@@ -26,7 +26,7 @@ See the [Introducing Coinbase International Exchange](https://www.coinbase.com/e
 ## Installation
 
 :::note
-No additional `coinbase_intx` installation is required; the adapter’s core components, written in Rust, are automatically compiled and linked during the build.
+No additional `coinbase_intx` installation is required; the adapter's core components, written in Rust, are automatically compiled and linked during the build.
 :::
 
 ## Examples
@@ -43,7 +43,7 @@ The following products are supported on the Coinbase International exchange:
 
 This guide assumes a trader is setting up for both live market data feeds, and trade execution.
 The Coinbase International adapter includes multiple components, which can be used together or
-separately depending on the use case. These components work together to connect to Coinbase International’s APIs
+separately depending on the use case. These components work together to connect to Coinbase International's APIs
 for market data and execution.
 
 - `CoinbaseIntxHttpClient`: REST API connectivity.
@@ -119,7 +119,7 @@ This will output a list of portfolio details, similar to the example below:
   'is_default': False,
   'is_lsp': False,
   'maker_fee_rate': '-0.00008',
-  'name': 'hrp5587988499',
+  'name': 'hrp558798849',
   'portfolio_id': '3mnk59ap-1-22',  # Your portfolio ID
   'portfolio_uuid': 'dd0958ad-0c9d-4445-a812-1870fe40d0e1',
   'pre_launch_trading_enabled': False,
@@ -140,74 +140,74 @@ Coinbase International offers market, limit, and stop order types, enabling a br
 
 ### Order Types
 
-| Order Type             | Derivatives | Spot | Notes                                   |
-|------------------------|-------------|------|-----------------------------------------|
-| `MARKET`               | ✓           | ✓    | Must use `IOC` or `FOK` time-in-forc    |
-| `LIMIT`                | ✓           | ✓    |                                         |
-| `STOP_MARKET`          | ✓           | ✓    |                                         |
-| `STOP_LIMIT`           | ✓           | ✓    |                                         |
-| `MARKET_IF_TOUCHED`    | -           | -    | *Not supported*.                        |
-| `LIMIT_IF_TOUCHED`     | -           | -    | *Not supported*.                        |
-| `TRAILING_STOP_MARKET` | -           | -    | *Not supported*.                        |
+| Order Type           | Derivatives | Spot | Notes                                |
+|----------------------|-------------|------|--------------------------------------|
+| `MARKET`             | ✓           | ✓    | Must use `IOC` or `FOK` time-in-force    |
+| `LIMIT`              | ✓           | ✓    |                                      |
+| `STOP_MARKET`        | ✓           | ✓    |                                      |
+| `STOP_LIMIT`         | ✓           | ✓    |                                      |
+| `MARKET_IF_TOUCHED`  | -           | -    | *Not supported*.                     |
+| `LIMIT_IF_TOUCHED`   | -           | -    | *Not supported*.                     |
+| `TRAILING_STOP_MARKET` | -         | -    | *Not supported*.                     |
 
 ### Execution Instructions
 
-| Instruction   | Derivatives | Spot | Notes                                            |
-|---------------|-------------|------|--------------------------------------------------|
-| `post_only`   | ✓           | ✓    | Ensures orders only provide liquidity.           |
-| `reduce_only` | ✓           | ✓    | Ensures orders only reduce existing positions.   |
+| Instruction  | Derivatives | Spot | Notes                                        |
+|--------------|-------------|------|----------------------------------------------|
+| `post_only`  | ✓           | ✓    | Ensures orders only provide liquidity.       |
+| `reduce_only`| ✓           | ✓    | Ensures orders only reduce existing positions. |
 
 ### Time in force options
 
-| Time in force | Derivatives | Spot | Notes                                            |
-|---------------|-------------|------|--------------------------------------------------|
-| `GTC`         | ✓           | ✓    | Good Till Canceled.                              |
-| `GTD`         | ✓           | ✓    | Good Till Date.                                  |
-| `FOK`         | ✓           | ✓    | Fill or Kill.                                    |
-| `IOC`         | ✓           | ✓    | Immediate or Cancel.                             |
+| Time in force | Derivatives | Spot | Notes                                        |
+|---------------|-------------|------|----------------------------------------------|
+| `GTC`         | ✓           | ✓    | Good Till Canceled.                          |
+| `GTD`         | ✓           | ✓    | Good Till Date.                              |
+| `FOK`         | ✓           | ✓    | Fill or Kill.                                |
+| `IOC`         | ✓           | ✓    | Immediate or Cancel.                         |
 
 ### Advanced Order Features
 
-| Feature            | Derivatives | Spot | Notes                                       |
-|--------------------|-------------|------|---------------------------------------------|
-| Order Modification | ✓           | ✓    | Price and quantity modification.             |
-| Bracket/OCO Orders | ?           | ?    | Requires further investigation.              |
-| Iceberg Orders     | ✓           | ✓    | Available via FIX protocol.                 |
+| Feature              | Derivatives | Spot | Notes                                   |
+|----------------------|-------------|------|-----------------------------------------|
+| Order Modification   | ✓           | ✓    | Price and quantity modification.        |
+| Bracket/OCO Orders   | ?           | ?    | Requires further investigation.         |
+| Iceberg Orders       | ✓           | ✓    | Available via FIX protocol.             |
 
 ### Batch operations
 
-| Operation          | Derivatives | Spot | Notes                                       |
-|--------------------|-------------|------|---------------------------------------------|
-| Batch Submit       | -           | -    | *Not supported*.                            |
-| Batch Modify       | -           | -    | *Not supported*.                            |
-| Batch Cancel       | -           | -    | *Not supported*.                            |
+| Operation            | Derivatives | Spot | Notes                                   |
+|----------------------|-------------|------|-----------------------------------------|
+| Batch Submit         | -           | -    | *Not supported*.                        |
+| Batch Modify         | -           | -    | *Not supported*.                        |
+| Batch Cancel         | -           | -    | *Not supported*.                        |
 
 ### Position management
 
-| Feature              | Derivatives | Spot | Notes                                       |
-|--------------------|-------------|------|---------------------------------------------|
-| Query positions     | ✓           | -    | Real-time position updates for derivatives.  |
-| Position mode       | -           | -    | Single position mode only.                   |
-| Leverage control    | ✓           | -    | Per-portfolio leverage settings.             |
-| Margin mode         | ✓           | -    | Cross margin only.                           |
+| Feature              | Derivatives | Spot | Notes                                   |
+|----------------------|-------------|------|-----------------------------------------|
+| Query positions      | ✓           | -    | Real-time position updates for derivatives.  |
+| Position mode        | -           | -    | Single position mode only.              |
+| Leverage control     | ✓           | -    | Per-portfolio leverage settings.        |
+| Margin mode          | ✓           | -    | Cross margin only.                      |
 
 ### Order querying
 
-| Feature              | Derivatives | Spot | Notes                                       |
-|--------------------|-------------|------|---------------------------------------------|
-| Query open orders   | ✓           | ✓    | List all active orders.                      |
-| Query order history | ✓           | ✓    | Historical order data.                       |
-| Order status updates| ✓           | ✓    | Real-time updates via FIX drop copy.       |
-| Trade history       | ✓           | ✓    | Execution and fill reports.                 |
+| Feature              | Derivatives | Spot | Notes                                   |
+|----------------------|-------------|------|-----------------------------------------|
+| Query open orders    | ✓           | ✓    | List all active orders.                 |
+| Query order history  | ✓           | ✓    | Historical order data.                  |
+| Order status updates | ✓           | ✓    | Real-time updates via FIX drop copy.   |
+| Trade history        | ✓           | ✓    | Execution and fill reports.             |
 
 ### Contingent orders
 
-| Feature              | Derivatives | Spot | Notes                                       |
-|--------------------|-------------|------|---------------------------------------------|
-| Order lists         | -           | -    | *Not supported*.                            |
-| OCO orders          | ?           | ?    | Requires further investigation.              |
-| Bracket orders      | ?           | ?    | Requires further investigation.              |
-| Conditional orders  | ✓           | ✓    | Stop and stop-limit orders.                |
+| Feature              | Derivatives | Spot | Notes                                   |
+|----------------------|-------------|------|-----------------------------------------|
+| Order lists          | -           | -    | *Not supported*.                        |
+| OCO orders           | ?           | ?    | Requires further investigation.         |
+| Bracket orders       | ?           | ?    | Requires further investigation.         |
+| Conditional orders   | ✓           | ✓    | Stop and stop-limit orders.            |
 
 ### Configuration Options
 
@@ -267,7 +267,9 @@ To comply, set the `use_uuid_client_order_ids=True` config option in your strate
 See the Coinbase International [Create order](https://docs.cdp.coinbase.com/intx/reference/createorder) REST API documentation for further details.
 :::
 
-An example configuration could be:
+### Basic Configuration Example
+
+A basic configuration for connecting to Coinbase International:
 
 ```python
 from nautilus_trader.adapters.coinbase_intx import COINBASE_INTX, CoinbaseIntxDataClientConfig, CoinbaseIntxExecClientConfig
@@ -295,7 +297,238 @@ strat_config = TOBQuoterConfig(
 )
 ```
 
-Then, create a `TradingNode` and add the client factories:
+### Advanced Configuration Examples
+
+#### 1. Data-Only Configuration (Market Data Feed)
+
+For users who only need market data without trading capabilities:
+
+```python
+from nautilus_trader.adapters.coinbase_intx import COINBASE_INTX, CoinbaseIntxDataClientConfig
+from nautilus_trader.live.node import TradingNode
+from nautilus_trader.config import TradingNodeConfig, InstrumentProviderConfig
+
+# Data-only configuration
+config = TradingNodeConfig(
+    trader_id="COINBASE_DATA_001",
+    log_level="INFO",
+    data_clients={
+        COINBASE_INTX: CoinbaseIntxDataClientConfig(
+            instrument_provider=InstrumentProviderConfig(
+                load_all=True,
+                load_ids=None,  # Load all instruments
+            ),
+            # Optional: specify custom timeouts
+            http_timeout_secs=30,
+        ),
+    },
+    # No execution clients needed for data-only setup
+    exec_clients={},
+)
+
+# Create and configure the node
+node = TradingNode(config=config)
+node.add_data_client_factory(COINBASE_INTX, CoinbaseIntxLiveDataClientFactory)
+node.build()
+```
+
+#### 2. Multi-Portfolio Trading Configuration
+
+For trading across multiple portfolios with separate execution clients:
+
+```python
+from nautilus_trader.adapters.coinbase_intx import COINBASE_INTX, CoinbaseIntxDataClientConfig, CoinbaseIntxExecClientConfig
+from nautilus_trader.live.node import TradingNode
+from nautilus_trader.config import TradingNodeConfig, InstrumentProviderConfig
+
+config = TradingNodeConfig(
+    trader_id="COINBASE_MULTI_PORTFOLIO",
+    log_level="INFO",
+    data_clients={
+        COINBASE_INTX: CoinbaseIntxDataClientConfig(
+            instrument_provider=InstrumentProviderConfig(load_all=True),
+        ),
+    },
+    exec_clients={
+        # Portfolio 1 - Main trading portfolio
+        "COINBASE_INTX_MAIN": CoinbaseIntxExecClientConfig(
+            instrument_provider=InstrumentProviderConfig(load_all=True),
+            portfolio_id="3mnk59ap-1-22",  # Specific portfolio ID
+            http_timeout_secs=60,
+        ),
+        # Portfolio 2 - Hedging portfolio
+        "COINBASE_INTX_HEDGE": CoinbaseIntxExecClientConfig(
+            instrument_provider=InstrumentProviderConfig(load_all=True),
+            portfolio_id="7xyz12cd-2-33",  # Different portfolio ID
+            http_timeout_secs=60,
+        ),
+    },
+)
+```
+
+#### 3. Production Trading Configuration with Risk Management
+
+A comprehensive production-ready configuration with enhanced settings:
+
+```python
+from nautilus_trader.adapters.coinbase_intx import COINBASE_INTX, CoinbaseIntxDataClientConfig, CoinbaseIntxExecClientConfig
+from nautilus_trader.live.node import TradingNode
+from nautilus_trader.config import (
+    TradingNodeConfig, 
+    InstrumentProviderConfig,
+    LoggingConfig,
+    CacheConfig,
+    MessageBusConfig,
+    RiskEngineConfig,
+    ExecEngineConfig,
+)
+
+config = TradingNodeConfig(
+    trader_id="COINBASE_PROD_001",
+    # Enhanced logging for production
+    logging=LoggingConfig(
+        log_level="INFO",
+        log_file_format="json",
+        log_component_levels={
+            "Portfolio": "DEBUG",
+            "RiskEngine": "INFO",
+            "ExecEngine": "INFO",
+        },
+    ),
+    # Cache configuration
+    cache=CacheConfig(
+        database=None,  # Use in-memory cache
+        flush_on_start=False,
+        drop_instruments_on_reset=True,
+        tick_capacity=10000,
+        bar_capacity=10000,
+    ),
+    # Message bus configuration
+    message_bus=MessageBusConfig(
+        database=None,
+        encoding="msgpack",
+        timestamps_as_iso8601=True,
+        buffer_interval_ms=1,
+    ),
+    # Risk engine configuration
+    risk_engine=RiskEngineConfig(
+        bypass=False,  # Enable risk checks
+        max_order_submit_rate="100/00:00:01",  # Max 100 orders per second
+        max_order_modify_rate="100/00:00:01",  # Max 100 modifications per second
+        max_notional_per_order={
+            "USD": 1_000_000,  # Max $1M per order
+            "BTC": 10,         # Max 10 BTC per order
+        },
+    ),
+    # Execution engine configuration
+    exec_engine=ExecEngineConfig(
+        reconciliation=True,
+        reconciliation_lookback_mins=1440,  # 24 hours
+        snapshot_orders=True,
+        snapshot_positions=True,
+    ),
+    data_clients={
+        COINBASE_INTX: CoinbaseIntxDataClientConfig(
+            instrument_provider=InstrumentProviderConfig(
+                load_all=True,
+                load_ids=None,
+            ),
+            http_timeout_secs=30,
+        ),
+    },
+    exec_clients={
+        COINBASE_INTX: CoinbaseIntxExecClientConfig(
+            instrument_provider=InstrumentProviderConfig(load_all=True),
+            # Portfolio ID from environment variable
+            portfolio_id=None,  # Will use COINBASE_INTX_PORTFOLIO_ID env var
+            http_timeout_secs=60,
+        ),
+    },
+)
+```
+
+#### 4. Specific Instrument Configuration
+
+For strategies focusing on specific instruments:
+
+```python
+from nautilus_trader.adapters.coinbase_intx import COINBASE_INTX, CoinbaseIntxDataClientConfig, CoinbaseIntxExecClientConfig
+from nautilus_trader.live.node import TradingNode
+from nautilus_trader.config import TradingNodeConfig, InstrumentProviderConfig
+
+# Define specific instruments to load
+btc_instruments = [
+    "BTC-USD",      # BTC spot
+    "BTC-PERP",     # BTC perpetual
+]
+
+eth_instruments = [
+    "ETH-USD",      # ETH spot  
+    "ETH-PERP",     # ETH perpetual
+]
+
+config = TradingNodeConfig(
+    trader_id="COINBASE_BTC_ETH_FOCUS",
+    log_level="INFO",
+    data_clients={
+        COINBASE_INTX: CoinbaseIntxDataClientConfig(
+            instrument_provider=InstrumentProviderConfig(
+                load_all=False,
+                load_ids=btc_instruments + eth_instruments,  # Only load specific instruments
+            ),
+        ),
+    },
+    exec_clients={
+        COINBASE_INTX: CoinbaseIntxExecClientConfig(
+            instrument_provider=InstrumentProviderConfig(
+                load_all=False,
+                load_ids=btc_instruments + eth_instruments,
+            ),
+        ),
+    },
+)
+```
+
+#### 5. Development/Testing Configuration
+
+A configuration suitable for development and testing:
+
+```python
+from nautilus_trader.adapters.coinbase_intx import COINBASE_INTX, CoinbaseIntxDataClientConfig, CoinbaseIntxExecClientConfig
+from nautilus_trader.live.node import TradingNode
+from nautilus_trader.config import TradingNodeConfig, InstrumentProviderConfig, LoggingConfig
+
+config = TradingNodeConfig(
+    trader_id="COINBASE_DEV_001",
+    # Verbose logging for development
+    logging=LoggingConfig(
+        log_level="DEBUG",
+        log_component_levels={
+            "WebSocketClient": "DEBUG",
+            "HttpClient": "DEBUG",
+            "DataClient": "DEBUG",
+            "ExecClient": "DEBUG",
+        },
+    ),
+    data_clients={
+        COINBASE_INTX: CoinbaseIntxDataClientConfig(
+            instrument_provider=InstrumentProviderConfig(load_all=True),
+            # Shorter timeout for faster feedback during development
+            http_timeout_secs=15,
+        ),
+    },
+    exec_clients={
+        COINBASE_INTX: CoinbaseIntxExecClientConfig(
+            instrument_provider=InstrumentProviderConfig(load_all=True),
+            http_timeout_secs=15,
+        ),
+    },
+)
+```
+
+### Setting Up the Trading Node
+
+After defining your configuration, create a `TradingNode` and add the client factories:
 
 ```python
 from nautilus_trader.adapters.coinbase_intx import COINBASE_INTX, CoinbaseIntxLiveDataClientFactory, CoinbaseIntxLiveExecClientFactory
@@ -333,6 +566,37 @@ Or, set the following environment variables:
 :::tip
 We recommend using environment variables to manage your credentials.
 :::
+
+#### Environment Variables Setup Examples
+
+**Linux/macOS:**
+```bash
+export COINBASE_INTX_API_KEY="your_api_key_here"
+export COINBASE_INTX_API_SECRET="your_api_secret_here"
+export COINBASE_INTX_API_PASSPHRASE="your_passphrase_here"
+export COINBASE_INTX_PORTFOLIO_ID="your_portfolio_id_here"
+```
+
+**Windows:**
+```cmd
+set COINBASE_INTX_API_KEY=your_api_key_here
+set COINBASE_INTX_API_SECRET=your_api_secret_here
+set COINBASE_INTX_API_PASSPHRASE=your_passphrase_here
+set COINBASE_INTX_PORTFOLIO_ID=your_portfolio_id_here
+```
+
+**Python .env file:**
+```python
+# .env file
+COINBASE_INTX_API_KEY=your_api_key_here
+COINBASE_INTX_API_SECRET=your_api_secret_here
+COINBASE_INTX_API_PASSPHRASE=your_passphrase_here
+COINBASE_INTX_PORTFOLIO_ID=your_portfolio_id_here
+
+# Load in Python
+from dotenv import load_dotenv
+load_dotenv()
+```
 
 When starting the trading node, you'll receive immediate confirmation of whether your
 credentials are valid and have trading permissions.

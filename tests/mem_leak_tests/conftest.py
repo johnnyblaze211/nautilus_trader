@@ -13,71 +13,34 @@
 #  limitations under the License.
 # -------------------------------------------------------------------------------------------------
 
-import gc
-import tracemalloc
+"""
+Pytest configuration and fixtures for memory leak tests.
+
+This module provides shared fixtures and utilities for memory leak testing.
+The main memory monitoring functionality has been moved to memory_utils.py
+for better organization and reusability.
+"""
+
+# Import the memory monitoring utilities for backward compatibility
+from tests.mem_leak_tests.memory_utils import MemoryMonitor
+from tests.mem_leak_tests.memory_utils import run_memory_test
+from tests.mem_leak_tests.memory_utils import snapshot_memory
+
+# Re-export for backward compatibility
+__all__ = [
+    "MemoryMonitor",
+    "run_memory_test", 
+    "snapshot_memory",
+]
 
 
-# Number of runs
+# Legacy function for backward compatibility
 def snapshot_memory(runs):
-    # Snapshot memory for func
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            # Start tracing memory allocations
-            tracemalloc.start()
-
-            # Initialize variables to track max memory usage and continuously increasing memory allocations
-            max_peak_memory = 0
-            snapshot = None
-            initial_snapshot = None
-
-            # Run the function n times and measure memory usage each time
-            for i in range(runs):
-                # Print the max heap memory usage
-                print(f"Run {i}...")
-
-                # Run func
-                func(args, kwargs)
-
-                # Register snapshots and measure memory
-                snapshot = tracemalloc.take_snapshot()
-                if i == 0:
-                    initial_snapshot = snapshot
-
-                (current_memory, peak) = tracemalloc.get_traced_memory()
-                current_memory = current_memory / (1024 * 1024)
-                peak = peak / (1024 * 1024)
-
-                # Update max_memory if current_memory is greater
-                if peak > max_peak_memory:
-                    max_peak_memory = current_memory
-
-                # Print the difference in memory usage between runs
-                print(
-                    f"Memory allocated after run {i+1}: {current_memory} MB",
-                )
-                print(
-                    f"Max peak memory recorded: {max_peak_memory} MB",
-                )
-                print()
-
-                # reset
-                gc.collect()
-                tracemalloc.reset_peak()
-
-            # Stop tracing memory allocations
-            tracemalloc.stop()
-
-            # Find and display largest memory blocks, since initial run
-            top_stats = snapshot.compare_to(initial_snapshot, "lineno")
-            print("[ Top 10 differences ]")
-            for stat in top_stats[:10]:
-                print(stat)
-
-            stat = top_stats[0]
-            print(f"{stat.count} memory blocks: {stat.size / 1024:.1f} KiB")
-            for line in stat.traceback.format():
-                print(line)
-
-        return wrapper
-
-    return decorator
+    """
+    Legacy decorator function - use memory_utils.snapshot_memory instead.
+    
+    This function is kept for backward compatibility with existing tests.
+    New tests should use the memory_utils module directly.
+    """
+    from tests.mem_leak_tests.memory_utils import snapshot_memory as new_snapshot_memory
+    return new_snapshot_memory(runs)

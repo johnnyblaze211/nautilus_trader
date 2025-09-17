@@ -80,3 +80,39 @@ Jupyter, or throttling the log flushing from Nautilus.
 - <https://github.com/deshaw/jupyterlab-limit-output>
 
 :::
+
+## Common workflows and troubleshooting
+
+### Development workflow recommendations
+
+When developing trading strategies with NautilusTrader, we recommend following this iterative workflow:
+
+1. **Start with the high-level API**: Use `BacktestNode` for initial strategy development as it provides a cleaner path to live trading
+2. **Use version control**: Always commit your strategy code and configuration files to track changes and performance variations
+3. **Test incrementally**: Begin with small datasets and short time periods before scaling to full historical backtests
+4. **Validate data quality**: Always inspect your data for gaps, outliers, or inconsistencies before running backtests
+
+### Common installation issues
+
+**Issue**: Import errors after installation
+```python
+ImportError: No module named 'nautilus_trader'
+```
+**Solution**: Ensure you're using the correct Python environment and that the package was installed successfully:
+```bash
+pip list | grep nautilus
+python -c "import nautilus_trader; print(nautilus_trader.__version__)"
+```
+
+**Issue**: Performance degradation on Windows
+**Solution**: Windows users should be aware that NautilusTrader runs in standard-precision mode (64-bit) due to platform limitations. For high-precision requirements, consider using Linux or macOS environments.
+
+**Issue**: Memory issues with large datasets
+**Solution**: Use data streaming and chunking techniques. Consider using the data catalog's built-in pagination features for large historical datasets.
+
+### Performance optimization tips
+
+- **Use Cython for custom indicators**: For latency-sensitive applications, implement custom indicators in Cython rather than pure Python
+- **Optimize data loading**: Use Parquet format for historical data storage as it provides better compression and faster I/O
+- **Configure logging appropriately**: Use `INFO` or `WARNING` log levels in production to reduce I/O overhead
+- **Monitor memory usage**: Large backtests can consume significant memory; consider using data streaming for very large datasets

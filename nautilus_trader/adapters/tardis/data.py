@@ -16,11 +16,19 @@
 import asyncio
 from typing import Any
 
-from nautilus_trader.adapters.tardis.common import convert_nautilus_bar_type_to_tardis_data_type
-from nautilus_trader.adapters.tardis.common import convert_nautilus_data_type_to_tardis_data_type
+from nautilus_trader.adapters.tardis.common import (
+    convert_nautilus_bar_type_to_tardis_data_type,
+)
+from nautilus_trader.adapters.tardis.common import (
+    convert_nautilus_data_type_to_tardis_data_type,
+)
 from nautilus_trader.adapters.tardis.common import create_instrument_info
-from nautilus_trader.adapters.tardis.common import create_replay_normalized_request_options
-from nautilus_trader.adapters.tardis.common import create_stream_normalized_request_options
+from nautilus_trader.adapters.tardis.common import (
+    create_replay_normalized_request_options,
+)
+from nautilus_trader.adapters.tardis.common import (
+    create_stream_normalized_request_options,
+)
 from nautilus_trader.adapters.tardis.common import get_ws_client_key
 from nautilus_trader.adapters.tardis.config import TardisDataClientConfig
 from nautilus_trader.adapters.tardis.constants import TARDIS
@@ -114,14 +122,20 @@ class TardisDataClient(LiveMarketDataClient):
 
         # Tardis Machine
         self._ws_base_url = self._config.base_url_ws
-        self._ws_client: nautilus_pyo3.TardisMachineClient = self._create_websocket_client()
+        self._ws_client: nautilus_pyo3.TardisMachineClient = (
+            self._create_websocket_client()
+        )
         self._ws_clients: dict[str, nautilus_pyo3.TardisMachineClient] = {}
         self._ws_pending_infos: list[nautilus_pyo3.TardisInstrumentMiniInfo] = []
-        self._ws_pending_streams: list[nautilus_pyo3.StreamNormalizedRequestOptions] = []
+        self._ws_pending_streams: list[nautilus_pyo3.StreamNormalizedRequestOptions] = (
+            []
+        )
         self._ws_client_futures: set[asyncio.Future] = set()
 
         # Tasks
-        self._update_instruments_interval_mins: int | None = config.update_instruments_interval_mins
+        self._update_instruments_interval_mins: int | None = (
+            config.update_instruments_interval_mins
+        )
         self._update_instruments_task: asyncio.Task | None = None
         self._main_ws_connect_task: asyncio.Task | None = None
         self._main_ws_delay = True
@@ -135,7 +149,9 @@ class TardisDataClient(LiveMarketDataClient):
                 self._update_instruments(self._update_instruments_interval_mins),
             )
 
-        self._main_ws_connect_task = self.create_task(self._connect_main_ws_after_delay())
+        self._main_ws_connect_task = self.create_task(
+            self._connect_main_ws_after_delay()
+        )
 
     async def _disconnect(self) -> None:
         if self._update_instruments_task:
@@ -227,7 +243,9 @@ class TardisDataClient(LiveMarketDataClient):
     ) -> None:
         instrument = self._cache.instrument(instrument_id)
         if instrument is None:
-            self._log.error(f"Cannot subscribe {data_type}: no instrument for {instrument_id}")
+            self._log.error(
+                f"Cannot subscribe {data_type}: no instrument for {instrument_id}"
+            )
             return
 
         instrument_info = create_instrument_info(instrument)
@@ -270,10 +288,16 @@ class TardisDataClient(LiveMarketDataClient):
             )
             return
 
-        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(OrderBookDelta)
-        self._subscribe_stream(command.instrument_id, tardis_data_type, "order book deltas")
+        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(
+            OrderBookDelta
+        )
+        self._subscribe_stream(
+            command.instrument_id, tardis_data_type, "order book deltas"
+        )
 
-    async def _subscribe_order_book_snapshots(self, command: SubscribeOrderBook) -> None:
+    async def _subscribe_order_book_snapshots(
+        self, command: SubscribeOrderBook
+    ) -> None:
         if command.book_type == BookType.L3_MBO:
             self._log.error(
                 "Cannot subscribe to order book snapshots: "
@@ -282,9 +306,13 @@ class TardisDataClient(LiveMarketDataClient):
             )
             return
 
-        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(OrderBookDepth10)
+        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(
+            OrderBookDepth10
+        )
         tardis_data_type = f"{tardis_data_type}_{command.depth}_0ms"
-        self._subscribe_stream(command.instrument_id, tardis_data_type, "order book snapshots")
+        self._subscribe_stream(
+            command.instrument_id, tardis_data_type, "order book snapshots"
+        )
 
     async def _subscribe_quote_ticks(self, command: SubscribeQuoteTicks) -> None:
         tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(QuoteTick)
@@ -296,19 +324,29 @@ class TardisDataClient(LiveMarketDataClient):
 
     async def _subscribe_funding_rates(self, command: SubscribeFundingRates) -> None:
         # For Tardis, funding rates come from derivative_ticker messages
-        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(FundingRateUpdate)
+        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(
+            FundingRateUpdate
+        )
         self._subscribe_stream(command.instrument_id, tardis_data_type, "funding rates")
 
     async def _subscribe_bars(self, command: SubscribeBars) -> None:
-        tardis_data_type = convert_nautilus_bar_type_to_tardis_data_type(command.bar_type)
+        tardis_data_type = convert_nautilus_bar_type_to_tardis_data_type(
+            command.bar_type
+        )
         self._subscribe_stream(command.bar_type.instrument_id, tardis_data_type, "bars")
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
-        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(OrderBookDelta)
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
+        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(
+            OrderBookDelta
+        )
         ws_client_key = get_ws_client_key(command.instrument_id, tardis_data_type)
         self._dispose_websocket_client_by_key(ws_client_key)
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         base_type = convert_nautilus_data_type_to_tardis_data_type(OrderBookDepth10)
         augmented_type = f"{base_type}_{command.depth}_0ms"
         ws_client_key = get_ws_client_key(command.instrument_id, augmented_type)
@@ -324,14 +362,22 @@ class TardisDataClient(LiveMarketDataClient):
         ws_client_key = get_ws_client_key(command.instrument_id, tardis_data_type)
         self._dispose_websocket_client_by_key(ws_client_key)
 
-    async def _unsubscribe_funding_rates(self, command: UnsubscribeFundingRates) -> None:
-        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(FundingRateUpdate)
+    async def _unsubscribe_funding_rates(
+        self, command: UnsubscribeFundingRates
+    ) -> None:
+        tardis_data_type = convert_nautilus_data_type_to_tardis_data_type(
+            FundingRateUpdate
+        )
         ws_client_key = get_ws_client_key(command.instrument_id, tardis_data_type)
         self._dispose_websocket_client_by_key(ws_client_key)
 
     async def _unsubscribe_bars(self, command: UnsubscribeBars) -> None:
-        tardis_data_type = convert_nautilus_bar_type_to_tardis_data_type(command.bar_type)
-        ws_client_key = get_ws_client_key(command.bar_type.instrument_id, tardis_data_type)
+        tardis_data_type = convert_nautilus_bar_type_to_tardis_data_type(
+            command.bar_type
+        )
+        ws_client_key = get_ws_client_key(
+            command.bar_type.instrument_id, tardis_data_type
+        )
         self._dispose_websocket_client_by_key(ws_client_key)
 
     async def _request_instrument(self, request: RequestInstrument) -> None:
@@ -345,12 +391,16 @@ class TardisDataClient(LiveMarketDataClient):
                 f"Requesting instrument {request.instrument_id} with specified `end` which has no effect",
             )
 
-        instrument: Instrument | None = self._instrument_provider.find(request.instrument_id)
+        instrument: Instrument | None = self._instrument_provider.find(
+            request.instrument_id
+        )
         if instrument is None:
             self._log.error(f"Cannot find instrument for {request.instrument_id}")
             return
 
-        self._handle_instrument(instrument, request.id, request.start, request.end, request.params)
+        self._handle_instrument(
+            instrument, request.id, request.start, request.end, request.params
+        )
 
     async def _request_instruments(self, request: RequestInstruments) -> None:
         if request.start is not None:
@@ -413,7 +463,9 @@ class TardisDataClient(LiveMarketDataClient):
         instrument_info = create_instrument_info(instrument)
         tardis_exchange_str = instrument_info.exchange
         raw_symbol_str = instrument.raw_symbol.value
-        tardis_data_type = convert_nautilus_bar_type_to_tardis_data_type(request.bar_type)
+        tardis_data_type = convert_nautilus_bar_type_to_tardis_data_type(
+            request.bar_type
+        )
 
         self._log.info(
             f"Subscribing replay: exchange={tardis_exchange_str}, raw_symbol={raw_symbol_str}, data_type={tardis_data_type}",
@@ -459,7 +511,8 @@ class TardisDataClient(LiveMarketDataClient):
         pyo3_bars = [
             pyo3_bar
             for pyo3_bar in pyo3_bars
-            if pyo3_bar.ts_event >= request.start.value and pyo3_bar.ts_event <= request.end.value
+            if pyo3_bar.ts_event >= request.start.value
+            and pyo3_bar.ts_event <= request.end.value
         ]
 
         bars = Bar.from_pyo3_list(pyo3_bars)

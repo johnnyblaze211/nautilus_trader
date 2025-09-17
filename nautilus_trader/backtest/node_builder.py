@@ -46,7 +46,9 @@ class BacktestNodeBuilder:
         self._log = logger
         self._data_factories: dict[str, type[LiveDataClientFactory]] = {}
 
-    def add_data_client_factory(self, name: str, factory: type[LiveDataClientFactory]) -> None:
+    def add_data_client_factory(
+        self, name: str, factory: type[LiveDataClientFactory]
+    ) -> None:
         """
         Add the given data client factory to the builder.
 
@@ -66,7 +68,9 @@ class BacktestNodeBuilder:
 
         """
         if not issubclass(factory, LiveDataClientFactory):
-            self._log.error(f"Factory was not of type `LiveDataClientFactory`, was {factory}")
+            self._log.error(
+                f"Factory was not of type `LiveDataClientFactory`, was {factory}"
+            )
             return
 
         self._data_factories[name] = factory

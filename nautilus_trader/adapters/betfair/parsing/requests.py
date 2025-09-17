@@ -218,7 +218,9 @@ def nautilus_order_to_place_instructions(
                 instrument=instrument,
             )
         else:
-            return nautilus_limit_to_place_instructions(command=command, instrument=instrument)
+            return nautilus_limit_to_place_instructions(
+                command=command, instrument=instrument
+            )
     elif isinstance(command.order, NautilusMarketOrder):
         if command.order.time_in_force in (
             NautilusTimeInForce.AT_THE_OPEN,
@@ -229,7 +231,9 @@ def nautilus_order_to_place_instructions(
                 instrument=instrument,
             )
         else:
-            return nautilus_market_to_place_instructions(command=command, instrument=instrument)
+            return nautilus_market_to_place_instructions(
+                command=command, instrument=instrument
+            )
     else:
         raise TypeError(f"Unknown order type: {type(command.order)}")
 
@@ -392,12 +396,16 @@ def bet_to_order_status_report(
         fill_qty = Quantity(order.size_matched, BETFAIR_QUANTITY_PRECISION)
     elif order.bsp_liability != 0.0:
         size = (
-            order.bsp_liability / order if order.side == BetOrderSide.BACK else order.bsp_liability
+            order.bsp_liability / order
+            if order.side == BetOrderSide.BACK
+            else order.bsp_liability
         )
         qty = Quantity(size, BETFAIR_QUANTITY_PRECISION)
         fill_qty = Quantity(size, BETFAIR_QUANTITY_PRECISION)
     else:
-        raise ValueError(f"Unknown order size {order.price_size.size=}, {order.bsp_liability=}")
+        raise ValueError(
+            f"Unknown order size {order.price_size.size=}, {order.bsp_liability=}"
+        )
     return OrderStatusReport(
         account_id=account_id,
         instrument_id=instrument_id,
@@ -414,7 +422,11 @@ def bet_to_order_status_report(
         report_id=report_id,
         ts_accepted=dt_to_unix_nanos(pd.Timestamp(order.placed_date)),
         ts_triggered=0,
-        ts_last=dt_to_unix_nanos(pd.Timestamp(order.matched_date)) if order.matched_date else 0,
+        ts_last=(
+            dt_to_unix_nanos(pd.Timestamp(order.matched_date))
+            if order.matched_date
+            else 0
+        ),
         ts_init=ts_init,
     )
 

@@ -82,7 +82,9 @@ class TestIdProviderPyo3:
 
     @staticmethod
     def betting_instrument_id():
-        from nautilus_trader.adapters.betfair.parsing.common import betfair_instrument_id
+        from nautilus_trader.adapters.betfair.parsing.common import (
+            betfair_instrument_id,
+        )
 
         return betfair_instrument_id(
             market_id="1-179082386",

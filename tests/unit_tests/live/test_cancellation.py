@@ -210,7 +210,9 @@ async def test_rapid_task_completion_during_cancellation():
     tasks.add(task2)
     tasks.add(task3)
 
-    await eventually(lambda: 1 in completion_order and 2 in completion_order, timeout=0.5)
+    await eventually(
+        lambda: 1 in completion_order and 2 in completion_order, timeout=0.5
+    )
 
     # Act
     await cancel_tasks_with_timeout(tasks, logger, timeout_secs=1.0)

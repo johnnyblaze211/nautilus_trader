@@ -82,10 +82,22 @@ def test_order_book(book: nautilus_pyo3.OrderBook) -> None:
     assert book.best_ask_price() == 101
     assert book.best_bid_size() == 100
     assert book.best_ask_size() == 100
-    assert book.bids_to_dict() == {Decimal(100): Decimal(100), Decimal(99): Decimal(200)}
-    assert book.asks_to_dict() == {Decimal(101): Decimal(100), Decimal(102): Decimal(200)}
-    assert book.get_avg_px_for_quantity(stub_qty, nautilus_pyo3.OrderSide.BUY) == 101.33333333333333
-    assert book.get_avg_px_for_quantity(stub_qty, nautilus_pyo3.OrderSide.SELL) == 99.66666666666667
+    assert book.bids_to_dict() == {
+        Decimal(100): Decimal(100),
+        Decimal(99): Decimal(200),
+    }
+    assert book.asks_to_dict() == {
+        Decimal(101): Decimal(100),
+        Decimal(102): Decimal(200),
+    }
+    assert (
+        book.get_avg_px_for_quantity(stub_qty, nautilus_pyo3.OrderSide.BUY)
+        == 101.33333333333333
+    )
+    assert (
+        book.get_avg_px_for_quantity(stub_qty, nautilus_pyo3.OrderSide.SELL)
+        == 99.66666666666667
+    )
 
 
 def test_group_bids_asks_empty(book: nautilus_pyo3.OrderBook) -> None:

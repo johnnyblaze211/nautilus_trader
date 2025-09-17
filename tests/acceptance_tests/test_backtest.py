@@ -43,14 +43,22 @@ from nautilus_trader.examples.algorithms.twap import TWAPExecAlgorithm
 from nautilus_trader.examples.strategies.ema_cross import EMACross
 from nautilus_trader.examples.strategies.ema_cross import EMACrossConfig
 from nautilus_trader.examples.strategies.ema_cross_stop_entry import EMACrossStopEntry
-from nautilus_trader.examples.strategies.ema_cross_stop_entry import EMACrossStopEntryConfig
-from nautilus_trader.examples.strategies.ema_cross_trailing_stop import EMACrossTrailingStop
-from nautilus_trader.examples.strategies.ema_cross_trailing_stop import EMACrossTrailingStopConfig
+from nautilus_trader.examples.strategies.ema_cross_stop_entry import (
+    EMACrossStopEntryConfig,
+)
+from nautilus_trader.examples.strategies.ema_cross_trailing_stop import (
+    EMACrossTrailingStop,
+)
+from nautilus_trader.examples.strategies.ema_cross_trailing_stop import (
+    EMACrossTrailingStopConfig,
+)
 from nautilus_trader.examples.strategies.ema_cross_twap import EMACrossTWAP
 from nautilus_trader.examples.strategies.ema_cross_twap import EMACrossTWAPConfig
 from nautilus_trader.examples.strategies.market_maker import MarketMaker
 from nautilus_trader.examples.strategies.orderbook_imbalance import OrderBookImbalance
-from nautilus_trader.examples.strategies.orderbook_imbalance import OrderBookImbalanceConfig
+from nautilus_trader.examples.strategies.orderbook_imbalance import (
+    OrderBookImbalanceConfig,
+)
 from nautilus_trader.model import Bar
 from nautilus_trader.model import InstrumentId
 from nautilus_trader.model import Price
@@ -308,8 +316,12 @@ class TestBacktestAcceptanceTestsGBPUSDBarsInternal:
         assert self.engine.kernel.msgbus.pub_count == 120_902  # Reduced from 382_303
         assert strategy.fast_ema.count >= 2_000  # Reduced from 8_353 (approximate)
         assert self.engine.iteration >= 30_000  # Reduced from 120_468 (approximate)
-        assert self.engine.cache.orders_total_count() >= 100  # Reduced from 570 (approximate)
-        assert self.engine.cache.positions_total_count() >= 50  # Reduced from 285 (approximate)
+        assert (
+            self.engine.cache.orders_total_count() >= 100
+        )  # Reduced from 570 (approximate)
+        assert (
+            self.engine.cache.positions_total_count() >= 50
+        )  # Reduced from 285 (approximate)
         assert self.engine.cache.orders_open_count() == 0
         assert self.engine.cache.positions_open_count() == 0
         account = self.engine.portfolio.account(self.venue)
@@ -344,8 +356,12 @@ class TestBacktestAcceptanceTestsGBPUSDBarsInternal:
         assert self.engine.kernel.msgbus.pub_count == 119_432  # Reduced from 378_661
         assert strategy.fast_ema.count >= 2_000  # Reduced from 8_353 (approximate)
         assert self.engine.iteration >= 30_000  # Reduced from 120_468 (approximate)
-        assert self.engine.cache.orders_total_count() >= 5  # Reduced from 12 (approximate)
-        assert self.engine.cache.positions_total_count() >= 1  # Should have at least 1 position
+        assert (
+            self.engine.cache.orders_total_count() >= 5
+        )  # Reduced from 12 (approximate)
+        assert (
+            self.engine.cache.positions_total_count() >= 1
+        )  # Should have at least 1 position
         assert self.engine.cache.orders_open_count() == 0
         assert self.engine.cache.positions_open_count() == 0
         account = self.engine.portfolio.account(self.venue)
@@ -565,8 +581,12 @@ class TestBacktestAcceptanceTestsBTCUSDTEmaCrossTWAP:
 
         # Build ticks from bar data
         ticks = wrangler.process_bar_data(
-            bid_data=provider.read_csv_bars("btc-perp-20211231-20220201_1m.csv")[:10_000],
-            ask_data=provider.read_csv_bars("btc-perp-20211231-20220201_1m.csv")[:10_000],
+            bid_data=provider.read_csv_bars("btc-perp-20211231-20220201_1m.csv")[
+                :10_000
+            ],
+            ask_data=provider.read_csv_bars("btc-perp-20211231-20220201_1m.csv")[
+                :10_000
+            ],
         )
 
         self.engine.add_data(ticks)
@@ -793,7 +813,9 @@ class TestBacktestAcceptanceTestsOrderBookImbalance:
 
         for instrument in instruments[:1]:
             trade_ticks = [
-                d for d in data if isinstance(d, TradeTick) and d.instrument_id == instrument.id
+                d
+                for d in data
+                if isinstance(d, TradeTick) and d.instrument_id == instrument.id
             ]
             order_book_deltas = [
                 d
@@ -852,7 +874,9 @@ class TestBacktestAcceptanceTestsMarketMaking:
 
         for instrument in instruments[:1]:
             trade_ticks = [
-                d for d in data if isinstance(d, TradeTick) and d.instrument_id == instrument.id
+                d
+                for d in data
+                if isinstance(d, TradeTick) and d.instrument_id == instrument.id
             ]
             order_book_deltas = [
                 d
@@ -910,7 +934,8 @@ class TestBacktestNodeWithBacktestDataIterator:
         # Now includes both individual leg orders and spread orders
         last_greeks = portfolio_greeks_messages[-1]
         assert (
-            "portfolio_greeks=PortfolioGreeks(pnl=-350.00, price=7,937.50" in last_greeks
+            "portfolio_greeks=PortfolioGreeks(pnl=-350.00, price=7,937.50"
+            in last_greeks
         ), f"Unexpected portfolio greeks: {last_greeks}"
         assert messages_with_data == messages_without_data
 
@@ -1234,7 +1259,9 @@ class OptionStrategy(Strategy):
         self.leg_fills: list[str] = []
 
     def on_start(self):
-        self.bar_type = BarType.from_str(f"{self.config.future_id}-1-MINUTE-LAST-EXTERNAL")
+        self.bar_type = BarType.from_str(
+            f"{self.config.future_id}-1-MINUTE-LAST-EXTERNAL"
+        )
 
         self.request_instrument(self.config.option_id)
         self.request_instrument(self.config.option_id2)
@@ -1247,7 +1274,10 @@ class OptionStrategy(Strategy):
         )
         self.subscribe_quote_ticks(
             self.config.option_id2,
-            params={"point_data": True, "durations_seconds": (pd.Timedelta(minutes=1).seconds,)},
+            params={
+                "point_data": True,
+                "durations_seconds": (pd.Timedelta(minutes=1).seconds,),
+            },
         )
         self.subscribe_bars(self.bar_type)
 
@@ -1277,7 +1307,10 @@ class OptionStrategy(Strategy):
 
     def on_quote_tick(self, tick):
         # Submit spread order when we have spread quotes available
-        if tick.instrument_id == self.config.spread_id and not self.spread_order_submitted:
+        if (
+            tick.instrument_id == self.config.spread_id
+            and not self.spread_order_submitted
+        ):
             self.user_log(f"Spread quote received: {tick}")
             self.spread_quotes_received += 1
 
@@ -1376,7 +1409,9 @@ class OptionStrategy(Strategy):
         self.unsubscribe_quote_ticks(self.config.option_id)
         self.unsubscribe_quote_ticks(self.config.option_id2)
         self.unsubscribe_data(DataType(GreeksData), instrument_id=self.config.option_id)
-        self.unsubscribe_data(DataType(GreeksData), instrument_id=self.config.option_id2)
+        self.unsubscribe_data(
+            DataType(GreeksData), instrument_id=self.config.option_id2
+        )
 
     def user_log(self, msg, color=LogColor.GREEN):
         self.log.warning(f"[SpreadTest] {msg!s}", color=color)
@@ -1573,7 +1608,9 @@ class TestBacktestPnLAlignmentAcceptance:
             starting_balances=[starting_balance],
         )
 
-        AUDUSD_SIM = TestInstrumentProvider.default_fx_ccy("AUD/USD", venue=Venue("SIM"))
+        AUDUSD_SIM = TestInstrumentProvider.default_fx_ccy(
+            "AUD/USD", venue=Venue("SIM")
+        )
         engine.add_instrument(AUDUSD_SIM)
 
         # Create a simple strategy that guarantees multiple position cycles
@@ -1818,7 +1855,9 @@ class TestBacktestPnLAlignmentAcceptance:
         )
 
         # Add instrument
-        AUDUSD_SIM = TestInstrumentProvider.default_fx_ccy("AUD/USD", venue=Venue("SIM"))
+        AUDUSD_SIM = TestInstrumentProvider.default_fx_ccy(
+            "AUD/USD", venue=Venue("SIM")
+        )
         engine.add_instrument(AUDUSD_SIM)
 
         # Add data with predictable price movements
@@ -1925,7 +1964,9 @@ class TestBacktestPnLAlignmentAcceptance:
             starting_balances=[starting_balance],
         )
 
-        AUDUSD_SIM = TestInstrumentProvider.default_fx_ccy("AUD/USD", venue=Venue("SIM"))
+        AUDUSD_SIM = TestInstrumentProvider.default_fx_ccy(
+            "AUD/USD", venue=Venue("SIM")
+        )
         engine.add_instrument(AUDUSD_SIM)
 
         # Create strategy with multiple position cycles

@@ -163,7 +163,9 @@ class TestCommands:
             == f"SubmitOrderList(client_id=None, trader_id=TRADER-001, strategy_id=S-001, instrument_id=AUD/USD.SIM, order_list=OrderList(id=OL-19700101-000000-000-001-1, instrument_id=AUD/USD.SIM, strategy_id=S-001, orders=[MarketOrder(BUY 100_000 AUD/USD.SIM MARKET GTC, status=INITIALIZED, client_order_id=O-19700101-000000-000-001-1, venue_order_id=None, position_id=None, contingency_type=OTO, linked_order_ids=[O-19700101-000000-000-001-2, O-19700101-000000-000-001-3], tags=['ENTRY']), StopMarketOrder(SELL 100_000 AUD/USD.SIM STOP_MARKET @ 1.00000[DEFAULT] GTC, status=INITIALIZED, client_order_id=O-19700101-000000-000-001-2, venue_order_id=None, position_id=None, contingency_type=OUO, linked_order_ids=[O-19700101-000000-000-001-3], parent_order_id=O-19700101-000000-000-001-1, tags=['STOP_LOSS']), LimitOrder(SELL 100_000 AUD/USD.SIM LIMIT @ 1.00100 GTC, status=INITIALIZED, client_order_id=O-19700101-000000-000-001-3, venue_order_id=None, position_id=None, contingency_type=OUO, linked_order_ids=[O-19700101-000000-000-001-2], parent_order_id=O-19700101-000000-000-001-1, tags=['TAKE_PROFIT'])]), position_id=P-001, command_id={uuid}, ts_init=0)"  # noqa
         )
 
-    def test_submit_bracket_order_command_with_exec_algorithm_to_from_dict_and_str_repr(self):
+    def test_submit_bracket_order_command_with_exec_algorithm_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
 
@@ -226,7 +228,9 @@ class TestCommands:
             == f"ModifyOrder(client_id=None, trader_id=TRADER-001, strategy_id=S-001, instrument_id=AUD/USD.SIM, client_order_id=O-123456, venue_order_id=001, quantity=100_000, price=1.00000, trigger_price=1.00010, command_id={uuid}, ts_init=0)"  # noqa
         )
 
-    def test_modify_order_command_with_none_venue_order_id_to_from_dict_and_str_repr(self):
+    def test_modify_order_command_with_none_venue_order_id_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
 
@@ -279,7 +283,9 @@ class TestCommands:
             == f"CancelOrder(client_id=SIM, trader_id=TRADER-001, strategy_id=S-001, instrument_id=AUD/USD.SIM, client_order_id=O-123456, venue_order_id=001, command_id={uuid}, ts_init=0)"  # noqa
         )
 
-    def test_cancel_order_command_with_none_venue_order_id_to_from_dict_and_str_repr(self):
+    def test_cancel_order_command_with_none_venue_order_id_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
 
@@ -320,7 +326,8 @@ class TestCommands:
         # Act, Assert
         assert CancelAllOrders.from_dict(CancelAllOrders.to_dict(command)) == command
         assert (
-            str(command) == "CancelAllOrders(instrument_id=AUD/USD.SIM, order_side=NO_ORDER_SIDE)"
+            str(command)
+            == "CancelAllOrders(instrument_id=AUD/USD.SIM, order_side=NO_ORDER_SIDE)"
         )
         assert (
             repr(command)
@@ -372,7 +379,9 @@ class TestCommands:
         )
 
         # Act, Assert
-        assert BatchCancelOrders.from_dict(BatchCancelOrders.to_dict(command)) == command
+        assert (
+            BatchCancelOrders.from_dict(BatchCancelOrders.to_dict(command)) == command
+        )
         assert (
             str(command)
             == f"BatchCancelOrders(instrument_id=AUD/USD.SIM, cancels=[CancelOrder(client_id=SIM, trader_id=TRADER-001, strategy_id=S-001, instrument_id=AUD/USD.SIM, client_order_id=O-1234561, venue_order_id=1, command_id={uuid1}, ts_init=0), CancelOrder(client_id=SIM, trader_id=TRADER-001, strategy_id=S-001, instrument_id=AUD/USD.SIM, client_order_id=O-1234562, venue_order_id=2, command_id={uuid2}, ts_init=0), CancelOrder(client_id=SIM, trader_id=TRADER-001, strategy_id=S-001, instrument_id=AUD/USD.SIM, client_order_id=O-1234563, venue_order_id=3, command_id={uuid3}, ts_init=0)])"  # noqa
@@ -408,7 +417,9 @@ class TestCommands:
             == f"QueryOrder(client_id=SIM, trader_id=TRADER-001, strategy_id=S-001, instrument_id=AUD/USD.SIM, client_order_id=O-123456, venue_order_id=001, command_id={uuid}, ts_init=0)"  # noqa
         )
 
-    def test_query_order_command_with_none_venue_order_id_to_from_dict_and_str_repr(self):
+    def test_query_order_command_with_none_venue_order_id_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
 
@@ -470,7 +481,9 @@ class TestCommands:
 
         # Act, Assert
         assert (
-            GenerateOrderStatusReport.from_dict(GenerateOrderStatusReport.to_dict(command))
+            GenerateOrderStatusReport.from_dict(
+                GenerateOrderStatusReport.to_dict(command)
+            )
             == command
         )
         assert (
@@ -494,7 +507,9 @@ class TestCommands:
 
         # Act, Assert
         assert (
-            GenerateOrderStatusReport.from_dict(GenerateOrderStatusReport.to_dict(command))
+            GenerateOrderStatusReport.from_dict(
+                GenerateOrderStatusReport.to_dict(command)
+            )
             == command
         )
         assert (
@@ -519,7 +534,9 @@ class TestCommands:
 
         # Act, Assert
         assert (
-            GenerateOrderStatusReports.from_dict(GenerateOrderStatusReports.to_dict(command))
+            GenerateOrderStatusReports.from_dict(
+                GenerateOrderStatusReports.to_dict(command)
+            )
             == command
         )
         assert (
@@ -546,7 +563,9 @@ class TestCommands:
 
         # Act, Assert
         assert (
-            GenerateOrderStatusReports.from_dict(GenerateOrderStatusReports.to_dict(command))
+            GenerateOrderStatusReports.from_dict(
+                GenerateOrderStatusReports.to_dict(command)
+            )
             == command
         )
         assert (
@@ -570,13 +589,18 @@ class TestCommands:
         )
 
         # Act, Assert
-        assert GenerateFillReports.from_dict(GenerateFillReports.to_dict(command)) == command
+        assert (
+            GenerateFillReports.from_dict(GenerateFillReports.to_dict(command))
+            == command
+        )
         assert (
             repr(command)
             == f"GenerateFillReports(instrument_id=AUD/USD.SIM, venue_order_id=001, start={start_time}, end={end_time}, command_id={uuid}, ts_init=0)"
         )
 
-    def test_generate_fill_reports_command_with_none_venue_order_id_to_from_dict_and_str_repr(self):
+    def test_generate_fill_reports_command_with_none_venue_order_id_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
         start_time = datetime(2023, 1, 1, 12, 0, 0)
@@ -592,7 +616,10 @@ class TestCommands:
         )
 
         # Act, Assert
-        assert GenerateFillReports.from_dict(GenerateFillReports.to_dict(command)) == command
+        assert (
+            GenerateFillReports.from_dict(GenerateFillReports.to_dict(command))
+            == command
+        )
         assert (
             repr(command)
             == f"GenerateFillReports(instrument_id=AUD/USD.SIM, venue_order_id=None, start={start_time}, end={end_time}, command_id={uuid}, ts_init=0)"  # noqa
@@ -614,7 +641,9 @@ class TestCommands:
 
         # Act, Assert
         assert (
-            GeneratePositionStatusReports.from_dict(GeneratePositionStatusReports.to_dict(command))
+            GeneratePositionStatusReports.from_dict(
+                GeneratePositionStatusReports.to_dict(command)
+            )
             == command
         )
         assert (
@@ -640,7 +669,9 @@ class TestCommands:
 
         # Act, Assert
         assert (
-            GeneratePositionStatusReports.from_dict(GeneratePositionStatusReports.to_dict(command))
+            GeneratePositionStatusReports.from_dict(
+                GeneratePositionStatusReports.to_dict(command)
+            )
             == command
         )
         assert (
@@ -662,7 +693,9 @@ class TestCommands:
 
         # Act, Assert
         assert (
-            GenerateExecutionMassStatus.from_dict(GenerateExecutionMassStatus.to_dict(command))
+            GenerateExecutionMassStatus.from_dict(
+                GenerateExecutionMassStatus.to_dict(command)
+            )
             == command
         )
         assert (
@@ -670,7 +703,9 @@ class TestCommands:
             == f"GenerateExecutionMassStatus(trader_id=TRADER-001, client_id=BROKER-001, venue=None, command_id={uuid}, ts_init=0)"
         )
 
-    def test_generate_execution_mass_status_command_with_params_to_from_dict_and_str_repr(self):
+    def test_generate_execution_mass_status_command_with_params_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
         params = {"custom_param": "value"}
@@ -686,7 +721,9 @@ class TestCommands:
 
         # Act, Assert
         assert (
-            GenerateExecutionMassStatus.from_dict(GenerateExecutionMassStatus.to_dict(command))
+            GenerateExecutionMassStatus.from_dict(
+                GenerateExecutionMassStatus.to_dict(command)
+            )
             == command
         )
         assert (

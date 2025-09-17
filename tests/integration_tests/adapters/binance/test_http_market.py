@@ -98,7 +98,9 @@ class TestBinanceSpotMarketHttpAPI:
         mock_send_request = mocker.patch(target="aiohttp.client.ClientSession.request")
 
         # Act
-        await self.api.query_historical_trades(symbol=self.test_symbol, limit=10, from_id=0)
+        await self.api.query_historical_trades(
+            symbol=self.test_symbol, limit=10, from_id=0
+        )
 
         # Assert
         request = mock_send_request.call_args.kwargs
@@ -124,7 +126,10 @@ class TestBinanceSpotMarketHttpAPI:
         request = mock_send_request.call_args.kwargs
         assert request["method"] == "GET"
         assert request["url"] == "https://api.binance.com/api/v3/aggTrades"
-        assert request["params"] == "symbol=BTCUSDT&fromId=0&startTime=0&endTime=1&limit=10"
+        assert (
+            request["params"]
+            == "symbol=BTCUSDT&fromId=0&startTime=0&endTime=1&limit=10"
+        )
 
     @pytest.mark.asyncio()
     async def test_query_klines_sends_expected_request(self, mocker):
@@ -144,7 +149,10 @@ class TestBinanceSpotMarketHttpAPI:
         request = mock_send_request.call_args.kwargs
         assert request["method"] == "GET"
         assert request["url"] == "https://api.binance.com/api/v3/klines"
-        assert request["params"] == "symbol=BTCUSDT&interval=1m&startTime=0&endTime=1&limit=1000"
+        assert (
+            request["params"]
+            == "symbol=BTCUSDT&interval=1m&startTime=0&endTime=1&limit=1000"
+        )
 
     @pytest.mark.asyncio()
     async def test_query_ticker_24hr_sends_expected_request(self, mocker):
@@ -191,7 +199,9 @@ class TestBinanceSpotMarketHttpAPI:
     # SPOT/MARGIN tests
 
     @pytest.mark.asyncio()
-    async def test_query_spot_exchange_info_with_symbol_sends_expected_request(self, mocker):
+    async def test_query_spot_exchange_info_with_symbol_sends_expected_request(
+        self, mocker
+    ):
         # Arrange
         mock_send_request = mocker.patch(target="aiohttp.client.ClientSession.request")
 
@@ -205,7 +215,9 @@ class TestBinanceSpotMarketHttpAPI:
         assert request["params"] == "symbol=BTCUSDT"
 
     @pytest.mark.asyncio()
-    async def test_query_spot_exchange_info_with_symbols_sends_expected_request(self, mocker):
+    async def test_query_spot_exchange_info_with_symbols_sends_expected_request(
+        self, mocker
+    ):
         # Arrange
         mock_send_request = mocker.patch(target="aiohttp.client.ClientSession.request")
 

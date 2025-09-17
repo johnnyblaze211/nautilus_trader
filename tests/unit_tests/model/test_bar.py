@@ -312,7 +312,12 @@ class TestBarSpecification:
         assert spec == expected
 
     @pytest.mark.parametrize(
-        ("bar_spec", "is_time_aggregated", "is_threshold_aggregated", "is_information_aggregated"),
+        (
+            "bar_spec",
+            "is_time_aggregated",
+            "is_threshold_aggregated",
+            "is_information_aggregated",
+        ),
         [
             [
                 BarSpecification(1, BarAggregation.SECOND, PriceType.BID),
@@ -351,7 +356,10 @@ class TestBarSpecification:
         assert bar_spec.is_time_aggregated() == is_time_aggregated
         assert bar_spec.is_threshold_aggregated() == is_threshold_aggregated
         assert bar_spec.is_information_aggregated() == is_information_aggregated
-        assert BarSpecification.check_time_aggregated(bar_spec.aggregation) == is_time_aggregated
+        assert (
+            BarSpecification.check_time_aggregated(bar_spec.aggregation)
+            == is_time_aggregated
+        )
         assert (
             BarSpecification.check_threshold_aggregated(bar_spec.aggregation)
             == is_threshold_aggregated
@@ -532,7 +540,9 @@ class TestBarType:
             ],
         ],
     )
-    def test_bar_type_from_str_with_invalid_values(self, input: str, expected_err: str) -> None:
+    def test_bar_type_from_str_with_invalid_values(
+        self, input: str, expected_err: str
+    ) -> None:
         # Arrange, Act
         with pytest.raises(ValueError) as exc_info:
             BarType.from_str(input)
@@ -746,7 +756,8 @@ class TestBar:
         # Act, Assert
         assert isinstance(hash(bar), int)
         assert (
-            str(bar) == "AUD/USD.SIM-1-MINUTE-BID-EXTERNAL,1.00001,1.00004,1.00000,1.00003,100000,0"
+            str(bar)
+            == "AUD/USD.SIM-1-MINUTE-BID-EXTERNAL,1.00001,1.00004,1.00000,1.00003,100000,0"
         )
         assert (
             repr(bar)

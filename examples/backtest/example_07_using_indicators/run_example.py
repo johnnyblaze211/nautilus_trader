@@ -39,7 +39,9 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------
 
     engine_config = BacktestEngineConfig(
-        trader_id=TraderId("BACKTEST-INDICATOR-001"),  # Unique identifier for this backtest
+        trader_id=TraderId(
+            "BACKTEST-INDICATOR-001"
+        ),  # Unique identifier for this backtest
         logging=LoggingConfig(
             log_level="INFO",  # Set to INFO to see indicator values
         ),

@@ -101,7 +101,10 @@ class OrderHelper:
 
             return time_in_force
 
-        if order_type in [DYDXGRPCOrderType.STOP_LIMIT, DYDXGRPCOrderType.TAKE_PROFIT_LIMIT]:
+        if order_type in [
+            DYDXGRPCOrderType.STOP_LIMIT,
+            DYDXGRPCOrderType.TAKE_PROFIT_LIMIT,
+        ]:
             if execution == OrderExecution.DEFAULT:
                 return Order.TimeInForce.TIME_IN_FORCE_UNSPECIFIED
 
@@ -113,7 +116,10 @@ class OrderHelper:
 
             if execution == OrderExecution.IOC:
                 return Order.TimeInForce.TIME_IN_FORCE_IOC
-        elif order_type in [DYDXGRPCOrderType.STOP_MARKET, DYDXGRPCOrderType.TAKE_PROFIT_MARKET]:
+        elif order_type in [
+            DYDXGRPCOrderType.STOP_MARKET,
+            DYDXGRPCOrderType.TAKE_PROFIT_MARKET,
+        ]:
             if execution in [OrderExecution.DEFAULT, OrderExecution.POST_ONLY]:
                 message = f"Execution value {execution.value} not supported for {order_type.value}"
                 raise ValueError(message)

@@ -52,10 +52,16 @@ def test_greeks_accuracy_call():
     )
 
     tolerance = 1e-5
-    assert abs(greeks.delta - delta_bnr) < tolerance, "Delta difference exceeds tolerance"
-    assert abs(greeks.gamma - gamma_bnr) < tolerance, "Gamma difference exceeds tolerance"
+    assert (
+        abs(greeks.delta - delta_bnr) < tolerance
+    ), "Delta difference exceeds tolerance"
+    assert (
+        abs(greeks.gamma - gamma_bnr) < tolerance
+    ), "Gamma difference exceeds tolerance"
     assert abs(greeks.vega - vega_bnr) < tolerance, "Vega difference exceeds tolerance"
-    assert abs(greeks.theta - theta_bnr) < tolerance, "Theta difference exceeds tolerance"
+    assert (
+        abs(greeks.theta - theta_bnr) < tolerance
+    ), "Theta difference exceeds tolerance"
 
 
 def test_greeks_accuracy_put():
@@ -93,10 +99,16 @@ def test_greeks_accuracy_put():
     )
 
     tolerance = 1e-5
-    assert abs(greeks.delta - delta_bnr) < tolerance, "Delta difference exceeds tolerance"
-    assert abs(greeks.gamma - gamma_bnr) < tolerance, "Gamma difference exceeds tolerance"
+    assert (
+        abs(greeks.delta - delta_bnr) < tolerance
+    ), "Delta difference exceeds tolerance"
+    assert (
+        abs(greeks.gamma - gamma_bnr) < tolerance
+    ), "Gamma difference exceeds tolerance"
     assert abs(greeks.vega - vega_bnr) < tolerance, "Vega difference exceeds tolerance"
-    assert abs(greeks.theta - theta_bnr) < tolerance, "Theta difference exceeds tolerance"
+    assert (
+        abs(greeks.theta - theta_bnr) < tolerance
+    ), "Theta difference exceeds tolerance"
 
 
 def test_imply_vol_and_greeks_accuracy_call():
@@ -114,7 +126,9 @@ def test_imply_vol_and_greeks_accuracy_call():
     implied_result = imply_vol_and_greeks(s, r, b, is_call, k, t, price, 1.0)
 
     tolerance = 1e-5
-    assert abs(implied_result.vol - sigma) < tolerance, "Vol difference exceeds tolerance"
+    assert (
+        abs(implied_result.vol - sigma) < tolerance
+    ), "Vol difference exceeds tolerance"
     assert (
         abs(implied_result.price - base_greeks.price) < tolerance
     ), "Price difference exceeds tolerance"
@@ -147,7 +161,9 @@ def test_imply_vol_and_greeks_accuracy_put():
     implied_result = imply_vol_and_greeks(s, r, b, is_call, k, t, price, 1.0)
 
     tolerance = 1e-5
-    assert abs(implied_result.vol - sigma) < tolerance, "Vol difference exceeds tolerance"
+    assert (
+        abs(implied_result.vol - sigma) < tolerance
+    ), "Vol difference exceeds tolerance"
     assert (
         abs(implied_result.price - base_greeks.price) < tolerance
     ), "Price difference exceeds tolerance"

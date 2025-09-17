@@ -98,7 +98,9 @@ class BinanceUserTrade(msgspec.Struct, frozen=True):
             venue_position_id = PositionId(f"{instrument_id}-{self.positionSide}")
 
         order_side = OrderSide.BUY if self.isBuyer or self.buyer else OrderSide.SELL
-        liquidity_side = LiquiditySide.MAKER if self.isMaker or self.maker else LiquiditySide.TAKER
+        liquidity_side = (
+            LiquiditySide.MAKER if self.isMaker or self.maker else LiquiditySide.TAKER
+        )
 
         return FillReport(
             account_id=account_id,
@@ -137,7 +139,9 @@ class BinanceOrder(msgspec.Struct, frozen=True):
     goodTillDate: int | None = None
     type: BinanceOrderType | None = None
     side: BinanceOrderSide | None = None
-    stopPrice: str | None = None  # please ignore when order type is TRAILING_STOP_MARKET
+    stopPrice: str | None = (
+        None  # please ignore when order type is TRAILING_STOP_MARKET
+    )
     time: int | None = None
     updateTime: int | None = None
 
@@ -158,7 +162,9 @@ class BinanceOrder(msgspec.Struct, frozen=True):
     reduceOnly: bool | None = None
     positionSide: str | None = None
     closePosition: bool | None = None
-    activatePrice: str | None = None  # activation price, only for TRAILING_STOP_MARKET order
+    activatePrice: str | None = (
+        None  # activation price, only for TRAILING_STOP_MARKET order
+    )
     priceRate: str | None = None  # callback rate, only for TRAILING_STOP_MARKET order
     workingType: str | None = None
     priceProtect: bool | None = None  # if conditional order trigger is protected
@@ -180,15 +186,21 @@ class BinanceOrder(msgspec.Struct, frozen=True):
                 "Cannot generate order status report from Binance ACK response.",
             )
 
-        client_order_id = ClientOrderId(self.clientOrderId) if self.clientOrderId != "" else None
-        order_list_id = OrderListId(str(self.orderListId)) if self.orderListId is not None else None
+        client_order_id = (
+            ClientOrderId(self.clientOrderId) if self.clientOrderId != "" else None
+        )
+        order_list_id = (
+            OrderListId(str(self.orderListId)) if self.orderListId is not None else None
+        )
         contingency_type = (
             ContingencyType.OCO
             if self.orderListId is not None and self.orderListId != -1
             else ContingencyType.NO_CONTINGENCY
         )
 
-        trigger_price = Decimal(self.stopPrice) if self.stopPrice is not None else Decimal()
+        trigger_price = (
+            Decimal(self.stopPrice) if self.stopPrice is not None else Decimal()
+        )
         trigger_type = TriggerType.NO_TRIGGER
         if self.workingType is not None:
             trigger_type = enum_parser.parse_binance_trigger_type(self.workingType)
@@ -203,7 +215,8 @@ class BinanceOrder(msgspec.Struct, frozen=True):
 
         avg_px = Decimal(self.avgPrice) if self.avgPrice is not None else None
         post_only = (
-            self.type == BinanceOrderType.LIMIT_MAKER or self.timeInForce == BinanceTimeInForce.GTX
+            self.type == BinanceOrderType.LIMIT_MAKER
+            or self.timeInForce == BinanceTimeInForce.GTX
         )
         reduce_only = self.reduceOnly if self.reduceOnly is not None else False
 

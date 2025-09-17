@@ -21,8 +21,12 @@ import pytest
 from nautilus_trader.adapters.binance.common.constants import BINANCE_VENUE
 from nautilus_trader.adapters.binance.common.enums import BinanceAccountType
 from nautilus_trader.adapters.binance.config import BinanceExecClientConfig
-from nautilus_trader.adapters.binance.futures.execution import BinanceFuturesExecutionClient
-from nautilus_trader.adapters.binance.futures.providers import BinanceFuturesInstrumentProvider
+from nautilus_trader.adapters.binance.futures.execution import (
+    BinanceFuturesExecutionClient,
+)
+from nautilus_trader.adapters.binance.futures.providers import (
+    BinanceFuturesInstrumentProvider,
+)
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.common.component import MessageBus
@@ -144,14 +148,18 @@ class TestBinanceFuturesExecutionClient:
             # (True, TestIdStubs.position_id_both(), "BOTH"),
         ],
     )
-    async def test_submit_market_order(self, mocker, _is_dual_side_position, position_id, expected):
+    async def test_submit_market_order(
+        self, mocker, _is_dual_side_position, position_id, expected
+    ):
         # Arrange
         mock_send_request = mocker.patch(
             target="nautilus_trader.adapters.binance.http.client.BinanceHttpClient.send_request",
         )
         # For one-way mode: _is_dual_side_position is False
         # For hedge mode: _is_dual_side_position is True
-        mocker.patch.object(self.exec_client, "_is_dual_side_position", _is_dual_side_position)
+        mocker.patch.object(
+            self.exec_client, "_is_dual_side_position", _is_dual_side_position
+        )
 
         order = self.strategy.order_factory.market(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -200,12 +208,16 @@ class TestBinanceFuturesExecutionClient:
             # (True, TestIdStubs.position_id_both(), "BOTH"),
         ],
     )
-    async def test_submit_limit_order(self, mocker, _is_dual_side_position, position_id, expected):
+    async def test_submit_limit_order(
+        self, mocker, _is_dual_side_position, position_id, expected
+    ):
         # Arrange
         mock_send_request = mocker.patch(
             target="nautilus_trader.adapters.binance.http.client.BinanceHttpClient.send_request",
         )
-        mocker.patch.object(self.exec_client, "_is_dual_side_position", _is_dual_side_position)
+        mocker.patch.object(
+            self.exec_client, "_is_dual_side_position", _is_dual_side_position
+        )
 
         order = self.strategy.order_factory.limit(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -268,7 +280,9 @@ class TestBinanceFuturesExecutionClient:
         mock_send_request = mocker.patch(
             target="nautilus_trader.adapters.binance.http.client.BinanceHttpClient.send_request",
         )
-        mocker.patch.object(self.exec_client, "_is_dual_side_position", _is_dual_side_position)
+        mocker.patch.object(
+            self.exec_client, "_is_dual_side_position", _is_dual_side_position
+        )
 
         order = self.strategy.order_factory.limit(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -334,8 +348,12 @@ class TestBinanceFuturesExecutionClient:
         mock_send_request = mocker.patch(
             target="nautilus_trader.adapters.binance.http.client.BinanceHttpClient.send_request",
         )
-        mocker.patch.object(self.exec_client, "_is_dual_side_position", _is_dual_side_position)
-        mocker.patch.object(self.exec_client, "_use_reduce_only", not _is_dual_side_position)
+        mocker.patch.object(
+            self.exec_client, "_is_dual_side_position", _is_dual_side_position
+        )
+        mocker.patch.object(
+            self.exec_client, "_use_reduce_only", not _is_dual_side_position
+        )
 
         order = self.strategy.order_factory.stop_market(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -406,7 +424,9 @@ class TestBinanceFuturesExecutionClient:
         mock_send_request = mocker.patch(
             target="nautilus_trader.adapters.binance.http.client.BinanceHttpClient.send_request",
         )
-        mocker.patch.object(self.exec_client, "_is_dual_side_position", _is_dual_side_position)
+        mocker.patch.object(
+            self.exec_client, "_is_dual_side_position", _is_dual_side_position
+        )
 
         order = self.strategy.order_factory.stop_limit(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -475,7 +495,9 @@ class TestBinanceFuturesExecutionClient:
         mock_send_request = mocker.patch(
             target="nautilus_trader.adapters.binance.http.client.BinanceHttpClient.send_request",
         )
-        mocker.patch.object(self.exec_client, "_is_dual_side_position", _is_dual_side_position)
+        mocker.patch.object(
+            self.exec_client, "_is_dual_side_position", _is_dual_side_position
+        )
 
         order = self.strategy.order_factory.market_if_touched(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -540,7 +562,9 @@ class TestBinanceFuturesExecutionClient:
         mock_send_request = mocker.patch(
             target="nautilus_trader.adapters.binance.http.client.BinanceHttpClient.send_request",
         )
-        mocker.patch.object(self.exec_client, "_is_dual_side_position", _is_dual_side_position)
+        mocker.patch.object(
+            self.exec_client, "_is_dual_side_position", _is_dual_side_position
+        )
 
         order = self.strategy.order_factory.limit_if_touched(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -608,8 +632,12 @@ class TestBinanceFuturesExecutionClient:
         mock_send_request = mocker.patch(
             target="nautilus_trader.adapters.binance.http.client.BinanceHttpClient.send_request",
         )
-        mocker.patch.object(self.exec_client, "_is_dual_side_position", _is_dual_side_position)
-        mocker.patch.object(self.exec_client, "_use_reduce_only", not _is_dual_side_position)
+        mocker.patch.object(
+            self.exec_client, "_is_dual_side_position", _is_dual_side_position
+        )
+        mocker.patch.object(
+            self.exec_client, "_use_reduce_only", not _is_dual_side_position
+        )
 
         order = self.strategy.order_factory.trailing_stop_market(
             instrument_id=ETHUSDT_PERP_BINANCE.id,

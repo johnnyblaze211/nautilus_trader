@@ -174,7 +174,9 @@ class DataSubscriber(Strategy):
         self.log.info(repr(deltas), LogColor.CYAN)
 
     def on_order_book(self, order_book) -> None:
-        self.log.info(f"\n{order_book.instrument_id}\n{order_book.pprint(10)}", LogColor.CYAN)
+        self.log.info(
+            f"\n{order_book.instrument_id}\n{order_book.pprint(10)}", LogColor.CYAN
+        )
 
     def on_quote_tick(self, tick) -> None:
         self.log.info(repr(tick), LogColor.CYAN)

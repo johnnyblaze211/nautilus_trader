@@ -35,7 +35,9 @@ BETFAIR_BOOK_TYPE: Final[BookType] = BookType.L2_MBP
 CLOSE_PRICE_WINNER: Final[Price] = Price(1.0, precision=BETFAIR_PRICE_PRECISION)
 CLOSE_PRICE_LOSER: Final[Price] = Price(0.0, precision=BETFAIR_PRICE_PRECISION)
 
-MARKET_STATUS_MAPPING: Final[dict[tuple[BetfairMarketStatus, bool], MarketStatusAction]] = {
+MARKET_STATUS_MAPPING: Final[
+    dict[tuple[BetfairMarketStatus, bool], MarketStatusAction]
+] = {
     (BetfairMarketStatus.INACTIVE, False): MarketStatusAction.CLOSE,
     (BetfairMarketStatus.OPEN, False): MarketStatusAction.PRE_OPEN,
     (BetfairMarketStatus.OPEN, True): MarketStatusAction.TRADING,

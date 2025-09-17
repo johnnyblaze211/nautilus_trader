@@ -211,7 +211,9 @@ class EMACrossBracket(Strategy):
             expire_time=self.clock.utc_now() + timedelta(seconds=30),
             entry_price=self.instrument.make_price(last_bar.close),  # TODO
             entry_trigger_price=self.instrument.make_price(last_bar.close),  # TODO
-            sl_trigger_price=self.instrument.make_price(last_bar.close - bracket_distance),
+            sl_trigger_price=self.instrument.make_price(
+                last_bar.close - bracket_distance
+            ),
             tp_price=self.instrument.make_price(last_bar.close + bracket_distance),
             entry_order_type=OrderType.LIMIT_IF_TOUCHED,
             emulation_trigger=TriggerType[self.config.emulation_trigger],
@@ -236,7 +238,9 @@ class EMACrossBracket(Strategy):
             expire_time=self.clock.utc_now() + timedelta(seconds=30),
             entry_price=self.instrument.make_price(last_bar.close),  # TODO
             entry_trigger_price=self.instrument.make_price(last_bar.close),  # TODO
-            sl_trigger_price=self.instrument.make_price(last_bar.close + bracket_distance),
+            sl_trigger_price=self.instrument.make_price(
+                last_bar.close + bracket_distance
+            ),
             tp_price=self.instrument.make_price(last_bar.close - bracket_distance),
             entry_order_type=OrderType.LIMIT_IF_TOUCHED,
             emulation_trigger=TriggerType[self.config.emulation_trigger],

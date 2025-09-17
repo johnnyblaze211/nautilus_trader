@@ -577,7 +577,15 @@ class TestSimulatedExchangeBracketQuantityIndependence:
 
         # All child orders should be capped to the remaining position (30k)
         # This is the minimum of their parent's filled qty and the position qty
-        assert tp1.quantity == Quantity.from_int(30_000), "TP1 should be capped to position"
-        assert sl1.quantity == Quantity.from_int(30_000), "SL1 should be capped to position"
-        assert tp2.quantity == Quantity.from_int(30_000), "TP2 should be capped to position"
-        assert sl2.quantity == Quantity.from_int(30_000), "SL2 should be capped to position"
+        assert tp1.quantity == Quantity.from_int(
+            30_000
+        ), "TP1 should be capped to position"
+        assert sl1.quantity == Quantity.from_int(
+            30_000
+        ), "SL1 should be capped to position"
+        assert tp2.quantity == Quantity.from_int(
+            30_000
+        ), "TP2 should be capped to position"
+        assert sl2.quantity == Quantity.from_int(
+            30_000
+        ), "SL2 should be capped to position"

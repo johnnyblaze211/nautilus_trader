@@ -4,12 +4,20 @@ from collections.abc import Callable
 from ibapi.client import EClient
 
 # fmt: off
-from nautilus_trader.adapters.interactive_brokers.client.client import InteractiveBrokersClient
-from nautilus_trader.adapters.interactive_brokers.client.wrapper import InteractiveBrokersEWrapper
+from nautilus_trader.adapters.interactive_brokers.client.client import (
+    InteractiveBrokersClient,
+)
+from nautilus_trader.adapters.interactive_brokers.client.wrapper import (
+    InteractiveBrokersEWrapper,
+)
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import ib_contract_to_instrument_id
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    ib_contract_to_instrument_id,
+)
 from nautilus_trader.common.enums import LogColor
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestContractStubs
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestContractStubs,
+)
 
 
 class MockEClient(EClient):

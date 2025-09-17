@@ -20,7 +20,8 @@ import importlib
 from collections.abc import Callable
 from decimal import Decimal
 from io import StringIO
-from typing import Annotated, Any
+from typing import Annotated
+from typing import Any
 
 import msgspec
 import pandas as pd
@@ -81,7 +82,9 @@ def resolve_path(path: str) -> type:
 def resolve_config_path(path: str) -> type[NautilusConfig]:
     config = resolve_path(path)
     if not issubclass(config, NautilusConfig):
-        raise TypeError(f"expected a subclass of `NautilusConfig`, was `{type(config)}`")
+        raise TypeError(
+            f"expected a subclass of `NautilusConfig`, was `{type(config)}`"
+        )
     return config
 
 
@@ -620,7 +623,9 @@ class ImportableConfig(NautilusConfig, frozen=True):
         return set(data) == {"path", "config"}
 
     def create(self):
-        assert ":" in self.path, "`path` variable should be of the form `path.to.module:class`"
+        assert (
+            ":" in self.path
+        ), "`path` variable should be of the form `path.to.module:class`"
         cls = resolve_path(self.path)
         cfg = msgspec.json.encode(self.config, enc_hook=msgspec_encoding_hook)
         return msgspec.json.decode(cfg, type=cls)

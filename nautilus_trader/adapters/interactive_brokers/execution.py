@@ -31,18 +31,42 @@ from nautilus_trader.adapters.interactive_brokers.client.common import IBPositio
 from nautilus_trader.adapters.interactive_brokers.common import IB_VENUE
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
 from nautilus_trader.adapters.interactive_brokers.common import IBOrderTags
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersExecClientConfig
-from nautilus_trader.adapters.interactive_brokers.parsing.execution import MAP_ORDER_ACTION
-from nautilus_trader.adapters.interactive_brokers.parsing.execution import MAP_ORDER_FIELDS
-from nautilus_trader.adapters.interactive_brokers.parsing.execution import MAP_ORDER_STATUS
-from nautilus_trader.adapters.interactive_brokers.parsing.execution import MAP_ORDER_TYPE
-from nautilus_trader.adapters.interactive_brokers.parsing.execution import MAP_TIME_IN_FORCE
-from nautilus_trader.adapters.interactive_brokers.parsing.execution import MAP_TRIGGER_METHOD
-from nautilus_trader.adapters.interactive_brokers.parsing.execution import ORDER_SIDE_TO_ORDER_ACTION
-from nautilus_trader.adapters.interactive_brokers.parsing.execution import timestring_to_timestamp
-from nautilus_trader.adapters.interactive_brokers.parsing.price_conversion import ib_price_to_nautilus_price
-from nautilus_trader.adapters.interactive_brokers.parsing.price_conversion import nautilus_price_to_ib_price
-from nautilus_trader.adapters.interactive_brokers.providers import InteractiveBrokersInstrumentProvider
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersExecClientConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.execution import (
+    MAP_ORDER_ACTION,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.execution import (
+    MAP_ORDER_FIELDS,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.execution import (
+    MAP_ORDER_STATUS,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.execution import (
+    MAP_ORDER_TYPE,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.execution import (
+    MAP_TIME_IN_FORCE,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.execution import (
+    MAP_TRIGGER_METHOD,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.execution import (
+    ORDER_SIDE_TO_ORDER_ACTION,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.execution import (
+    timestring_to_timestamp,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.price_conversion import (
+    ib_price_to_nautilus_price,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.price_conversion import (
+    nautilus_price_to_ib_price,
+)
+from nautilus_trader.adapters.interactive_brokers.providers import (
+    InteractiveBrokersInstrumentProvider,
+)
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.common.component import MessageBus
@@ -107,7 +131,9 @@ ib_to_nautilus_time_in_force = dict(
 ib_to_nautilus_order_side = dict(
     zip(MAP_ORDER_ACTION.values(), MAP_ORDER_ACTION.keys(), strict=False),
 )
-ib_to_nautilus_order_type = dict(zip(MAP_ORDER_TYPE.values(), MAP_ORDER_TYPE.keys(), strict=False))
+ib_to_nautilus_order_type = dict(
+    zip(MAP_ORDER_TYPE.values(), MAP_ORDER_TYPE.keys(), strict=False)
+)
 
 
 class InteractiveBrokersExecutionClient(LiveExecutionClient):
@@ -212,11 +238,15 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
         # Event hooks
         account = self.account_id.get_id()
         self._client.registered_nautilus_clients.add(self.id)
-        self._client.subscribe_event(f"accountSummary-{account}", self._on_account_summary)
+        self._client.subscribe_event(
+            f"accountSummary-{account}", self._on_account_summary
+        )
         self._client.subscribe_event(f"openOrder-{account}", self._on_open_order)
         self._client.subscribe_event(f"orderStatus-{account}", self._on_order_status)
         self._client.subscribe_event(f"execDetails-{account}", self._on_exec_details)
-        self._client.subscribe_event(f"positionUpdate-{account}", self._on_position_update)
+        self._client.subscribe_event(
+            f"positionUpdate-{account}", self._on_position_update
+        )
 
         # Load account balance
         self._client.subscribe_account_summary()
@@ -237,7 +267,10 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
         if self._client.is_running:
             self._client.unsubscribe_positions()
 
-        if self._client.is_running and self._client.registered_nautilus_clients == set():
+        if (
+            self._client.is_running
+            and self._client.registered_nautilus_clients == set()
+        ):
             self._client.stop()
 
         self._set_connected(False)
@@ -253,7 +286,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
                 for position in positions:
                     self._known_positions[position.contract.conId] = position.quantity
 
-                self._log.info(f"Initialized tracking for {len(positions)} existing positions")
+                self._log.info(
+                    f"Initialized tracking for {len(positions)} existing positions"
+                )
         except Exception as e:
             self._log.warning(f"Failed to initialize position tracking: {e}")
 
@@ -261,18 +296,25 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
         self,
         command: GenerateOrderStatusReport,
     ) -> OrderStatusReport | None:
-        PyCondition.type_or_none(command.client_order_id, ClientOrderId, "client_order_id")
+        PyCondition.type_or_none(
+            command.client_order_id, ClientOrderId, "client_order_id"
+        )
         PyCondition.type_or_none(command.venue_order_id, VenueOrderId, "venue_order_id")
 
         if not (command.client_order_id or command.venue_order_id):
-            self._log.debug("Both `client_order_id` and `venue_order_id` cannot be None")
+            self._log.debug(
+                "Both `client_order_id` and `venue_order_id` cannot be None"
+            )
             return None
 
         report = None
         ib_orders = await self._client.get_open_orders(self.account_id.get_id())
 
         for ib_order in ib_orders:
-            if (command.client_order_id and command.client_order_id.value == ib_order.orderRef) or (
+            if (
+                command.client_order_id
+                and command.client_order_id.value == ib_order.orderRef
+            ) or (
                 command.venue_order_id
                 and command.venue_order_id.value
                 == str(
@@ -294,7 +336,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
 
         return report
 
-    async def _parse_ib_order_to_order_status_report(self, ib_order: IBOrder) -> OrderStatusReport:
+    async def _parse_ib_order_to_order_status_report(
+        self, ib_order: IBOrder
+    ) -> OrderStatusReport:
         self._log.debug(f"Trying OrderStatusReport for {ib_order.__dict__}")
         instrument = await self.instrument_provider.get_instrument(ib_order.contract)
         total_qty = (
@@ -319,11 +363,15 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
         price = None
 
         if ib_order.lmtPrice != UNSET_DOUBLE:
-            converted_price = ib_price_to_nautilus_price(ib_order.lmtPrice, price_magnifier)
+            converted_price = ib_price_to_nautilus_price(
+                ib_order.lmtPrice, price_magnifier
+            )
             price = instrument.make_price(converted_price)
 
         expire_time = (
-            timestring_to_timestamp(ib_order.goodTillDate) if ib_order.tif == "GTD" else None
+            timestring_to_timestamp(ib_order.goodTillDate)
+            if ib_order.tif == "GTD"
+            else None
         )
         mapped_order_type_info = ib_to_nautilus_order_type[ib_order.orderType]
 
@@ -396,7 +444,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             else:
                 continue  # Skip, IB may continue to display closed positions
 
-            instrument = await self.instrument_provider.get_instrument(position.contract)
+            instrument = await self.instrument_provider.get_instrument(
+                position.contract
+            )
 
             if instrument is None:
                 self._log.error(
@@ -461,7 +511,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             return []
 
         for position in positions:
-            self._log.debug(f"Trying PositionStatusReport for {position.contract.conId}")
+            self._log.debug(
+                f"Trying PositionStatusReport for {position.contract.conId}"
+            )
 
             if position.quantity > 0:
                 side = PositionSide.LONG
@@ -470,7 +522,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             else:
                 continue  # Skip, IB may continue to display closed positions
 
-            instrument = await self.instrument_provider.get_instrument(position.contract)
+            instrument = await self.instrument_provider.get_instrument(
+                position.contract
+            )
 
             if instrument is None:
                 self._log.error(
@@ -495,20 +549,26 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
 
         return report
 
-    def _transform_order_to_ib_order(self, order: Order) -> IBOrder:  # noqa: C901 11 > 10
+    def _transform_order_to_ib_order(
+        self, order: Order
+    ) -> IBOrder:  # noqa: C901 11 > 10
         if order.is_post_only:
             raise ValueError("`post_only` not supported by Interactive Brokers")
 
         ib_order = IBOrder()
         time_in_force = order.time_in_force
-        price_magnifier = self.instrument_provider.get_price_magnifier(order.instrument_id)
+        price_magnifier = self.instrument_provider.get_price_magnifier(
+            order.instrument_id
+        )
 
         for key, field, fn in MAP_ORDER_FIELDS:
             if value := getattr(order, key, None):
                 if key == "order_type" and time_in_force == TimeInForce.AT_THE_CLOSE:
                     setattr(ib_order, field, fn((value, time_in_force)))
                 elif key == "price" and value is not None:
-                    converted_price = nautilus_price_to_ib_price(value.as_double(), price_magnifier)
+                    converted_price = nautilus_price_to_ib_price(
+                        value.as_double(), price_magnifier
+                    )
                     setattr(ib_order, field, converted_price)
                 else:
                     setattr(ib_order, field, fn(value))
@@ -535,7 +595,10 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
         elif (
             isinstance(
                 order,
-                MarketIfTouchedOrder | LimitIfTouchedOrder | StopLimitOrder | StopMarketOrder,
+                MarketIfTouchedOrder
+                | LimitIfTouchedOrder
+                | StopLimitOrder
+                | StopMarketOrder,
             )
         ) and order.trigger_price:
             converted_aux_price = nautilus_price_to_ib_price(
@@ -569,7 +632,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             for tag in order.tags:
                 if tag.startswith("IBOrderTags:"):
                     try:
-                        tags_dict = IBOrderTags.parse(tag.replace("IBOrderTags:", "")).dict()
+                        tags_dict = IBOrderTags.parse(
+                            tag.replace("IBOrderTags:", "")
+                        ).dict()
 
                         if tags_dict.get("ocaGroup"):
                             oca_group_from_tags = tags_dict["ocaGroup"]
@@ -738,10 +803,16 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
         if command.quantity and command.quantity != ib_order.totalQuantity:
             ib_order.totalQuantity = command.quantity.as_double()
 
-        price_magnifier = self.instrument_provider.get_price_magnifier(command.instrument_id)
+        price_magnifier = self.instrument_provider.get_price_magnifier(
+            command.instrument_id
+        )
 
-        if command.price and command.price.as_double() != getattr(ib_order, "lmtPrice", None):
-            converted_price = nautilus_price_to_ib_price(command.price.as_double(), price_magnifier)
+        if command.price and command.price.as_double() != getattr(
+            ib_order, "lmtPrice", None
+        ):
+            converted_price = nautilus_price_to_ib_price(
+                command.price.as_double(), price_magnifier
+            )
             ib_order.lmtPrice = converted_price
 
         if command.trigger_price and command.trigger_price.as_double() != getattr(
@@ -796,7 +867,10 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             if not currency:
                 continue
 
-            if self._account_summary_tags - set(self._account_summary[currency].keys()) == set():
+            if (
+                self._account_summary_tags - set(self._account_summary[currency].keys())
+                == set()
+            ):
                 self._log.info(f"{self._account_summary}", LogColor.GREEN)
                 # free = self._account_summary[currency]["FullAvailableFunds"]
                 locked = self._account_summary[currency]["FullMaintMarginReq"]
@@ -896,7 +970,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
         report = await self._parse_ib_order_to_order_status_report(ib_order)
         self._send_order_status_report(report)
 
-    def _on_open_order(self, order_ref: str, order: IBOrder, order_state: IBOrderState) -> None:
+    def _on_open_order(
+        self, order_ref: str, order: IBOrder, order_state: IBOrderState
+    ) -> None:
         if not order.orderRef:
             self._log.warning(
                 f"ClientOrderId not available, order={order.__dict__}, state={order_state.__dict__}",
@@ -930,7 +1006,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
 
             if total_qty <= 0.0:
                 # This can be caused by a partially filled entry bracket order and SL triggered.
-                self._log.warning(f"IB order with totalQuantity <= 0, skipping: {order.__dict__}")
+                self._log.warning(
+                    f"IB order with totalQuantity <= 0, skipping: {order.__dict__}"
+                )
                 return
 
             price_magnifier = self.instrument_provider.get_price_magnifier(
@@ -939,7 +1017,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             price = None
 
             if order.lmtPrice != UNSET_DOUBLE:
-                converted_price = ib_price_to_nautilus_price(order.lmtPrice, price_magnifier)
+                converted_price = ib_price_to_nautilus_price(
+                    order.lmtPrice, price_magnifier
+                )
                 price = instrument.make_price(converted_price)
 
             trigger_price = None
@@ -974,7 +1054,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
                 order_id=order.orderId,
             )
 
-    def _on_order_status(self, order_ref: str, order_status: str, reason: str = "") -> None:
+    def _on_order_status(
+        self, order_ref: str, order_status: str, reason: str = ""
+    ) -> None:
         if order_status in ["ApiCancelled", "Cancelled"]:
             status = OrderStatus.CANCELED
         elif order_status == "PendingCancel":
@@ -1018,11 +1100,15 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
         contract: IBContract,
     ) -> None:
         if not execution.orderRef:
-            self._log.warning(f"ClientOrderId not available, execution={execution.__dict__}")
+            self._log.warning(
+                f"ClientOrderId not available, execution={execution.__dict__}"
+            )
             return
 
         if not (nautilus_order := self._cache.order(ClientOrderId(order_ref))):
-            self._log.warning(f"ClientOrderId not found in Cache, execution={execution.__dict__}")
+            self._log.warning(
+                f"ClientOrderId not found in Cache, execution={execution.__dict__}"
+            )
             return
 
         instrument = self.instrument_provider.find(nautilus_order.instrument_id)
@@ -1062,7 +1148,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             order_side=OrderSide[ORDER_SIDE_TO_ORDER_ACTION[execution.side]],
             order_type=nautilus_order.order_type,
             last_qty=Quantity(execution.shares, precision=instrument.size_precision),
-            last_px=Price(converted_execution_price, precision=instrument.price_precision),
+            last_px=Price(
+                converted_execution_price, precision=instrument.price_precision
+            ),
             quote_currency=instrument.quote_currency,
             commission=Money(
                 commission_report.commission,
@@ -1145,7 +1233,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             price_magnifier = self.instrument_provider.get_price_magnifier(
                 nautilus_order.instrument_id,
             )
-            converted_execution_price = ib_price_to_nautilus_price(execution.price, price_magnifier)
+            converted_execution_price = ib_price_to_nautilus_price(
+                execution.price, price_magnifier
+            )
             combo_price = Price(
                 converted_execution_price,
                 precision=spread_instrument.price_precision,
@@ -1164,14 +1254,20 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             )
             leg_side_numeric = 1 if ratio >= 0 else -1
             combo_order_side = (
-                OrderSide.BUY if execution_side_numeric == leg_side_numeric else OrderSide.SELL
+                OrderSide.BUY
+                if execution_side_numeric == leg_side_numeric
+                else OrderSide.SELL
             )
 
             # Combo commission scaled to the number of legs of the combo
             combo_commission = (
-                commission_report.commission * nautilus_order.instrument_id.n_legs() / abs(ratio)
+                commission_report.commission
+                * nautilus_order.instrument_id.n_legs()
+                / abs(ratio)
             )
-            commission = Money(combo_commission, Currency.from_str(commission_report.currency))
+            commission = Money(
+                combo_commission, Currency.from_str(commission_report.currency)
+            )
 
             # Generate combo fill with spread instrument ID
             self._log.info(
@@ -1221,7 +1317,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             leg_instrument = self._cache.instrument(leg_instrument_id)
 
             if not leg_instrument:
-                self._log.warning(f"Leg instrument not found in cache: {leg_instrument_id}")
+                self._log.warning(
+                    f"Leg instrument not found in cache: {leg_instrument_id}"
+                )
                 return
 
             # Unique client_order_id for leg fill so it doesn't conflict with spread order
@@ -1230,7 +1328,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             )
 
             # Unique trade ID for leg fills to avoid conflicts with combo fills
-            spread_legs = nautilus_order.instrument_id.to_list()  # [(instrument_id, ratio), ...]
+            spread_legs = (
+                nautilus_order.instrument_id.to_list()
+            )  # [(instrument_id, ratio), ...]
             spread_instrument_ids = [leg[0] for leg in spread_legs]
             leg_position = (
                 spread_instrument_ids.index(leg_instrument_id)
@@ -1243,13 +1343,23 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             # Unique venue_order_id
             leg_venue_order_id = VenueOrderId(f"{execution.orderId}-LEG-{leg_position}")
 
-            price_magnifier = self.instrument_provider.get_price_magnifier(leg_instrument_id)
-            converted_execution_price = ib_price_to_nautilus_price(execution.price, price_magnifier)
-            price = Price(converted_execution_price, precision=leg_instrument.price_precision)
+            price_magnifier = self.instrument_provider.get_price_magnifier(
+                leg_instrument_id
+            )
+            converted_execution_price = ib_price_to_nautilus_price(
+                execution.price, price_magnifier
+            )
+            price = Price(
+                converted_execution_price, precision=leg_instrument.price_precision
+            )
 
-            quantity = Quantity(execution.shares, precision=leg_instrument.size_precision)
+            quantity = Quantity(
+                execution.shares, precision=leg_instrument.size_precision
+            )
 
-            order_side = order_side = OrderSide[ORDER_SIDE_TO_ORDER_ACTION[execution.side]]
+            order_side = order_side = OrderSide[
+                ORDER_SIDE_TO_ORDER_ACTION[execution.side]
+            ]
 
             commission = Money(
                 commission_report.commission,
@@ -1296,7 +1406,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
 
         return None, 1
 
-    def _update_position_tracking_from_execution(self, contract: IBContract, execution) -> None:
+    def _update_position_tracking_from_execution(
+        self, contract: IBContract, execution
+    ) -> None:
         """
         Update position tracking based on execution to avoid duplicate processing.
         """
@@ -1355,7 +1467,9 @@ class InteractiveBrokersExecutionClient(LiveExecutionClient):
             )
 
             # Get instrument for this position
-            instrument = await self.instrument_provider.get_instrument(ib_position.contract)
+            instrument = await self.instrument_provider.get_instrument(
+                ib_position.contract
+            )
 
             if instrument is None:
                 self._log.warning(

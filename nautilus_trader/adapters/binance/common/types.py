@@ -392,7 +392,9 @@ class BinanceTicker(Data):
             price_change=Decimal(values["price_change"]),
             price_change_percent=Decimal(values["price_change_percent"]),
             weighted_avg_price=Decimal(values["weighted_avg_price"]),
-            prev_close_price=Decimal(prev_close_str) if prev_close_str is not None else None,
+            prev_close_price=(
+                Decimal(prev_close_str) if prev_close_str is not None else None
+            ),
             last_price=Decimal(values["last_price"]),
             last_qty=Decimal(values["last_qty"]),
             bid_price=Decimal(bid_price_str) if bid_price_str is not None else None,

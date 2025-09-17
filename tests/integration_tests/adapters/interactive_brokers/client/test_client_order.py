@@ -24,8 +24,12 @@ from ibapi.order_cancel import OrderCancel as IBOrderCancel
 
 from nautilus_trader.adapters.interactive_brokers.client.common import AccountOrderRef
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestContractStubs
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestExecStubs
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestContractStubs,
+)
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestExecStubs,
+)
 
 
 def test_place_order(ib_client):
@@ -250,7 +254,9 @@ async def test_execDetails(ib_client):
 
     # Assert
     # The contract should be converted to IBContract
-    from nautilus_trader.adapters.interactive_brokers.parsing.instruments import IBContract
+    from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+        IBContract,
+    )
 
     expected_contract = IBContract(**contract.__dict__)
     handler_func.assert_called_with(
@@ -271,7 +277,9 @@ async def test_commissionReport(ib_client):
     commission_report = IBTestExecStubs.commission()
 
     # Create a contract for the test
-    from nautilus_trader.adapters.interactive_brokers.parsing.instruments import IBContract
+    from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+        IBContract,
+    )
 
     contract = IBContract(
         symbol="AAPL",

@@ -26,7 +26,9 @@ from nautilus_trader.config import ImportableStrategyConfig
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.model.data import QuoteTick
 from nautilus_trader.model.identifiers import InstrumentId
-from nautilus_trader.test_kit.mocks.data import load_catalog_with_stub_quote_ticks_audusd
+from nautilus_trader.test_kit.mocks.data import (
+    load_catalog_with_stub_quote_ticks_audusd,
+)
 from nautilus_trader.test_kit.mocks.data import setup_catalog
 
 

@@ -96,7 +96,9 @@ def test_exchange_strings_are_lowercase_kebab_case():
         assert exchange.islower(), f"Exchange '{exchange}' should be lowercase"
 
         # Should not contain underscores (kebab-case, not snake_case)
-        assert "_" not in exchange, f"Exchange '{exchange}' should use dashes, not underscores"
+        assert (
+            "_" not in exchange
+        ), f"Exchange '{exchange}' should use dashes, not underscores"
 
         # Should only contain alphanumeric characters and dashes
         allowed_chars = set("abcdefghijklmnopqrstuvwxyz0123456789-")
@@ -190,7 +192,9 @@ def test_symbol_venue_consistency_with_stub_data():
     for trade in trades:
         # Verify instrument ID format
         id_parts = str(trade.instrument_id).split(".")
-        assert len(id_parts) == 2, f"Invalid instrument ID format: {trade.instrument_id}"
+        assert (
+            len(id_parts) == 2
+        ), f"Invalid instrument ID format: {trade.instrument_id}"
 
         symbol, venue = id_parts
         assert symbol != "", "Symbol part should not be empty"
@@ -207,7 +211,9 @@ def test_symbol_venue_consistency_with_stub_data():
     for delta in deltas:
         # Same checks for deltas
         id_parts = str(delta.instrument_id).split(".")
-        assert len(id_parts) == 2, f"Invalid instrument ID format: {delta.instrument_id}"
+        assert (
+            len(id_parts) == 2
+        ), f"Invalid instrument ID format: {delta.instrument_id}"
 
         symbol, venue = id_parts
         venue_obj = Venue(venue)

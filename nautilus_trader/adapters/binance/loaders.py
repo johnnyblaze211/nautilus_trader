@@ -61,7 +61,9 @@ class BinanceOrderBookDeltaDataLoader:
         df["sequence"] = df["last_update_id"]
 
         # Drop now redundant columns
-        df = df.drop(columns=["symbol", "update_type", "first_update_id", "last_update_id"])
+        df = df.drop(
+            columns=["symbol", "update_type", "first_update_id", "last_update_id"]
+        )
 
         # Reorder columns
         columns = [

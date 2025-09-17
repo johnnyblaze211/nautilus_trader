@@ -18,7 +18,9 @@ from decimal import Decimal
 import pytest
 
 from nautilus_trader.adapters.polymarket.common.conversion import usdce_from_units
-from nautilus_trader.adapters.polymarket.http.conversion import convert_tif_to_polymarket_order_type
+from nautilus_trader.adapters.polymarket.http.conversion import (
+    convert_tif_to_polymarket_order_type,
+)
 from nautilus_trader.model.currencies import USDC_POS
 from nautilus_trader.model.enums import TimeInForce
 

@@ -26,7 +26,9 @@ def serialize(event: OrderInitialized | OrderFilled) -> pa.RecordBatch:
     if isinstance(event, OrderInitialized):
         data["options"] = msgspec.json.encode(data["options"])
         data["linked_order_ids"] = msgspec.json.encode(data["linked_order_ids"])
-        data["exec_algorithm_params"] = msgspec.json.encode(data["exec_algorithm_params"])
+        data["exec_algorithm_params"] = msgspec.json.encode(
+            data["exec_algorithm_params"]
+        )
         data["tags"] = msgspec.json.encode(data["tags"])
     elif isinstance(event, OrderFilled):
         data["info"] = msgspec.json.encode(data["info"])
@@ -39,7 +41,9 @@ def deserialize(cls):
             if cls == OrderInitialized:
                 data["options"] = msgspec.json.decode(data["options"])
                 data["linked_order_ids"] = msgspec.json.decode(data["linked_order_ids"])
-                data["exec_algorithm_params"] = msgspec.json.decode(data["exec_algorithm_params"])
+                data["exec_algorithm_params"] = msgspec.json.decode(
+                    data["exec_algorithm_params"]
+                )
                 data["tags"] = msgspec.json.decode(data["tags"])
             elif cls == OrderFilled:
                 data["info"] = msgspec.json.decode(data["info"])

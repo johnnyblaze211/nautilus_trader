@@ -42,12 +42,22 @@ import time
 from ibapi.common import MarketDataTypeEnum as IBMarketDataTypeEnum
 
 from nautilus_trader.adapters.interactive_brokers.common import IB
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersDataClientConfig
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersExecClientConfig
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersInstrumentProviderConfig
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersDataClientConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersExecClientConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersInstrumentProviderConfig,
+)
 from nautilus_trader.adapters.interactive_brokers.config import SymbologyMethod
-from nautilus_trader.adapters.interactive_brokers.factories import InteractiveBrokersLiveDataClientFactory
-from nautilus_trader.adapters.interactive_brokers.factories import InteractiveBrokersLiveExecClientFactory
+from nautilus_trader.adapters.interactive_brokers.factories import (
+    InteractiveBrokersLiveDataClientFactory,
+)
+from nautilus_trader.adapters.interactive_brokers.factories import (
+    InteractiveBrokersLiveExecClientFactory,
+)
 from nautilus_trader.common.enums import LogColor
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.config import RoutingConfig
@@ -132,7 +142,9 @@ class RatioSpreadTestStrategy(Strategy):
         Place a market order for the 1x2 ratio spread.
         """
         self.log.info("=" * 60, color=LogColor.GREEN)
-        self.log.info("PLACING 1x2 RATIO SPREAD MARKET ORDER (DAY)", color=LogColor.GREEN)
+        self.log.info(
+            "PLACING 1x2 RATIO SPREAD MARKET ORDER (DAY)", color=LogColor.GREEN
+        )
         self.log.info("=" * 60, color=LogColor.GREEN)
 
         # Create market order for 3 spread units (DAY required for combo orders)
@@ -168,12 +180,16 @@ class RatioSpreadTestStrategy(Strategy):
         # Log first few quote ticks to verify subscription is working
         if self.quote_tick_count <= 5:
             self.log.info("=" * 60, color=LogColor.CYAN)
-            self.log.info(f"QUOTE TICK #{self.quote_tick_count} RECEIVED", color=LogColor.CYAN)
+            self.log.info(
+                f"QUOTE TICK #{self.quote_tick_count} RECEIVED", color=LogColor.CYAN
+            )
             self.log.info("=" * 60, color=LogColor.CYAN)
             self.log.info(f"   Instrument: {tick.instrument_id}")
             self.log.info(f"   Bid: {tick.bid_price} @ {tick.bid_size}")
             self.log.info(f"   Ask: {tick.ask_price} @ {tick.ask_size}")
-            self.log.info(f"   Spread: {float(tick.ask_price) - float(tick.bid_price):.4f}")
+            self.log.info(
+                f"   Spread: {float(tick.ask_price) - float(tick.bid_price):.4f}"
+            )
             self.log.info(f"   Event Time: {tick.ts_event}")
         elif self.quote_tick_count == 6:
             self.log.info(
@@ -212,14 +228,18 @@ class RatioSpreadTestStrategy(Strategy):
         Handle order rejected events.
         """
         self.order_events.append(("REJECTED", event))
-        self.log.error(f"ORDER REJECTED: {event.client_order_id} | Reason: {event.reason}")
+        self.log.error(
+            f"ORDER REJECTED: {event.client_order_id} | Reason: {event.reason}"
+        )
 
     def on_order_filled(self, event: OrderFilled):
         """Handle order filled events - KEY for understanding ratio spread execution."""
         self.execution_events.append(event)
 
         self.log.info("=" * 80, color=LogColor.MAGENTA)
-        self.log.info(f"FILL #{len(self.execution_events)} RECEIVED", color=LogColor.MAGENTA)
+        self.log.info(
+            f"FILL #{len(self.execution_events)} RECEIVED", color=LogColor.MAGENTA
+        )
         self.log.info("=" * 80, color=LogColor.MAGENTA)
 
         self.log.info(f"   Client Order ID: {event.client_order_id}")
@@ -246,17 +266,27 @@ class RatioSpreadTestStrategy(Strategy):
         fill_qty = int(event.last_qty.as_double())
 
         if event.order_side == OrderSide.BUY:
-            self.log.info(f"   LONG leg fill: {fill_qty} contracts", color=LogColor.CYAN)
-            self.log.info("   Expected: 1 contract per spread unit", color=LogColor.CYAN)
+            self.log.info(
+                f"   LONG leg fill: {fill_qty} contracts", color=LogColor.CYAN
+            )
+            self.log.info(
+                "   Expected: 1 contract per spread unit", color=LogColor.CYAN
+            )
         elif event.order_side == OrderSide.SELL:
-            self.log.info(f"   SHORT leg fill: {fill_qty} contracts", color=LogColor.CYAN)
-            self.log.info("   Expected: 2 contracts per spread unit", color=LogColor.CYAN)
+            self.log.info(
+                f"   SHORT leg fill: {fill_qty} contracts", color=LogColor.CYAN
+            )
+            self.log.info(
+                "   Expected: 2 contracts per spread unit", color=LogColor.CYAN
+            )
 
         # Check if this is spread-level or leg-level fill
         if str(event.instrument_id) == str(self.config.spread_instrument_id):
             self.log.info("   SPREAD-LEVEL FILL", color=LogColor.GREEN)
         else:
-            self.log.info(f"   LEG-LEVEL FILL: {event.instrument_id}", color=LogColor.YELLOW)
+            self.log.info(
+                f"   LEG-LEVEL FILL: {event.instrument_id}", color=LogColor.YELLOW
+            )
 
     def _check_portfolio_state(self):
         """
@@ -272,7 +302,9 @@ class RatioSpreadTestStrategy(Strategy):
             return
 
         for position in all_positions:
-            self.log.info(f"   {position.instrument_id}: {position.side} {position.quantity}")
+            self.log.info(
+                f"   {position.instrument_id}: {position.side} {position.quantity}"
+            )
 
     def on_stop(self):
         """
@@ -293,8 +325,12 @@ class RatioSpreadTestStrategy(Strategy):
         self.log.info(f"Total order events: {len(self.order_events)}")
 
         if self.execution_events:
-            buy_fills = [e for e in self.execution_events if e.order_side == OrderSide.BUY]
-            sell_fills = [e for e in self.execution_events if e.order_side == OrderSide.SELL]
+            buy_fills = [
+                e for e in self.execution_events if e.order_side == OrderSide.BUY
+            ]
+            sell_fills = [
+                e for e in self.execution_events if e.order_side == OrderSide.SELL
+            ]
 
             buy_qty = sum(int(f.last_qty.as_double()) for f in buy_fills)
             sell_qty = sum(int(f.last_qty.as_double()) for f in sell_fills)

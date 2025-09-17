@@ -151,7 +151,9 @@ class OptionStrategy(Strategy):
         self.spread_quotes_received = 0
 
     def on_start(self):
-        self.bar_type = BarType.from_str(f"{self.config.future_id}-1-MINUTE-LAST-EXTERNAL")
+        self.bar_type = BarType.from_str(
+            f"{self.config.future_id}-1-MINUTE-LAST-EXTERNAL"
+        )
 
         self.request_instrument(self.config.option_id)
         self.request_instrument(self.config.option_id2)
@@ -202,7 +204,10 @@ class OptionStrategy(Strategy):
 
     def on_quote_tick(self, tick):
         # Submit spread order when we have spread quotes available
-        if tick.instrument_id == self.config.spread_id and not self.spread_order_submitted:
+        if (
+            tick.instrument_id == self.config.spread_id
+            and not self.spread_order_submitted
+        ):
             self.user_log(f"Spread quote received: {tick}")
 
             # Try submitting order immediately - the exchange should have processed the quote by now
@@ -266,7 +271,9 @@ class OptionStrategy(Strategy):
         self.unsubscribe_quote_ticks(self.config.option_id)
         self.unsubscribe_quote_ticks(self.config.option_id2)
         self.unsubscribe_data(DataType(GreeksData), instrument_id=self.config.option_id)
-        self.unsubscribe_data(DataType(GreeksData), instrument_id=self.config.option_id2)
+        self.unsubscribe_data(
+            DataType(GreeksData), instrument_id=self.config.option_id2
+        )
         self.unsubscribe_quote_ticks(self.config.spread_id)
 
 
@@ -285,7 +292,9 @@ actors = [
         actor_path=InterestRateProvider.fully_qualified_name(),
         config_path=InterestRateProviderConfig.fully_qualified_name(),
         config={
-            "interest_rates_file": str(data_path(catalog_folder, "usd_short_term_rate.xml")),
+            "interest_rates_file": str(
+                data_path(catalog_folder, "usd_short_term_rate.xml")
+            ),
         },
     ),
 ]

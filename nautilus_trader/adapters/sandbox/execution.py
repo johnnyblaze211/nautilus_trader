@@ -82,7 +82,9 @@ class SandboxExecutionClient(LiveExecutionClient):
         sandbox_venue = Venue(config.venue)
         oms_type = oms_type_from_str(config.oms_type)
         account_type = account_type_from_str(config.account_type)
-        base_currency = Currency.from_str(config.base_currency) if config.base_currency else None
+        base_currency = (
+            Currency.from_str(config.base_currency) if config.base_currency else None
+        )
 
         self.test_clock = TestClock()
 

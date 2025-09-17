@@ -50,9 +50,15 @@ from betfair_parser.spec.navigation import Menu
 
 from nautilus_trader.adapters.betfair.orderbook import betfair_float_to_price
 from nautilus_trader.adapters.betfair.orderbook import betfair_float_to_quantity
-from nautilus_trader.adapters.betfair.parsing.requests import order_cancel_to_cancel_order_params
-from nautilus_trader.adapters.betfair.parsing.requests import order_submit_to_place_order_params
-from nautilus_trader.adapters.betfair.parsing.requests import order_update_to_replace_order_params
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    order_cancel_to_cancel_order_params,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    order_submit_to_place_order_params,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    order_update_to_replace_order_params,
+)
 from nautilus_trader.core.uuid import UUID4
 from nautilus_trader.execution.messages import SubmitOrder
 from nautilus_trader.model.enums import OrderSide
@@ -65,7 +71,9 @@ from nautilus_trader.test_kit.stubs.execution import TestExecStubs
 from nautilus_trader.test_kit.stubs.identifiers import TestIdStubs
 from tests.integration_tests.adapters.betfair.test_kit import BetfairResponses
 from tests.integration_tests.adapters.betfair.test_kit import betting_instrument
-from tests.integration_tests.adapters.betfair.test_kit import betting_instrument_handicap
+from tests.integration_tests.adapters.betfair.test_kit import (
+    betting_instrument_handicap,
+)
 from tests.integration_tests.adapters.betfair.test_kit import mock_betfair_request
 
 
@@ -90,7 +98,9 @@ async def test_connect(betfair_client):
 
 @pytest.mark.asyncio()
 async def test_exception_handling(betfair_client):
-    mock_betfair_request(betfair_client, response=BetfairResponses.account_funds_error())
+    mock_betfair_request(
+        betfair_client, response=BetfairResponses.account_funds_error()
+    )
     with pytest.raises(AccountAPINGException) as e:
         await betfair_client.get_account_funds(wallet="not a real walltet")
         result = e.value.response
@@ -119,7 +129,9 @@ async def test_list_market_catalogue(betfair_client):
         "eventTypeIds": ["7"],
         "marketBettingTypes": ["ODDS"],
     }
-    mock_betfair_request(betfair_client, BetfairResponses.betting_list_market_catalogue())
+    mock_betfair_request(
+        betfair_client, BetfairResponses.betting_list_market_catalogue()
+    )
     catalogue = await betfair_client.list_market_catalogue(filter_=market_filter)
     assert catalogue
     _, request = betfair_client._request.call_args[0]
@@ -176,7 +188,9 @@ async def test_place_orders(betfair_client):
         quantity=betfair_float_to_quantity(10),
     )
     command = TestCommandStubs.submit_order_command(order=limit_order)
-    place_orders = order_submit_to_place_order_params(command=command, instrument=instrument)
+    place_orders = order_submit_to_place_order_params(
+        command=command, instrument=instrument
+    )
     mock_betfair_request(betfair_client, BetfairResponses.betting_place_order_success())
 
     await betfair_client.place_orders(place_orders)
@@ -221,7 +235,9 @@ async def test_place_orders_handicap(betfair_client):
         quantity=betfair_float_to_quantity(10.0),
     )
     command = TestCommandStubs.submit_order_command(order=limit_order)
-    place_orders = order_submit_to_place_order_params(command=command, instrument=instrument)
+    place_orders = order_submit_to_place_order_params(
+        command=command, instrument=instrument
+    )
     mock_betfair_request(betfair_client, BetfairResponses.betting_place_order_success())
 
     await betfair_client.place_orders(place_orders)
@@ -320,7 +336,9 @@ async def test_replace_orders_single(betfair_client):
         venue_order_id=VenueOrderId("240718603398"),
         instrument=instrument,
     )
-    mock_betfair_request(betfair_client, BetfairResponses.betting_replace_orders_success())
+    mock_betfair_request(
+        betfair_client, BetfairResponses.betting_replace_orders_success()
+    )
 
     resp = await betfair_client.replace_orders(replace_order)
     assert resp
@@ -349,7 +367,9 @@ async def test_cancel_orders(betfair_client):
         command=cancel_command,
         instrument=instrument,
     )
-    mock_betfair_request(betfair_client, BetfairResponses.betting_cancel_orders_success())
+    mock_betfair_request(
+        betfair_client, BetfairResponses.betting_cancel_orders_success()
+    )
 
     resp = await betfair_client.cancel_orders(cancel_order_params)
     assert resp
@@ -368,7 +388,9 @@ async def test_cancel_orders(betfair_client):
 
 @pytest.mark.asyncio()
 async def test_list_current_orders(betfair_client):
-    mock_betfair_request(betfair_client, response=BetfairResponses.list_current_orders_executable())
+    mock_betfair_request(
+        betfair_client, response=BetfairResponses.list_current_orders_executable()
+    )
     current_orders = await betfair_client.list_current_orders()
     assert len(current_orders) == 2
 
@@ -394,8 +416,12 @@ async def test_list_current_orders(betfair_client):
 
 @pytest.mark.asyncio()
 async def test_list_cleared_orders(betfair_client):
-    mock_betfair_request(betfair_client, response=BetfairResponses.list_cleared_orders())
-    cleared_orders = await betfair_client.list_cleared_orders(bet_status=BetStatus.SETTLED)
+    mock_betfair_request(
+        betfair_client, response=BetfairResponses.list_cleared_orders()
+    )
+    cleared_orders = await betfair_client.list_cleared_orders(
+        bet_status=BetStatus.SETTLED
+    )
     assert len(cleared_orders) == 14
 
     _, request = betfair_client._request.call_args[0]

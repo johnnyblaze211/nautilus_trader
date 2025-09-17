@@ -142,15 +142,21 @@ class DYDXDataClient(LiveMarketDataClient):
         # Decoders
         self._decoder_ws_msg_general = msgspec.json.Decoder(DYDXWsMessageGeneral)
         self._decoder_ws_orderbook = msgspec.json.Decoder(DYDXWsOrderbookChannelData)
-        self._decoder_ws_orderbook_batched = msgspec.json.Decoder(DYDXWsOrderbookBatchedData)
+        self._decoder_ws_orderbook_batched = msgspec.json.Decoder(
+            DYDXWsOrderbookBatchedData
+        )
         self._decoder_ws_orderbook_snapshot = msgspec.json.Decoder(
             DYDXWsOrderbookSnapshotChannelData,
         )
         self._decoder_ws_trade = msgspec.json.Decoder(DYDXWsTradeChannelData)
         self._decoder_ws_kline = msgspec.json.Decoder(DYDXWsCandlesChannelData)
-        self._decoder_ws_kline_subscribed = msgspec.json.Decoder(DYDXWsCandlesSubscribedData)
+        self._decoder_ws_kline_subscribed = msgspec.json.Decoder(
+            DYDXWsCandlesSubscribedData
+        )
         self._decoder_ws_instruments = msgspec.json.Decoder(DYDXWsMarketChannelData)
-        self._decoder_ws_instruments_subscribed = msgspec.json.Decoder(DYDXWsMarketSubscribedData)
+        self._decoder_ws_instruments_subscribed = msgspec.json.Decoder(
+            DYDXWsMarketSubscribedData
+        )
 
         self._ws_client = DYDXWebsocketClient(
             clock=clock,
@@ -170,8 +176,12 @@ class DYDXDataClient(LiveMarketDataClient):
         self._books: dict[InstrumentId, OrderBook] = {}
         self._topic_bar_type: dict[str, BarType] = {}
 
-        self._update_instruments_interval_mins: int | None = config.update_instruments_interval_mins
-        self._update_orderbook_interval_secs: int = 60  # Once every 60 seconds (hard-coded for now)
+        self._update_instruments_interval_mins: int | None = (
+            config.update_instruments_interval_mins
+        )
+        self._update_orderbook_interval_secs: int = (
+            60  # Once every 60 seconds (hard-coded for now)
+        )
         self._update_instruments_task: asyncio.Task | None = None
         self._fetch_orderbook_task: asyncio.Task | None = None
         self._last_quotes: dict[InstrumentId, QuoteTick] = {}
@@ -334,7 +344,9 @@ class DYDXDataClient(LiveMarketDataClient):
             instrument = self._cache.instrument(instrument_id)
 
             if instrument is None:
-                self._log.error(f"Cannot parse trade data: no instrument for {instrument_id}")
+                self._log.error(
+                    f"Cannot parse trade data: no instrument for {instrument_id}"
+                )
                 return
 
             for tick_msg in msg.contents.trades:
@@ -363,7 +375,9 @@ class DYDXDataClient(LiveMarketDataClient):
             instrument = self._cache.instrument(instrument_id)
 
             if instrument is None:
-                self._log.error(f"Cannot parse orderbook data: no instrument for {instrument_id}")
+                self._log.error(
+                    f"Cannot parse orderbook data: no instrument for {instrument_id}"
+                )
                 return
 
             ts_init = self._clock.timestamp_ns()
@@ -390,7 +404,9 @@ class DYDXDataClient(LiveMarketDataClient):
             instrument = self._cache.instrument(instrument_id)
 
             if instrument is None:
-                self._log.error(f"Cannot parse orderbook data: no instrument for {instrument_id}")
+                self._log.error(
+                    f"Cannot parse orderbook data: no instrument for {instrument_id}"
+                )
                 return
 
             ts_init = self._clock.timestamp_ns()
@@ -409,8 +425,10 @@ class DYDXDataClient(LiveMarketDataClient):
 
     def _handle_orderbook_snapshot(self, raw: bytes) -> None:
         try:
-            msg: DYDXWsOrderbookSnapshotChannelData = self._decoder_ws_orderbook_snapshot.decode(
-                raw,
+            msg: DYDXWsOrderbookSnapshotChannelData = (
+                self._decoder_ws_orderbook_snapshot.decode(
+                    raw,
+                )
             )
 
             symbol = msg.id
@@ -436,7 +454,9 @@ class DYDXDataClient(LiveMarketDataClient):
             self._handle_deltas(instrument_id=instrument_id, deltas=deltas)
 
         except Exception as e:
-            self._log.exception(f"Failed to parse orderbook snapshot: {raw.decode()}", e)
+            self._log.exception(
+                f"Failed to parse orderbook snapshot: {raw.decode()}", e
+            )
 
     def _resolve_crossed_order_book(
         self,
@@ -456,7 +476,9 @@ class DYDXDataClient(LiveMarketDataClient):
         instrument = self._cache.instrument(instrument_id)
 
         if instrument is None:
-            self._log.error(f"Cannot resolve crossed order book: no instrument for {instrument_id}")
+            self._log.error(
+                f"Cannot resolve crossed order book: no instrument for {instrument_id}"
+            )
             return venue_deltas
 
         book.apply_deltas(venue_deltas)
@@ -577,7 +599,9 @@ class DYDXDataClient(LiveMarketDataClient):
                 temp_deltas.append(delta)
 
             deltas += temp_deltas
-            order_book_deltas = OrderBookDeltas(instrument_id=instrument_id, deltas=temp_deltas)
+            order_book_deltas = OrderBookDeltas(
+                instrument_id=instrument_id, deltas=temp_deltas
+            )
             book.apply_deltas(order_book_deltas)
 
             bid_price = book.best_bid_price()
@@ -618,7 +642,9 @@ class DYDXDataClient(LiveMarketDataClient):
 
         return OrderBookDeltas(instrument_id=instrument_id, deltas=final_deltas)
 
-    def _handle_deltas(self, instrument_id: InstrumentId, deltas: OrderBookDeltas) -> None:
+    def _handle_deltas(
+        self, instrument_id: InstrumentId, deltas: OrderBookDeltas
+    ) -> None:
         book = self._books.get(instrument_id)
 
         if book is None:
@@ -683,13 +709,17 @@ class DYDXDataClient(LiveMarketDataClient):
             instrument = self._cache.instrument(instrument_id)
 
             if instrument is None:
-                self._log.error(f"Cannot parse kline data: no instrument for {instrument_id}")
+                self._log.error(
+                    f"Cannot parse kline data: no instrument for {instrument_id}"
+                )
                 return
 
             bar_type = self._topic_bar_type.get(msg.id)
 
             if bar_type is None:
-                self._log.error(f"Cannot parse kline data: no bar type for {instrument_id}")
+                self._log.error(
+                    f"Cannot parse kline data: no bar type for {instrument_id}"
+                )
                 return
 
             parsed_bar = msg.contents.parse_to_bar(
@@ -745,14 +775,18 @@ class DYDXDataClient(LiveMarketDataClient):
                         ts_init=ts_init,
                     )
                     data_type = DataType(DYDXOraclePrice)
-                    self._msgbus.publish(topic=f"data.{data_type.topic}", msg=dydx_oracle_price)
+                    self._msgbus.publish(
+                        topic=f"data.{data_type.topic}", msg=dydx_oracle_price
+                    )
 
         except Exception as e:
             self._log.exception(f"Failed to parse market data: {raw.decode()}", e)
 
     def _handle_markets_subscribed(self, raw: bytes) -> None:
         try:
-            msg: DYDXWsMarketSubscribedData = self._decoder_ws_instruments_subscribed.decode(raw)
+            msg: DYDXWsMarketSubscribedData = (
+                self._decoder_ws_instruments_subscribed.decode(raw)
+            )
             ts_init = self._clock.timestamp_ns()
 
             for symbol, oracle_price_market in msg.contents.markets.items():
@@ -775,10 +809,14 @@ class DYDXDataClient(LiveMarketDataClient):
                         ts_init=ts_init,
                     )
                     data_type = DataType(DYDXOraclePrice)
-                    self._msgbus.publish(topic=f"data.{data_type.topic}", msg=dydx_oracle_price)
+                    self._msgbus.publish(
+                        topic=f"data.{data_type.topic}", msg=dydx_oracle_price
+                    )
 
         except Exception as e:
-            self._log.exception(f"Failed to parse market channel data: {raw.decode()}", e)
+            self._log.exception(
+                f"Failed to parse market channel data: {raw.decode()}", e
+            )
 
     async def _subscribe_instruments(self, command: SubscribeInstruments) -> None:
         """
@@ -848,7 +886,9 @@ class DYDXDataClient(LiveMarketDataClient):
         self._orderbook_subscriptions.add(dydx_symbol.raw_symbol)
 
         if command.instrument_id not in self._books:
-            self._books[command.instrument_id] = OrderBook(command.instrument_id, command.book_type)
+            self._books[command.instrument_id] = OrderBook(
+                command.instrument_id, command.book_type
+            )
 
         if not self._ws_client.has_subscription(
             channel=DYDXChannel.ORDERBOOK,
@@ -888,13 +928,17 @@ class DYDXDataClient(LiveMarketDataClient):
         candles_resolution = get_interval_from_bar_type(command.bar_type)
         topic = f"{dydx_symbol.raw_symbol}/{candles_resolution.value}"
         self._topic_bar_type[topic] = command.bar_type
-        await self._ws_client.subscribe_klines(dydx_symbol.raw_symbol, candles_resolution)
+        await self._ws_client.subscribe_klines(
+            dydx_symbol.raw_symbol, candles_resolution
+        )
 
     async def _unsubscribe_trade_ticks(self, command: UnsubscribeTradeTicks) -> None:
         dydx_symbol = DYDXSymbol(command.instrument_id.symbol.value)
         await self._ws_client.unsubscribe_trades(dydx_symbol.raw_symbol)
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         dydx_symbol = DYDXSymbol(command.instrument_id.symbol.value)
 
         # Check if the websocket client is subscribed.
@@ -929,14 +973,18 @@ class DYDXDataClient(LiveMarketDataClient):
     async def _unsubscribe_bars(self, command: UnsubscribeBars) -> None:
         dydx_symbol = DYDXSymbol(command.bar_type.instrument_id.symbol.value)
         candles_resolution = get_interval_from_bar_type(command.bar_type)
-        await self._ws_client.unsubscribe_klines(dydx_symbol.raw_symbol, candles_resolution)
+        await self._ws_client.unsubscribe_klines(
+            dydx_symbol.raw_symbol, candles_resolution
+        )
 
     def _get_cached_instrument_id(self, symbol: str) -> InstrumentId:
         dydx_symbol = DYDXSymbol(symbol)
         nautilus_instrument_id: InstrumentId = dydx_symbol.to_instrument_id()
         return nautilus_instrument_id
 
-    def _should_partition_bars_request(self, request: RequestBars, max_bars: int) -> bool:
+    def _should_partition_bars_request(
+        self, request: RequestBars, max_bars: int
+    ) -> bool:
         bar_timedelta = request.bar_type.spec.timedelta
         total_duration = request.end - request.start
         expected_bars = int(total_duration / bar_timedelta)
@@ -1003,7 +1051,9 @@ class DYDXDataClient(LiveMarketDataClient):
         instrument = self._cache.instrument(instrument_id)
 
         if instrument is None:
-            self._log.error(f"Cannot parse kline data: no instrument for {instrument_id}")
+            self._log.error(
+                f"Cannot parse kline data: no instrument for {instrument_id}"
+            )
             return
 
         all_bars = []

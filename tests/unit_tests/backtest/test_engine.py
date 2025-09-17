@@ -89,7 +89,9 @@ class TestBacktestEngine:
             BacktestEngineConfig(logging=LoggingConfig(bypass_logging=True)),
         )
 
-    def create_engine(self, config: BacktestEngineConfig | None = None) -> BacktestEngine:
+    def create_engine(
+        self, config: BacktestEngineConfig | None = None
+    ) -> BacktestEngine:
         engine = BacktestEngine(config)
         engine.add_venue(
             venue=Venue("SIM"),
@@ -116,7 +118,9 @@ class TestBacktestEngine:
         self.engine.dispose()
 
     def test_initialization(self):
-        engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(bypass_logging=True)))
+        engine = BacktestEngine(
+            BacktestEngineConfig(logging=LoggingConfig(bypass_logging=True))
+        )
 
         # Arrange, Act, Assert
         assert engine.run_id is None
@@ -358,7 +362,9 @@ class TestBacktestEngineCashAccount:
             BacktestEngineConfig(logging=LoggingConfig(bypass_logging=True)),
         )
 
-    def create_engine(self, config: BacktestEngineConfig | None = None) -> BacktestEngine:
+    def create_engine(
+        self, config: BacktestEngineConfig | None = None
+    ) -> BacktestEngine:
         engine = BacktestEngine(config)
         engine.add_venue(
             venue=Venue("SIM"),
@@ -374,7 +380,9 @@ class TestBacktestEngineCashAccount:
         self.engine.reset()
         self.engine.dispose()
 
-    def test_adding_currency_pair_for_single_currency_cash_account_raises_exception(self):
+    def test_adding_currency_pair_for_single_currency_cash_account_raises_exception(
+        self,
+    ):
         # Arrange, Act, Assert
         with pytest.raises(InvalidConfiguration):
             self.engine.add_instrument(self.usdjpy)
@@ -450,7 +458,9 @@ class TestBacktestEngineData:
 
     def test_add_instrument_when_no_venue_raises_exception(self):
         # Arrange
-        engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(bypass_logging=True)))
+        engine = BacktestEngine(
+            BacktestEngineConfig(logging=LoggingConfig(bypass_logging=True))
+        )
 
         # Act, Assert
         with pytest.raises(InvalidConfiguration):
@@ -643,7 +653,9 @@ class TestBacktestEngineData:
             instrument=USDJPY_SIM,
         )
         provider = TestDataProvider()
-        bars = wrangler.process(provider.read_csv_bars("fxcm/usdjpy-m1-bid-2013.csv")[:2000])
+        bars = wrangler.process(
+            provider.read_csv_bars("fxcm/usdjpy-m1-bid-2013.csv")[:2000]
+        )
 
         # Act
         self.engine.add_instrument(USDJPY_SIM)
@@ -721,8 +733,12 @@ class TestBacktestWithAddedBars:
         )
 
         provider = TestDataProvider()
-        bid_bars = bid_wrangler.process(provider.read_csv_bars("fxcm/gbpusd-m1-bid-2012.csv"))
-        ask_bars = ask_wrangler.process(provider.read_csv_bars("fxcm/gbpusd-m1-ask-2012.csv"))
+        bid_bars = bid_wrangler.process(
+            provider.read_csv_bars("fxcm/gbpusd-m1-bid-2012.csv")
+        )
+        ask_bars = ask_wrangler.process(
+            provider.read_csv_bars("fxcm/gbpusd-m1-ask-2012.csv")
+        )
 
         # Add data
         self.engine.add_instrument(GBPUSD_SIM)
@@ -895,7 +911,9 @@ class TestBacktestEngineStreaming:
             ),  # 1min intervals
             (
                 "instrument_B_day1",
-                self.create_data_iterator("B", batch_1_start + 30_000_000_000, 16, 90_000_000_000),
+                self.create_data_iterator(
+                    "B", batch_1_start + 30_000_000_000, 16, 90_000_000_000
+                ),
             ),  # 1.5min intervals, offset by 30s
             (
                 "instrument_C_day1",
@@ -927,7 +945,9 @@ class TestBacktestEngineStreaming:
             ),  # Dense 1ms data
             (
                 "instrument_D_day2",
-                self.create_data_iterator("D", batch_2_start + 45_000_000_000, 25, 45_000_000_000),
+                self.create_data_iterator(
+                    "D", batch_2_start + 45_000_000_000, 25, 45_000_000_000
+                ),
             ),  # 45s intervals, offset
         ]
 
@@ -951,7 +971,9 @@ class TestBacktestEngineStreaming:
             ),  # 10s intervals
             (
                 "instrument_B_day3",
-                self.create_data_iterator("B", batch_3_start + 5_000_000_000, 40, 15_000_000_000),
+                self.create_data_iterator(
+                    "B", batch_3_start + 5_000_000_000, 40, 15_000_000_000
+                ),
             ),  # 15s intervals, offset
             (
                 "instrument_E_day3",
@@ -986,9 +1008,14 @@ class TestBacktestEngineStreaming:
             ),  # 5s intervals
             (
                 "large_stream_B",
-                self.create_data_iterator("B_large", start_ts + 2_500_000_000, 80, 7_500_000_000),
+                self.create_data_iterator(
+                    "B_large", start_ts + 2_500_000_000, 80, 7_500_000_000
+                ),
             ),  # 7.5s intervals
-            ("large_stream_C", self.create_dense_iterator("C_dense", start_ts, 50)),  # Dense data
+            (
+                "large_stream_C",
+                self.create_dense_iterator("C_dense", start_ts, 50),
+            ),  # Dense data
         ]
 
         # Add iterators individually
@@ -1052,13 +1079,18 @@ class TestBacktestEngineStreaming:
         edge_case_iterators = [
             ("empty_stream", empty_iterator()),
             ("single_item", single_item_iterator()),
-            ("normal_stream", self.create_data_iterator("normal", start_ts, 5, 30_000_000_000)),
+            (
+                "normal_stream",
+                self.create_data_iterator("normal", start_ts, 5, 30_000_000_000),
+            ),
         ]
 
         # Add some regular data so the engine can run
         from nautilus_trader.model.identifiers import ClientId
 
-        self.engine.add_data([MyData(value="baseline", ts_init=start_ts)], ClientId("TEST"))
+        self.engine.add_data(
+            [MyData(value="baseline", ts_init=start_ts)], ClientId("TEST")
+        )
         for data_name, generator in edge_case_iterators:
             self.engine.add_data_iterator(data_name, generator)
 
@@ -1089,7 +1121,9 @@ class TestBacktestEngineStreaming:
                 iterators = [
                     (
                         f"regular_A_iter{iteration}",
-                        self.create_data_iterator(f"A{iteration}", start_ts, 10, 60_000_000_000),
+                        self.create_data_iterator(
+                            f"A{iteration}", start_ts, 10, 60_000_000_000
+                        ),
                     ),
                     (
                         f"regular_B_iter{iteration}",
@@ -1144,12 +1178,15 @@ class TestBacktestEngineStreaming:
             def ultra_dense_generator():
                 for chunk in range(chunks):
                     chunk_data = []
-                    base_ts = start_ts + (chunk * chunk_size * 1_000)  # 1ms per chunk offset
+                    base_ts = start_ts + (
+                        chunk * chunk_size * 1_000
+                    )  # 1ms per chunk offset
                     for i in range(chunk_size):
                         chunk_data.append(
                             MyData(
                                 value=f"{name}_ultra_{chunk}_{i}",
-                                ts_init=base_ts + (i * 1_000),  # 1 microsecond intervals
+                                ts_init=base_ts
+                                + (i * 1_000),  # 1 microsecond intervals
                             ),
                         )
                     yield chunk_data
@@ -1171,7 +1208,8 @@ class TestBacktestEngineStreaming:
                         chunk_data.append(
                             MyData(
                                 value=f"{name}_sparse_{chunk}_{i}",
-                                ts_init=base_ts + (i * 3_600_000_000_000),  # 1 hour intervals
+                                ts_init=base_ts
+                                + (i * 3_600_000_000_000),  # 1 hour intervals
                             ),
                         )
                     yield chunk_data
@@ -1186,7 +1224,9 @@ class TestBacktestEngineStreaming:
             def mixed_density_generator():
                 for chunk in range(chunks):
                     chunk_data = []
-                    base_ts = start_ts + (chunk * chunk_size * 60_000_000_000)  # 1 minute per chunk
+                    base_ts = start_ts + (
+                        chunk * chunk_size * 60_000_000_000
+                    )  # 1 minute per chunk
                     for i in range(chunk_size):
                         # Alternate between dense and sparse within chunk
                         if i % 1000 < 500:  # First half of each 1000 items: dense

@@ -24,13 +24,27 @@ from nautilus_trader.adapters.binance.common.schemas.market import BinanceSymbol
 from nautilus_trader.adapters.binance.common.symbol import BinanceSymbol
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesContractStatus
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesContractType
-from nautilus_trader.adapters.binance.futures.http.account import BinanceFuturesAccountHttpAPI
-from nautilus_trader.adapters.binance.futures.http.market import BinanceFuturesMarketHttpAPI
-from nautilus_trader.adapters.binance.futures.http.wallet import BinanceFuturesWalletHttpAPI
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesFeeRates
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesPositionRisk
-from nautilus_trader.adapters.binance.futures.schemas.market import BinanceFuturesSymbolInfo
-from nautilus_trader.adapters.binance.futures.schemas.wallet import BinanceFuturesCommissionRate
+from nautilus_trader.adapters.binance.futures.http.account import (
+    BinanceFuturesAccountHttpAPI,
+)
+from nautilus_trader.adapters.binance.futures.http.market import (
+    BinanceFuturesMarketHttpAPI,
+)
+from nautilus_trader.adapters.binance.futures.http.wallet import (
+    BinanceFuturesWalletHttpAPI,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesFeeRates,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesPositionRisk,
+)
+from nautilus_trader.adapters.binance.futures.schemas.market import (
+    BinanceFuturesSymbolInfo,
+)
+from nautilus_trader.adapters.binance.futures.schemas.wallet import (
+    BinanceFuturesCommissionRate,
+)
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.common.providers import InstrumentProvider
@@ -89,7 +103,9 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
             clock=self._clock,
             account_type=account_type,
         )
-        self._http_market = BinanceFuturesMarketHttpAPI(self._client, account_type=account_type)
+        self._http_market = BinanceFuturesMarketHttpAPI(
+            self._client, account_type=account_type
+        )
 
         self._log_warnings = config.log_warnings if config else True
 
@@ -121,7 +137,9 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
 
         # Get exchange info for all assets
         exchange_info = await self._http_market.query_futures_exchange_info()
-        account_info = await self._http_account.query_futures_account_info(recv_window=str(5000))
+        account_info = await self._http_account.query_futures_account_info(
+            recv_window=str(5000)
+        )
         fee_rates = self._fee_rates[account_info.feeTier]
 
         for symbol_info in exchange_info.symbols:
@@ -148,11 +166,14 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
 
         # Check all instrument IDs
         for instrument_id in instrument_ids:
-            PyCondition.equal(instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE")
+            PyCondition.equal(
+                instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE"
+            )
 
         # Extract all symbol strings
         symbols = [
-            str(BinanceSymbol(instrument_id.symbol.value)) for instrument_id in instrument_ids
+            str(BinanceSymbol(instrument_id.symbol.value))
+            for instrument_id in instrument_ids
         ]
 
         # Get exchange info for all assets
@@ -160,7 +181,9 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
         symbol_info_dict: dict[str, BinanceFuturesSymbolInfo] = {
             info.symbol: info for info in exchange_info.symbols
         }
-        account_info = await self._http_account.query_futures_account_info(recv_window=str(5000))
+        account_info = await self._http_account.query_futures_account_info(
+            recv_window=str(5000)
+        )
         fee_rates = self._fee_rates[account_info.feeTier]
 
         position_risk_resp = await self._http_account.query_futures_position_risk()
@@ -182,9 +205,13 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
                 position_risk=position_risk[symbol],
             )
 
-    async def load_async(self, instrument_id: InstrumentId, filters: dict | None = None) -> None:
+    async def load_async(
+        self, instrument_id: InstrumentId, filters: dict | None = None
+    ) -> None:
         PyCondition.not_none(instrument_id, "instrument_id")
-        PyCondition.equal(instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE")
+        PyCondition.equal(
+            instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE"
+        )
 
         filters_str = "..." if not filters else f" with filters {filters}..."
         self._log.debug(f"Loading instrument {instrument_id}{filters_str}.")
@@ -197,7 +224,9 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
             info.symbol: info for info in exchange_info.symbols
         }
 
-        account_info = await self._http_account.query_futures_account_info(recv_window=str(5000))
+        account_info = await self._http_account.query_futures_account_info(
+            recv_window=str(5000)
+        )
         fee_rates = self._fee_rates[account_info.feeTier]
         fee = BinanceFuturesCommissionRate(
             symbol=symbol,
@@ -244,8 +273,12 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
             filters: dict[BinanceSymbolFilterType, BinanceSymbolFilter] = {
                 f.filterType: f for f in symbol_info.filters
             }
-            price_filter: BinanceSymbolFilter = filters.get(BinanceSymbolFilterType.PRICE_FILTER)
-            lot_size_filter: BinanceSymbolFilter = filters.get(BinanceSymbolFilterType.LOT_SIZE)
+            price_filter: BinanceSymbolFilter = filters.get(
+                BinanceSymbolFilterType.PRICE_FILTER
+            )
+            lot_size_filter: BinanceSymbolFilter = filters.get(
+                BinanceSymbolFilterType.LOT_SIZE
+            )
             min_notional_filter: BinanceSymbolFilter = filters.get(
                 BinanceSymbolFilterType.MIN_NOTIONAL,
             )
@@ -253,17 +286,25 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
             tick_size = price_filter.tickSize
             step_size = lot_size_filter.stepSize
             PyCondition.in_range(float(tick_size), PRICE_MIN, PRICE_MAX, "tick_size")
-            PyCondition.in_range(float(step_size), QUANTITY_MIN, QUANTITY_MAX, "step_size")
+            PyCondition.in_range(
+                float(step_size), QUANTITY_MIN, QUANTITY_MAX, "step_size"
+            )
 
             price_precision = abs(int(Decimal(tick_size).as_tuple().exponent))
             size_precision = abs(int(Decimal(step_size).as_tuple().exponent))
             price_increment = Price.from_str(tick_size)
             size_increment = Quantity.from_str(step_size)
-            max_quantity = Quantity(float(lot_size_filter.maxQty), precision=size_precision)
-            min_quantity = Quantity(float(lot_size_filter.minQty), precision=size_precision)
+            max_quantity = Quantity(
+                float(lot_size_filter.maxQty), precision=size_precision
+            )
+            min_quantity = Quantity(
+                float(lot_size_filter.minQty), precision=size_precision
+            )
             min_notional = None
             if filters.get(BinanceSymbolFilterType.MIN_NOTIONAL):
-                min_notional = Money(min_notional_filter.notional, currency=quote_currency)
+                min_notional = Money(
+                    min_notional_filter.notional, currency=quote_currency
+                )
             max_notional = (
                 Money(position_risk.maxNotionalValue, currency=quote_currency)
                 if position_risk
@@ -361,4 +402,6 @@ class BinanceFuturesInstrumentProvider(InstrumentProvider):
             self._log.debug(f"Added instrument {instrument.id}.")
         except ValueError as e:
             if self._log_warnings:
-                self._log.warning(f"Unable to parse instrument {symbol_info.symbol}: {e}.")
+                self._log.warning(
+                    f"Unable to parse instrument {symbol_info.symbol}: {e}."
+                )

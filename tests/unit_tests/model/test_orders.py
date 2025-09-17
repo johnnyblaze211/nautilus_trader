@@ -152,7 +152,9 @@ class TestOrders:
 
         # Act, Assert
         assert (
-            order.would_reduce_only(position_side=position_side, position_qty=position_qty)
+            order.would_reduce_only(
+                position_side=position_side, position_qty=position_qty
+            )
             == expected
         )
 
@@ -1084,7 +1086,9 @@ class TestOrders:
             == "TrailingStopMarketOrder(BUY 100_000 AUD/USD.SIM TRAILING_STOP_MARKET[DEFAULT] @ 1.00000-ACTIVATION 0.00050-TRAILING_OFFSET[PRICE] GTC, status=INITIALIZED, client_order_id=O-19700101-000000-000-001-1, venue_order_id=None, position_id=None, tags=None)"  # noqa
         )
 
-    def test_initialize_trailing_stop_market_order_with_activation_price_and_trigger(self):
+    def test_initialize_trailing_stop_market_order_with_activation_price_and_trigger(
+        self,
+    ):
         # Arrange, Act
         order = self.order_factory.trailing_stop_market(
             AUDUSD_SIM.id,
@@ -1325,7 +1329,9 @@ class TestOrders:
             == "TrailingStopLimitOrder(BUY 100_000 AUD/USD.SIM TRAILING_STOP_LIMIT[DEFAULT] @ 1.00000-ACTIVATION [DEFAULT] 1.00000-LIMIT 10-TRAILING_OFFSET[PRICE] 5-LIMIT_OFFSET[PRICE] GTC, status=INITIALIZED, client_order_id=O-19700101-000000-000-001-1, venue_order_id=None, position_id=None, tags=None)"  # noqa
         )
 
-    def test_initialize_trailing_stop_market_order_with_activation_price_and_no_initial_price(self):
+    def test_initialize_trailing_stop_market_order_with_activation_price_and_no_initial_price(
+        self,
+    ):
         # Arrange, Act
         order = self.order_factory.trailing_stop_limit(
             AUDUSD_SIM.id,
@@ -1529,9 +1535,15 @@ class TestOrders:
         assert bracket.orders[0].instrument_id == AUDUSD_SIM.id
         assert bracket.orders[1].instrument_id == AUDUSD_SIM.id
         assert bracket.orders[2].instrument_id == AUDUSD_SIM.id
-        assert bracket.orders[0].client_order_id == ClientOrderId("O-19700101-000000-000-001-1")
-        assert bracket.orders[1].client_order_id == ClientOrderId("O-19700101-000000-000-001-2")
-        assert bracket.orders[2].client_order_id == ClientOrderId("O-19700101-000000-000-001-3")
+        assert bracket.orders[0].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
+        assert bracket.orders[1].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-2"
+        )
+        assert bracket.orders[2].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-3"
+        )
         assert bracket.orders[0].side == OrderSide.BUY
         assert bracket.orders[1].side == OrderSide.SELL
         assert bracket.orders[2].side == OrderSide.SELL
@@ -1551,10 +1563,18 @@ class TestOrders:
             ClientOrderId("O-19700101-000000-000-001-2"),
             ClientOrderId("O-19700101-000000-000-001-3"),
         ]
-        assert bracket.orders[1].linked_order_ids == [ClientOrderId("O-19700101-000000-000-001-3")]
-        assert bracket.orders[2].linked_order_ids == [ClientOrderId("O-19700101-000000-000-001-2")]
-        assert bracket.orders[1].parent_order_id == ClientOrderId("O-19700101-000000-000-001-1")
-        assert bracket.orders[2].parent_order_id == ClientOrderId("O-19700101-000000-000-001-1")
+        assert bracket.orders[1].linked_order_ids == [
+            ClientOrderId("O-19700101-000000-000-001-3")
+        ]
+        assert bracket.orders[2].linked_order_ids == [
+            ClientOrderId("O-19700101-000000-000-001-2")
+        ]
+        assert bracket.orders[1].parent_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
+        assert bracket.orders[2].parent_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
         assert bracket.ts_init == 0
 
     def test_bracket_limit_entry_order_list(self):
@@ -1584,9 +1604,15 @@ class TestOrders:
         assert bracket.orders[0].instrument_id == AUDUSD_SIM.id
         assert bracket.orders[1].instrument_id == AUDUSD_SIM.id
         assert bracket.orders[2].instrument_id == AUDUSD_SIM.id
-        assert bracket.orders[0].client_order_id == ClientOrderId("O-19700101-000000-000-001-1")
-        assert bracket.orders[1].client_order_id == ClientOrderId("O-19700101-000000-000-001-2")
-        assert bracket.orders[2].client_order_id == ClientOrderId("O-19700101-000000-000-001-3")
+        assert bracket.orders[0].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
+        assert bracket.orders[1].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-2"
+        )
+        assert bracket.orders[2].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-3"
+        )
         assert bracket.orders[0].side == OrderSide.BUY
         assert bracket.orders[1].side == OrderSide.SELL
         assert bracket.orders[2].side == OrderSide.SELL
@@ -1609,10 +1635,18 @@ class TestOrders:
             ClientOrderId("O-19700101-000000-000-001-2"),
             ClientOrderId("O-19700101-000000-000-001-3"),
         ]
-        assert bracket.orders[1].linked_order_ids == [ClientOrderId("O-19700101-000000-000-001-3")]
-        assert bracket.orders[2].linked_order_ids == [ClientOrderId("O-19700101-000000-000-001-2")]
-        assert bracket.orders[1].parent_order_id == ClientOrderId("O-19700101-000000-000-001-1")
-        assert bracket.orders[2].parent_order_id == ClientOrderId("O-19700101-000000-000-001-1")
+        assert bracket.orders[1].linked_order_ids == [
+            ClientOrderId("O-19700101-000000-000-001-3")
+        ]
+        assert bracket.orders[2].linked_order_ids == [
+            ClientOrderId("O-19700101-000000-000-001-2")
+        ]
+        assert bracket.orders[1].parent_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
+        assert bracket.orders[2].parent_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
         assert bracket.ts_init == 0
 
     def test_bracket_limit_if_touched_entry_stop_limit_tp_order_list(self):
@@ -1642,9 +1676,15 @@ class TestOrders:
         assert bracket.orders[0].instrument_id == AUDUSD_SIM.id
         assert bracket.orders[1].instrument_id == AUDUSD_SIM.id
         assert bracket.orders[2].instrument_id == AUDUSD_SIM.id
-        assert bracket.orders[0].client_order_id == ClientOrderId("O-19700101-000000-000-001-1")
-        assert bracket.orders[1].client_order_id == ClientOrderId("O-19700101-000000-000-001-2")
-        assert bracket.orders[2].client_order_id == ClientOrderId("O-19700101-000000-000-001-3")
+        assert bracket.orders[0].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
+        assert bracket.orders[1].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-2"
+        )
+        assert bracket.orders[2].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-3"
+        )
         assert bracket.orders[0].side == OrderSide.BUY
         assert bracket.orders[1].side == OrderSide.SELL
         assert bracket.orders[2].side == OrderSide.SELL
@@ -1664,10 +1704,18 @@ class TestOrders:
             ClientOrderId("O-19700101-000000-000-001-2"),
             ClientOrderId("O-19700101-000000-000-001-3"),
         ]
-        assert bracket.orders[1].linked_order_ids == [ClientOrderId("O-19700101-000000-000-001-3")]
-        assert bracket.orders[2].linked_order_ids == [ClientOrderId("O-19700101-000000-000-001-2")]
-        assert bracket.orders[1].parent_order_id == ClientOrderId("O-19700101-000000-000-001-1")
-        assert bracket.orders[2].parent_order_id == ClientOrderId("O-19700101-000000-000-001-1")
+        assert bracket.orders[1].linked_order_ids == [
+            ClientOrderId("O-19700101-000000-000-001-3")
+        ]
+        assert bracket.orders[2].linked_order_ids == [
+            ClientOrderId("O-19700101-000000-000-001-2")
+        ]
+        assert bracket.orders[1].parent_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
+        assert bracket.orders[2].parent_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
         assert bracket.ts_init == 0
 
     def test_bracket_stop_limit_entry_stop_limit_tp_order_list(self):
@@ -1697,9 +1745,15 @@ class TestOrders:
         assert bracket.orders[0].instrument_id == AUDUSD_SIM.id
         assert bracket.orders[1].instrument_id == AUDUSD_SIM.id
         assert bracket.orders[2].instrument_id == AUDUSD_SIM.id
-        assert bracket.orders[0].client_order_id == ClientOrderId("O-19700101-000000-000-001-1")
-        assert bracket.orders[1].client_order_id == ClientOrderId("O-19700101-000000-000-001-2")
-        assert bracket.orders[2].client_order_id == ClientOrderId("O-19700101-000000-000-001-3")
+        assert bracket.orders[0].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
+        assert bracket.orders[1].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-2"
+        )
+        assert bracket.orders[2].client_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-3"
+        )
         assert bracket.orders[0].side == OrderSide.BUY
         assert bracket.orders[1].side == OrderSide.SELL
         assert bracket.orders[2].side == OrderSide.SELL
@@ -1721,10 +1775,18 @@ class TestOrders:
             ClientOrderId("O-19700101-000000-000-001-2"),
             ClientOrderId("O-19700101-000000-000-001-3"),
         ]
-        assert bracket.orders[1].linked_order_ids == [ClientOrderId("O-19700101-000000-000-001-3")]
-        assert bracket.orders[2].linked_order_ids == [ClientOrderId("O-19700101-000000-000-001-2")]
-        assert bracket.orders[1].parent_order_id == ClientOrderId("O-19700101-000000-000-001-1")
-        assert bracket.orders[2].parent_order_id == ClientOrderId("O-19700101-000000-000-001-1")
+        assert bracket.orders[1].linked_order_ids == [
+            ClientOrderId("O-19700101-000000-000-001-3")
+        ]
+        assert bracket.orders[2].linked_order_ids == [
+            ClientOrderId("O-19700101-000000-000-001-2")
+        ]
+        assert bracket.orders[1].parent_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
+        assert bracket.orders[2].parent_order_id == ClientOrderId(
+            "O-19700101-000000-000-001-1"
+        )
         assert bracket.ts_init == 0
 
     def test_order_list_str_and_repr(self):

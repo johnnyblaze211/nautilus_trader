@@ -21,8 +21,12 @@ from ibapi.order_state import OrderState as IBOrderState
 
 # fmt: off
 from nautilus_trader.adapters.interactive_brokers.common import IBOrderTags
-from nautilus_trader.adapters.interactive_brokers.factories import InteractiveBrokersLiveExecClientFactory
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import instrument_id_to_ib_contract
+from nautilus_trader.adapters.interactive_brokers.factories import (
+    InteractiveBrokersLiveExecClientFactory,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    instrument_id_to_ib_contract,
+)
 from nautilus_trader.model.enums import OrderSide
 from nautilus_trader.model.enums import OrderStatus
 from nautilus_trader.model.identifiers import PositionId
@@ -31,9 +35,15 @@ from nautilus_trader.model.objects import Quantity
 from nautilus_trader.test_kit.stubs.commands import TestCommandStubs
 from nautilus_trader.test_kit.stubs.execution import TestExecStubs
 from nautilus_trader.test_kit.stubs.identifiers import TestIdStubs
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestContractStubs
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestDataStubs
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestExecStubs
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestContractStubs,
+)
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestDataStubs,
+)
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestExecStubs,
+)
 
 
 # fmt: on
@@ -53,8 +63,12 @@ def contract(contract_details):
 
 def instrument_setup(exec_client, cache, instrument=None, contract_details=None):
     instrument = instrument or IBTestContractStubs.aapl_instrument()
-    contract_details = contract_details or IBTestContractStubs.aapl_equity_contract_details()
-    exec_client._instrument_provider.contract_details[instrument.id.value] = contract_details
+    contract_details = (
+        contract_details or IBTestContractStubs.aapl_equity_contract_details()
+    )
+    exec_client._instrument_provider.contract_details[instrument.id.value] = (
+        contract_details
+    )
     exec_client._instrument_provider.contract_id_to_instrument_id[
         contract_details.contract.conId
     ] = instrument.id

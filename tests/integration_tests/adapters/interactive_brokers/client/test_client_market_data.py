@@ -41,7 +41,9 @@ from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.identifiers import TradeId
 from nautilus_trader.model.objects import Price
 from nautilus_trader.model.objects import Quantity
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestContractStubs
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestContractStubs,
+)
 
 
 @pytest.mark.asyncio
@@ -337,7 +339,9 @@ async def test_ib_bar_to_nautilus_bar(ib_client):
     ib_client._cache.add_instrument(IBTestContractStubs.aapl_instrument())
 
     # Act
-    result = await ib_client._ib_bar_to_nautilus_bar(bar_type, bar, ts_init, is_revision=False)
+    result = await ib_client._ib_bar_to_nautilus_bar(
+        bar_type, bar, ts_init, is_revision=False
+    )
 
     # Assert
     assert result.bar_type == BarType.from_str(bar_type_str)
@@ -437,7 +441,9 @@ async def test_process_bar_data_eod_bar_missing_issue(ib_client):
     # It's stored in _bar_type_to_last_bar but never processed
     last_stored_bar = ib_client._bar_type_to_last_bar.get(bar_type_str)
     assert last_stored_bar is not None
-    assert int(last_stored_bar.date) == 1704067140  # 11:59 bar is stored but not processed
+    assert (
+        int(last_stored_bar.date) == 1704067140
+    )  # 11:59 bar is stored but not processed
 
     # In a real scenario, there would be no subsequent bar to trigger processing of the 11:59 bar
 
@@ -522,7 +528,8 @@ async def test_process_bar_data_completion_timeout_fix(ib_client):
                         is_revision=False,
                     )
                     if nautilus_bar and not (
-                        nautilus_bar.is_single_price() and nautilus_bar.open.as_double() == 0
+                        nautilus_bar.is_single_price()
+                        and nautilus_bar.open.as_double() == 0
                     ):
                         await ib_client._handle_data(nautilus_bar)
             except asyncio.CancelledError:
@@ -700,8 +707,12 @@ async def test_process_bar_data_out_of_sync_bars(ib_client):
     bar_older.barCount = -1
 
     # Act - Process newer bar first, then older bar
-    result1 = await ib_client._process_bar_data(bar_type_str, bar_newer, handle_revised_bars=False)
-    result2 = await ib_client._process_bar_data(bar_type_str, bar_older, handle_revised_bars=False)
+    result1 = await ib_client._process_bar_data(
+        bar_type_str, bar_newer, handle_revised_bars=False
+    )
+    result2 = await ib_client._process_bar_data(
+        bar_type_str, bar_older, handle_revised_bars=False
+    )
 
     # Assert - Out of sync bar should return None
     assert result1 is None  # First bar returns None

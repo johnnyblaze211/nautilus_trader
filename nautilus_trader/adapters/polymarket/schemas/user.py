@@ -47,7 +47,9 @@ from nautilus_trader.model.instruments import BinaryOption
 from nautilus_trader.model.objects import Money
 
 
-class PolymarketUserOrder(msgspec.Struct, tag="order", tag_field="event_type", frozen=True):
+class PolymarketUserOrder(
+    msgspec.Struct, tag="order", tag_field="event_type", frozen=True
+):
     """
     Represents a Polymarket user order status update.
 
@@ -87,7 +89,9 @@ class PolymarketUserOrder(msgspec.Struct, tag="order", tag_field="event_type", f
         ts_init: int,
     ) -> OrderStatusReport:
         expire_time = (
-            pd.Timestamp(int(self.expiration), unit="ms", tz="UTC") if self.expiration else None
+            pd.Timestamp(int(self.expiration), unit="ms", tz="UTC")
+            if self.expiration
+            else None
         )
         timestamp_ns = millis_to_nanos(int(self.timestamp))
         return OrderStatusReport(
@@ -137,7 +141,9 @@ class PolymarketUserOrder(msgspec.Struct, tag="order", tag_field="event_type", f
         )
 
 
-class PolymarketUserTrade(msgspec.Struct, tag="trade", tag_field="event_type", frozen=True):
+class PolymarketUserTrade(
+    msgspec.Struct, tag="trade", tag_field="event_type", frozen=True
+):
     """
     Represents a Polymarket user trade.
 
@@ -230,7 +236,9 @@ class PolymarketUserTrade(msgspec.Struct, tag="trade", tag_field="event_type", f
         last_qty = instrument.make_qty(self.last_qty(maker_address))
         last_px = instrument.make_price(self.last_px(maker_address))
         fee_rate_bps = self.get_fee_rate_bps(maker_address)
-        commission = float(last_qty * last_px) * basis_points_as_percentage(fee_rate_bps)
+        commission = float(last_qty * last_px) * basis_points_as_percentage(
+            fee_rate_bps
+        )
 
         return FillReport(
             account_id=account_id,
@@ -286,7 +294,9 @@ class PolymarketOpenOrder(msgspec.Struct, frozen=True):
         ts_init: int,
     ) -> OrderStatusReport:
         expire_time = (
-            pd.Timestamp(int(self.expiration), unit="ms", tz="UTC") if self.expiration else None
+            pd.Timestamp(int(self.expiration), unit="ms", tz="UTC")
+            if self.expiration
+            else None
         )
         timestamp_ns = millis_to_nanos(int(self.created_at))
         return OrderStatusReport(

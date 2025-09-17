@@ -120,7 +120,9 @@ class OKXInstrumentProvider(InstrumentProvider):
 
         # Check all instrument IDs
         for instrument_id in instrument_ids:
-            PyCondition.equal(instrument_id.venue, OKX_VENUE, "instrument_id.venue", "OKX")
+            PyCondition.equal(
+                instrument_id.venue, OKX_VENUE, "instrument_id.venue", "OKX"
+            )
 
         all_pyo3_instruments = []
         for instrument_type in self._instrument_types:
@@ -135,6 +137,8 @@ class OKXInstrumentProvider(InstrumentProvider):
                 continue  # Filter instrument ID
             self.add(instrument=instrument)
 
-    async def load_async(self, instrument_id: InstrumentId, filters: dict | None = None) -> None:
+    async def load_async(
+        self, instrument_id: InstrumentId, filters: dict | None = None
+    ) -> None:
         PyCondition.not_none(instrument_id, "instrument_id")
         await self.load_ids_async([instrument_id], filters)

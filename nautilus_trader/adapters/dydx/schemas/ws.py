@@ -37,7 +37,9 @@ from nautilus_trader.adapters.dydx.common.enums import DYDXTransferType
 from nautilus_trader.adapters.dydx.common.symbol import DYDXSymbol
 
 # fmt: off
-from nautilus_trader.adapters.dydx.endpoints.market.instruments_info import DYDXListPerpetualMarketsResponse
+from nautilus_trader.adapters.dydx.endpoints.market.instruments_info import (
+    DYDXListPerpetualMarketsResponse,
+)
 
 # fmt: on
 from nautilus_trader.adapters.dydx.schemas.account.address import DYDXSubaccount
@@ -337,7 +339,9 @@ class PriceLevel(msgspec.Struct, forbid_unknown_fields=False):
     size: str
 
 
-class DYDXWsOrderbookMessageSnapshotContents(msgspec.Struct, forbid_unknown_fields=False):
+class DYDXWsOrderbookMessageSnapshotContents(
+    msgspec.Struct, forbid_unknown_fields=False
+):
     """
     Define the order book message contents.
     """
@@ -618,7 +622,9 @@ class DYDXWalletAddress(msgspec.Struct, forbid_unknown_fields=False):
     subaccountNumber: int | None = None
 
 
-class DYDXWsTransferSubaccountMessageContents(msgspec.Struct, forbid_unknown_fields=False):
+class DYDXWsTransferSubaccountMessageContents(
+    msgspec.Struct, forbid_unknown_fields=False
+):
     """
     Define a transfer subaccount message.
     """
@@ -725,7 +731,9 @@ class DYDXWsOrderSubaccountMessageContents(msgspec.Struct, forbid_unknown_fields
             if self.totalFilled is not None
             else Quantity(0, size_precision)
         )
-        ts_last = dt_to_unix_nanos(self.updatedAt) if self.updatedAt is not None else ts_init
+        ts_last = (
+            dt_to_unix_nanos(self.updatedAt) if self.updatedAt is not None else ts_init
+        )
 
         # Quantity cannot be set to zero or None. This most probably occurs when an order is canceled.
         quantity = (
@@ -741,7 +749,9 @@ class DYDXWsOrderSubaccountMessageContents(msgspec.Struct, forbid_unknown_fields
         )
 
         trigger_type = (
-            TriggerType.DEFAULT if self.triggerPrice is not None else TriggerType.NO_TRIGGER
+            TriggerType.DEFAULT
+            if self.triggerPrice is not None
+            else TriggerType.NO_TRIGGER
         )
         trigger_price = (
             Price(Decimal(self.triggerPrice), price_precision)
@@ -756,7 +766,9 @@ class DYDXWsOrderSubaccountMessageContents(msgspec.Struct, forbid_unknown_fields
             venue_order_id=VenueOrderId(self.id),
             order_side=enum_parser.parse_dydx_order_side(self.side),
             order_type=(
-                enum_parser.parse_dydx_order_type(self.type) if self.type is not None else None
+                enum_parser.parse_dydx_order_type(self.type)
+                if self.type is not None
+                else None
             ),
             time_in_force=(
                 enum_parser.parse_dydx_time_in_force(self.timeInForce)
@@ -779,7 +791,9 @@ class DYDXWsOrderSubaccountMessageContents(msgspec.Struct, forbid_unknown_fields
         )
 
 
-class DYDXWsAssetPositionSubaccountMessageContents(msgspec.Struct, forbid_unknown_fields=False):
+class DYDXWsAssetPositionSubaccountMessageContents(
+    msgspec.Struct, forbid_unknown_fields=False
+):
     """
     Define an asset position update message.
     """
@@ -793,7 +807,9 @@ class DYDXWsAssetPositionSubaccountMessageContents(msgspec.Struct, forbid_unknow
     size: str
 
 
-class DYDXWsPerpetualPositionSubaccountMessageContents(msgspec.Struct, forbid_unknown_fields=False):
+class DYDXWsPerpetualPositionSubaccountMessageContents(
+    msgspec.Struct, forbid_unknown_fields=False
+):
     """
     Define a perpetual position update message.
     """
@@ -830,7 +846,9 @@ class DYDXWsSubaccountMessageContents(msgspec.Struct, forbid_unknown_fields=Fals
     Define the contents of a subaccount message.
     """
 
-    perpetualPositions: list[DYDXWsPerpetualPositionSubaccountMessageContents] | None = None
+    perpetualPositions: (
+        list[DYDXWsPerpetualPositionSubaccountMessageContents] | None
+    ) = None
 
     # Asset position updates on the subaccount
     assetPositions: list[DYDXWsAssetPositionSubaccountMessageContents] | None = None

@@ -77,7 +77,11 @@ class DockerizedIBGatewayConfig(NautilusConfig, frozen=True):
         if value is None:
             return "None"
 
-        return value[0] + "*" * (len(value) - 2) + value[-1] if len(value) > 2 else "*" * len(value)
+        return (
+            value[0] + "*" * (len(value) - 2) + value[-1]
+            if len(value) > 2
+            else "*" * len(value)
+        )
 
 
 class InteractiveBrokersInstrumentProviderConfig(InstrumentProviderConfig, frozen=True):

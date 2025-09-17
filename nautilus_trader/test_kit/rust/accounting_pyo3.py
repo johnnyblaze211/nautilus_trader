@@ -84,4 +84,6 @@ class TestAccountingProviderPyo3:
             position_id=TestIdProviderPyo3.position_id(),
             last_px=Price.from_str("1.00001"),
         )
-        return Position(instrument=TestInstrumentProviderPyo3.audusd_sim(), fill=order_filled)
+        return Position(
+            instrument=TestInstrumentProviderPyo3.audusd_sim(), fill=order_filled
+        )

@@ -26,13 +26,17 @@ from nautilus_trader.adapters.dydx.endpoints.endpoint import DYDXHttpEndpoint
 from nautilus_trader.adapters.dydx.http.client import DYDXHttpClient
 
 # fmt: off
-from nautilus_trader.adapters.dydx.schemas.account.perpetual_positions import DYDXPerpetualPositionsResponse
+from nautilus_trader.adapters.dydx.schemas.account.perpetual_positions import (
+    DYDXPerpetualPositionsResponse,
+)
 
 # fmt: on
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 
-class DYDXGetPerpetualPositionsGetParams(msgspec.Struct, omit_defaults=True, frozen=True):
+class DYDXGetPerpetualPositionsGetParams(
+    msgspec.Struct, omit_defaults=True, frozen=True
+):
     """
     Define the parameters for the sub account endpoint.
     """

@@ -23,7 +23,9 @@ from weakref import WeakSet
 
 import msgspec
 
-from nautilus_trader.adapters.polymarket.common.credentials import PolymarketWebSocketAuth
+from nautilus_trader.adapters.polymarket.common.credentials import (
+    PolymarketWebSocketAuth,
+)
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.common.component import Logger
 from nautilus_trader.common.enums import LogColor
@@ -76,11 +78,15 @@ class PolymarketWebSocketClient:
         self._log: Logger = Logger(type(self).__name__)
 
         self._channel = channel
-        self._base_url: str = base_url or "wss://ws-subscriptions-clob.polymarket.com/ws/"
+        self._base_url: str = (
+            base_url or "wss://ws-subscriptions-clob.polymarket.com/ws/"
+        )
         self._ws_url = self._base_url + channel.value
         self._auth = auth
         self._handler: Callable[[bytes], None] = handler
-        self._handler_reconnect: Callable[..., Awaitable[None]] | None = handler_reconnect
+        self._handler_reconnect: Callable[..., Awaitable[None]] | None = (
+            handler_reconnect
+        )
         self._loop = loop
         self._tasks: WeakSet[asyncio.Task] = WeakSet()
 
@@ -209,7 +215,9 @@ class PolymarketWebSocketClient:
 
     def subscribe_market(self, condition_id: str) -> None:
         if condition_id in self._markets:
-            self._log.warning(f"Cannot subscribe to market {condition_id}: already subscribed")
+            self._log.warning(
+                f"Cannot subscribe to market {condition_id}: already subscribed"
+            )
             return  # Already subscribed
 
         self._markets.append(condition_id)

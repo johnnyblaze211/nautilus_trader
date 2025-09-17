@@ -146,7 +146,9 @@ def setup_catalog(
     path: Path | str,
 ) -> ParquetDataCatalog:
     if protocol not in ("memory", "file"):
-        raise ValueError("`protocol` should only be one of `memory` or `file` for testing")
+        raise ValueError(
+            "`protocol` should only be one of `memory` or `file` for testing"
+        )
 
     if isinstance(path, str):
         path = Path(path)
@@ -158,14 +160,18 @@ def setup_catalog(
     catalog.fs.mkdir(catalog.path, create_parents=True)
 
     assert catalog.fs.isdir(catalog.path)
-    assert not [fn for fn in catalog.fs.glob(f"{catalog.path}/**") if catalog.fs.isfile(fn)]
+    assert not [
+        fn for fn in catalog.fs.glob(f"{catalog.path}/**") if catalog.fs.isfile(fn)
+    ]
 
     return catalog
 
 
 def load_catalog_with_stub_quote_ticks_audusd(catalog: ParquetDataCatalog) -> None:
     wrangler = QuoteTickDataWrangler(_AUDUSD_SIM)
-    ticks = wrangler.process(TestDataProvider().read_csv_ticks("truefx/audusd-ticks.csv"))
+    ticks = wrangler.process(
+        TestDataProvider().read_csv_ticks("truefx/audusd-ticks.csv")
+    )
     ticks.sort(key=lambda x: x.ts_init)  # CAUTION: data was not originally sorted
     catalog.write_data([_AUDUSD_SIM])
     catalog.write_data(ticks)
@@ -173,7 +179,9 @@ def load_catalog_with_stub_quote_ticks_audusd(catalog: ParquetDataCatalog) -> No
 
 def load_catalog_with_stub_trade_ticks_ethusdt(catalog: ParquetDataCatalog) -> None:
     wrangler = TradeTickDataWrangler(_ETHUSDT_BINANCE)
-    ticks = wrangler.process(TestDataProvider().read_csv_ticks("binance/ethusdt-trades.csv"))
+    ticks = wrangler.process(
+        TestDataProvider().read_csv_ticks("binance/ethusdt-trades.csv")
+    )
     # ticks.sort(key=lambda x: x.ts_init)
     catalog.write_data([_ETHUSDT_BINANCE])
     catalog.write_data(ticks)

@@ -162,7 +162,9 @@ class TestRiskEngineWithCashAccount:
         assert risk_engine.is_bypassed
         assert risk_engine.max_order_submit_rate() == (5, timedelta(seconds=1))
         assert risk_engine.max_order_modify_rate() == (5, timedelta(seconds=1))
-        assert risk_engine.max_notionals_per_order() == {_GBPUSD_SIM.id: Decimal("2000000")}
+        assert risk_engine.max_notionals_per_order() == {
+            _GBPUSD_SIM.id: Decimal("2000000")
+        }
         assert risk_engine.max_notional_per_order(_GBPUSD_SIM.id) == 2_000_000
 
     def test_risk_engine_on_stop(self):
@@ -437,7 +439,9 @@ class TestRiskEngineWithCashAccount:
         assert self.exec_engine.command_count == 2
         assert self.exec_client.calls == ["_start", "submit_order", "submit_order"]
 
-    def test_submit_reduce_only_order_when_position_would_be_increased_then_denies(self):
+    def test_submit_reduce_only_order_when_position_would_be_increased_then_denies(
+        self,
+    ):
         # Arrange
         self.exec_engine.start()
 
@@ -504,7 +508,9 @@ class TestRiskEngineWithCashAccount:
         assert self.exec_engine.command_count == 1
         assert self.exec_client.calls == ["_start", "submit_order"]
 
-    def test_submit_order_reduce_only_order_with_custom_position_id_not_open_then_denies(self):
+    def test_submit_order_reduce_only_order_with_custom_position_id_not_open_then_denies(
+        self,
+    ):
         # Arrange
         self.exec_engine.start()
 
@@ -860,7 +866,9 @@ class TestRiskEngineWithCashAccount:
         self.risk_engine.execute(submit_order)
 
         # Assert
-        assert self.exec_engine.command_count == 1  # <-- Command reaches engine with warning
+        assert (
+            self.exec_engine.command_count == 1
+        )  # <-- Command reaches engine with warning
 
     @pytest.mark.parametrize(("order_side"), [OrderSide.BUY, OrderSide.SELL])
     def test_submit_order_when_less_than_min_notional_for_instrument_then_denies(
@@ -877,7 +885,9 @@ class TestRiskEngineWithCashAccount:
             cache=self.cache,
             clock=self.clock,
         )
-        self.portfolio.update_account(TestEventStubs.cash_account_state(AccountId("BITMEX-001")))
+        self.portfolio.update_account(
+            TestEventStubs.cash_account_state(AccountId("BITMEX-001"))
+        )
         self.exec_engine.register_client(exec_client)
 
         self.cache.add_instrument(_XBTUSD_BITMEX)
@@ -940,7 +950,9 @@ class TestRiskEngineWithCashAccount:
             cache=self.cache,
             clock=self.clock,
         )
-        self.portfolio.update_account(TestEventStubs.cash_account_state(AccountId("BITMEX-001")))
+        self.portfolio.update_account(
+            TestEventStubs.cash_account_state(AccountId("BITMEX-001"))
+        )
         self.exec_engine.register_client(exec_client)
 
         self.cache.add_instrument(_XBTUSD_BITMEX)
@@ -969,7 +981,9 @@ class TestRiskEngineWithCashAccount:
         order = strategy.order_factory.market(
             _XBTUSD_BITMEX.id,
             order_side,
-            Quantity.from_int(11_000_000),  # <-- Greater than max notional ($10 million USD)
+            Quantity.from_int(
+                11_000_000
+            ),  # <-- Greater than max notional ($10 million USD)
         )
 
         submit_order = SubmitOrder(
@@ -1033,7 +1047,9 @@ class TestRiskEngineWithCashAccount:
         assert order.status == OrderStatus.DENIED
         assert self.exec_engine.command_count == 0  # <-- Command never reaches engine
 
-    def test_submit_order_when_sell_market_order_and_over_max_notional_then_denies(self):
+    def test_submit_order_when_sell_market_order_and_over_max_notional_then_denies(
+        self,
+    ):
         # Arrange
         self.risk_engine.set_max_notional_per_order(_AUDUSD_SIM.id, 1_000_000)
 
@@ -1327,7 +1343,9 @@ class TestRiskEngineWithCashAccount:
         assert account.balance_free(USD) == Money(1_000_000, USD)  # Plenty of USD
 
         # Should be denied due to insufficient AUD (not USD)
-        assert self.risk_engine.command_count == initial_command_count + 1  # Command was processed
+        assert (
+            self.risk_engine.command_count == initial_command_count + 1
+        )  # Command was processed
         assert order.status == OrderStatus.DENIED
         assert self.exec_engine.command_count == 0  # Order should not reach execution
 
@@ -1406,7 +1424,9 @@ class TestRiskEngineWithCashAccount:
         order = strategy.order_factory.market(
             _ETHUSDT_BINANCE.id,
             OrderSide.BUY,
-            Quantity.from_int(2_000_000),  # 2M USDT quote quantity - exceeds 1M USD balance
+            Quantity.from_int(
+                2_000_000
+            ),  # 2M USDT quote quantity - exceeds 1M USD balance
             quote_quantity=True,
         )
 
@@ -1444,7 +1464,9 @@ class TestRiskEngineWithCashAccount:
         self.exec_engine.register_client(exec_client)
         self.cache.reset()  # Clear accounts
         self.cache.add_instrument(_AUDUSD_SIM)  # Re-add instrument
-        self.portfolio.update_account(TestEventStubs.cash_account_state(base_currency=None))
+        self.portfolio.update_account(
+            TestEventStubs.cash_account_state(base_currency=None)
+        )
 
         # Prepare market
         quote = TestDataStubs.quote_tick(_AUDUSD_SIM)
@@ -1537,7 +1559,9 @@ class TestRiskEngineWithCashAccount:
         )
 
         self.risk_engine.execute(submit_order1)
-        self.risk_engine.set_trading_state(TradingState.REDUCING)  # <-- Allow reducing orders only
+        self.risk_engine.set_trading_state(
+            TradingState.REDUCING
+        )  # <-- Allow reducing orders only
 
         order2 = strategy.order_factory.market(
             _AUDUSD_SIM.id,
@@ -1606,7 +1630,9 @@ class TestRiskEngineWithCashAccount:
         )
 
         self.risk_engine.execute(submit_order1)
-        self.risk_engine.set_trading_state(TradingState.REDUCING)  # <-- Allow reducing orders only
+        self.risk_engine.set_trading_state(
+            TradingState.REDUCING
+        )  # <-- Allow reducing orders only
 
         order2 = strategy.order_factory.market(
             _AUDUSD_SIM.id,
@@ -1720,7 +1746,9 @@ class TestRiskEngineWithCashAccount:
         assert order.status == OrderStatus.DENIED
         assert isinstance(order.last_event, OrderDenied)
         assert self.risk_engine.command_count == 101
-        assert self.exec_engine.command_count == 100  # <-- Does not send last submit event
+        assert (
+            self.exec_engine.command_count == 100
+        )  # <-- Does not send last submit event
 
     def test_submit_order_list_when_trading_halted_then_denies_orders(self):
         # Arrange
@@ -1857,7 +1885,9 @@ class TestRiskEngineWithCashAccount:
         )
 
         # Reduce trading
-        self.risk_engine.set_trading_state(TradingState.REDUCING)  # <-- Allow reducing orders only
+        self.risk_engine.set_trading_state(
+            TradingState.REDUCING
+        )  # <-- Allow reducing orders only
 
         # Act
         self.risk_engine.execute(submit_bracket)
@@ -1941,7 +1971,9 @@ class TestRiskEngineWithCashAccount:
         )
 
         # Reduce trading
-        self.risk_engine.set_trading_state(TradingState.REDUCING)  # <-- Allow reducing orders only
+        self.risk_engine.set_trading_state(
+            TradingState.REDUCING
+        )  # <-- Allow reducing orders only
 
         # Act
         self.risk_engine.execute(submit_bracket)
@@ -2194,7 +2226,9 @@ class TestRiskEngineWithCashAccount:
         # Assert
         assert isinstance(order.last_event, OrderModifyRejected)
         assert self.risk_engine.command_count == 102
-        assert self.exec_engine.command_count == 101  # <-- Does not send last modify event
+        assert (
+            self.exec_engine.command_count == 101
+        )  # <-- Does not send last modify event
 
     def test_modify_order_with_default_settings_then_sends_to_client(self):
         # Arrange
@@ -2342,7 +2376,9 @@ class TestRiskEngineWithBettingAccount:
         self.trader_id = TestIdStubs.trader_id()
         self.account_id = TestIdStubs.account_id()
         self.venue = Venue("SIM")
-        self.instrument = TestInstrumentProvider.betting_instrument(venue=self.venue.value)
+        self.instrument = TestInstrumentProvider.betting_instrument(
+            venue=self.venue.value
+        )
 
         self.msgbus = MessageBus(
             trader_id=self.trader_id,
@@ -2645,7 +2681,9 @@ class TestRiskEngineWithCryptoCashAccount:
         )
 
         self.risk_engine.execute(submit_order1)
-        self.exec_engine.process(TestEventStubs.order_submitted(order1, account_id=self.account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order1, account_id=self.account_id)
+        )
         self.exec_engine.process(TestEventStubs.order_accepted(order1))
         self.exec_engine.process(
             TestEventStubs.order_filled(
@@ -2667,7 +2705,9 @@ class TestRiskEngineWithCryptoCashAccount:
 
         # Act
         self.risk_engine.execute(submit_order2)
-        self.exec_engine.process(TestEventStubs.order_submitted(order2, account_id=self.account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order2, account_id=self.account_id)
+        )
         self.exec_engine.process(TestEventStubs.order_accepted(order2))
         self.exec_engine.process(
             TestEventStubs.order_filled(
@@ -2679,5 +2719,7 @@ class TestRiskEngineWithCryptoCashAccount:
 
         # Assert
         account = self.cache.account(self.account_id)
-        assert account.balance(_ETHUSDT_BINANCE.base_currency).total == Money(0.00000000, ETH)
+        assert account.balance(_ETHUSDT_BINANCE.base_currency).total == Money(
+            0.00000000, ETH
+        )
         assert self.portfolio.net_position(_ETHUSDT_BINANCE.id) == Decimal("0.02050")

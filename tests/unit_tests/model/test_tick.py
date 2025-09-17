@@ -43,7 +43,9 @@ class TestQuoteTick:
 
     def test_fully_qualified_name(self):
         # Arrange, Act, Assert
-        assert QuoteTick.fully_qualified_name() == "nautilus_trader.model.data:QuoteTick"
+        assert (
+            QuoteTick.fully_qualified_name() == "nautilus_trader.model.data:QuoteTick"
+        )
 
     def test_tick_hash_str_and_repr(self):
         # Arrange
@@ -247,7 +249,9 @@ class TestQuoteTick:
 class TestTradeTick:
     def test_fully_qualified_name(self):
         # Arrange, Act, Assert
-        assert TradeTick.fully_qualified_name() == "nautilus_trader.model.data:TradeTick"
+        assert (
+            TradeTick.fully_qualified_name() == "nautilus_trader.model.data:TradeTick"
+        )
 
     def test_hash_str_and_repr(self):
         # Arrange
@@ -374,7 +378,9 @@ class TestTradeTick:
 
         # Assert
         assert unpickled == trade
-        assert repr(unpickled) == "TradeTick(AUD/USD.SIM,1.00000,50000,BUYER,123456789,1)"
+        assert (
+            repr(unpickled) == "TradeTick(AUD/USD.SIM,1.00000,50000,BUYER,123456789,1)"
+        )
 
     def test_from_raw_returns_expected_tick(self):
         # Arrange, Act

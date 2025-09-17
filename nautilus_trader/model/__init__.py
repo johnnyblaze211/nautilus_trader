@@ -88,7 +88,9 @@ def convert_to_raw_int(value, precision: int) -> int:
     # Use Decimal for exact decimal arithmetic to avoid platform-specific
     # floating-point rounding differences.
     decimal_value = Decimal(str(value))
-    quantized = decimal_value.quantize(Decimal(10) ** -precision, rounding=ROUND_HALF_UP)
+    quantized = decimal_value.quantize(
+        Decimal(10) ** -precision, rounding=ROUND_HALF_UP
+    )
     return int(quantized * (10**FIXED_PRECISION))
 
 

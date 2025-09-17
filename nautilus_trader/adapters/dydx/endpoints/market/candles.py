@@ -67,7 +67,9 @@ class DYDXCandlesEndpoint(DYDXHttpEndpoint):
         self.method_type = HttpMethod.GET
         self._decoder = msgspec.json.Decoder(DYDXCandlesResponse)
 
-    async def get(self, symbol: str, params: DYDXCandlesGetParams) -> DYDXCandlesResponse | None:
+    async def get(
+        self, symbol: str, params: DYDXCandlesGetParams
+    ) -> DYDXCandlesResponse | None:
         """
         Call the bars endpoint.
         """

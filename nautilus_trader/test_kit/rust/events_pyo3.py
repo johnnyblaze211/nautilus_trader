@@ -461,7 +461,9 @@ class TestEventsProviderPyo3:
         if last_qty is None:
             last_qty = order.quantity
         if account is None:
-            from nautilus_trader.test_kit.rust.accounting_pyo3 import TestAccountingProviderPyo3
+            from nautilus_trader.test_kit.rust.accounting_pyo3 import (
+                TestAccountingProviderPyo3,
+            )
 
             account = TestAccountingProviderPyo3.cash_account()
         assert account is not None

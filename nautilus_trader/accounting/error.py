@@ -36,7 +36,9 @@ class AccountBalanceNegative(AccountError):
         self.currency = currency
 
     def __str__(self) -> str:
-        return f"{type(self).__name__}(balance={self.balance}, currency={self.currency})"
+        return (
+            f"{type(self).__name__}(balance={self.balance}, currency={self.currency})"
+        )
 
 
 class AccountMarginExceeded(AccountError):

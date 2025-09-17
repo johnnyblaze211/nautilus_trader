@@ -48,7 +48,9 @@ class InstrumentProvider:
 
         # Configuration
         self._load_all_on_start = config.load_all
-        self._load_ids_on_start = set(config.load_ids) if config.load_ids is not None else None
+        self._load_ids_on_start = (
+            set(config.load_ids) if config.load_ids is not None else None
+        )
         self._filters = config.filters
 
         # Async loading flags
@@ -177,7 +179,9 @@ class InstrumentProvider:
                 ]
 
                 instruments_str = ", ".join([i.value for i in instrument_ids])
-                filters_str = "..." if not self._filters else f" with filters {self._filters}..."
+                filters_str = (
+                    "..." if not self._filters else f" with filters {self._filters}..."
+                )
                 self._log.info(f"Loading instruments: {instruments_str}{filters_str}")
 
                 await self.load_ids_async(instrument_ids, self._filters)
@@ -189,7 +193,9 @@ class InstrumentProvider:
         if self._instruments:
             self._log.info(f"Loaded {self.count} instruments")
         else:
-            self._log.warning("No instruments were loaded, verify config if this is unexpected")
+            self._log.warning(
+                "No instruments were loaded, verify config if this is unexpected"
+            )
 
         # Set state flags
         self._loading = False

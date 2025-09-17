@@ -23,11 +23,21 @@ from nautilus_trader.adapters.binance.common.schemas.account import BinanceOrder
 from nautilus_trader.adapters.binance.common.schemas.account import BinanceStatusCode
 from nautilus_trader.adapters.binance.common.symbol import BinanceSymbol
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesMarginType
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesAccountInfo
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesDualSidePosition
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesLeverage
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesMarginTypeResponse  # fmt: skip
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesPositionRisk
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesAccountInfo,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesDualSidePosition,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesLeverage,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesMarginTypeResponse,  # fmt: skip
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesPositionRisk,
+)
 from nautilus_trader.adapters.binance.http.account import BinanceAccountHttpAPI
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
 from nautilus_trader.adapters.binance.http.endpoint import BinanceHttpEndpoint
@@ -495,16 +505,22 @@ class BinanceFuturesAccountHttpAPI(BinanceAccountHttpAPI):
             client,
             self.base_endpoint,
         )
-        self._endpoint_futures_cancel_multiple_orders = BinanceFuturesCancelMultipleOrdersHttp(
-            client,
-            self.base_endpoint,
+        self._endpoint_futures_cancel_multiple_orders = (
+            BinanceFuturesCancelMultipleOrdersHttp(
+                client,
+                self.base_endpoint,
+            )
         )
-        self._endpoint_futures_account = BinanceFuturesAccountHttp(client, v2_endpoint_base)
+        self._endpoint_futures_account = BinanceFuturesAccountHttp(
+            client, v2_endpoint_base
+        )
         self._endpoint_futures_position_risk = BinanceFuturesPositionRiskHttp(
             client,
             v2_endpoint_base,
         )
-        self._endpoint_futures_leverage = BinanceFuturesLeverageHttp(client, self.base_endpoint)
+        self._endpoint_futures_leverage = BinanceFuturesLeverageHttp(
+            client, self.base_endpoint
+        )
         self._endpoint_futures_margin_type = BinanceFuturesMarginTypeHttp(
             client,
             self.base_endpoint,
@@ -614,7 +630,9 @@ class BinanceFuturesAccountHttpAPI(BinanceAccountHttpAPI):
         Returns whether successful.
 
         """
-        stringified_client_order_ids = str(client_order_ids).replace(" ", "").replace("'", '"')
+        stringified_client_order_ids = (
+            str(client_order_ids).replace(" ", "").replace("'", '"')
+        )
         await self._endpoint_futures_cancel_multiple_orders.delete(
             params=self._endpoint_futures_cancel_multiple_orders.DeleteParameters(
                 timestamp=self._timestamp(),

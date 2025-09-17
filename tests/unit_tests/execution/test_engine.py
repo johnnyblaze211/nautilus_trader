@@ -254,8 +254,13 @@ class TestExecutionEngine:
         self.exec_engine.register_external_order_claims(strategy)
 
         # Assert
-        assert self.exec_engine.get_external_order_claim(expected_instrument_id) == strategy.id
-        assert self.exec_engine.get_external_order_claims_instruments() == {expected_instrument_id}
+        assert (
+            self.exec_engine.get_external_order_claim(expected_instrument_id)
+            == strategy.id
+        )
+        assert self.exec_engine.get_external_order_claims_instruments() == {
+            expected_instrument_id
+        }
 
     def test_register_strategy_with_external_order_claims_when_no_claim(self) -> None:
         # Arrange
@@ -581,7 +586,9 @@ class TestExecutionEngine:
         # Assert
         assert entry.status == OrderStatus.SUBMITTED  # Did not invalidate originals
         assert stop_loss.status == OrderStatus.SUBMITTED  # Did not invalidate originals
-        assert take_profit.status == OrderStatus.SUBMITTED  # Did not invalidate originals
+        assert (
+            take_profit.status == OrderStatus.SUBMITTED
+        )  # Did not invalidate originals
         assert self.exec_engine.command_count == 2
 
     def test_submit_order(self) -> None:
@@ -843,7 +850,9 @@ class TestExecutionEngine:
 
         # Act
         self.exec_engine.process(
-            TestEventStubs.order_filled(order, AUDUSD_SIM, last_qty=Quantity.from_int(50_000)),
+            TestEventStubs.order_filled(
+                order, AUDUSD_SIM, last_qty=Quantity.from_int(50_000)
+            ),
         )
 
         # Assert
@@ -951,7 +960,9 @@ class TestExecutionEngine:
         assert order.status == OrderStatus.FILLED
         assert order.quantity == Quantity.from_int(100_000)
 
-    def test_handle_order_event_with_random_client_order_id_and_order_id_cached(self) -> None:
+    def test_handle_order_event_with_random_client_order_id_and_order_id_cached(
+        self,
+    ) -> None:
         # Arrange
         self.exec_engine.start()
 
@@ -1105,7 +1116,9 @@ class TestExecutionEngine:
         assert order.status == OrderStatus.CANCELED
         assert order.event_count == 4
 
-    def test_handle_order_fill_event_with_no_position_id_correctly_handles_fill(self) -> None:
+    def test_handle_order_fill_event_with_no_position_id_correctly_handles_fill(
+        self,
+    ) -> None:
         # Arrange
         self.exec_engine.start()
 
@@ -1153,9 +1166,13 @@ class TestExecutionEngine:
         assert not self.cache.is_position_closed(expected_position_id)
         assert isinstance(self.cache.position(expected_position_id), Position)
         assert expected_position_id in self.cache.position_ids()
-        assert expected_position_id not in self.cache.position_closed_ids(strategy_id=strategy.id)
+        assert expected_position_id not in self.cache.position_closed_ids(
+            strategy_id=strategy.id
+        )
         assert expected_position_id not in self.cache.position_closed_ids()
-        assert expected_position_id in self.cache.position_open_ids(strategy_id=strategy.id)
+        assert expected_position_id in self.cache.position_open_ids(
+            strategy_id=strategy.id
+        )
         assert expected_position_id in self.cache.position_open_ids()
         assert self.cache.positions_total_count() == 1
         assert self.cache.positions_open_count() == 1
@@ -1204,9 +1221,13 @@ class TestExecutionEngine:
         assert not self.cache.is_position_closed(expected_position_id)
         assert isinstance(self.cache.position(expected_position_id), Position)
         assert expected_position_id in self.cache.position_ids()
-        assert expected_position_id not in self.cache.position_closed_ids(strategy_id=strategy.id)
+        assert expected_position_id not in self.cache.position_closed_ids(
+            strategy_id=strategy.id
+        )
         assert expected_position_id not in self.cache.position_closed_ids()
-        assert expected_position_id in self.cache.position_open_ids(strategy_id=strategy.id)
+        assert expected_position_id in self.cache.position_open_ids(
+            strategy_id=strategy.id
+        )
         assert expected_position_id in self.cache.position_open_ids()
         assert self.cache.positions_total_count() == 1
         assert self.cache.positions_open_count() == 1
@@ -1277,9 +1298,13 @@ class TestExecutionEngine:
         assert not self.cache.is_position_closed(expected_position_id)
         assert isinstance(self.cache.position(expected_position_id), Position)
         assert expected_position_id in self.cache.position_ids()
-        assert expected_position_id not in self.cache.position_closed_ids(strategy_id=strategy.id)
+        assert expected_position_id not in self.cache.position_closed_ids(
+            strategy_id=strategy.id
+        )
         assert expected_position_id not in self.cache.position_closed_ids()
-        assert expected_position_id in self.cache.position_open_ids(strategy_id=strategy.id)
+        assert expected_position_id in self.cache.position_open_ids(
+            strategy_id=strategy.id
+        )
         assert expected_position_id in self.cache.position_open_ids()
         assert self.cache.positions_total_count() == 1
         assert self.cache.positions_open_count() == 1
@@ -1320,7 +1345,9 @@ class TestExecutionEngine:
         self.exec_engine.process(TestEventStubs.order_accepted(order))
         self.exec_engine.process(TestEventStubs.order_filled(order, AUDUSD_SIM))
 
-        expected_id = PositionId("P-19700101-000000-000-None-1")  # Generated inside engine
+        expected_id = PositionId(
+            "P-19700101-000000-000-None-1"
+        )  # Generated inside engine
 
         # Assert
         assert self.cache.position_exists(expected_id)
@@ -1328,7 +1355,9 @@ class TestExecutionEngine:
         assert not self.cache.is_position_closed(expected_id)
         assert isinstance(self.cache.position(expected_id), Position)
         assert expected_id in self.cache.position_ids()
-        assert expected_id not in self.cache.position_closed_ids(strategy_id=strategy.id)
+        assert expected_id not in self.cache.position_closed_ids(
+            strategy_id=strategy.id
+        )
         assert expected_id not in self.cache.position_closed_ids()
         assert expected_id in self.cache.position_open_ids(strategy_id=strategy.id)
         assert expected_id in self.cache.position_open_ids()
@@ -1393,7 +1422,9 @@ class TestExecutionEngine:
             TestEventStubs.order_accepted(order2, venue_order_id=VenueOrderId("2")),
         )
         self.exec_engine.process(
-            TestEventStubs.order_filled(order2, AUDUSD_SIM, position_id=expected_position_id),
+            TestEventStubs.order_filled(
+                order2, AUDUSD_SIM, position_id=expected_position_id
+            ),
         )
 
         # Assert
@@ -1587,8 +1618,12 @@ class TestExecutionEngine:
         assert position2_id in self.cache.position_open_ids(strategy_id=strategy2.id)
         assert position1_id in self.cache.position_open_ids()
         assert position2_id in self.cache.position_open_ids()
-        assert position1_id not in self.cache.position_closed_ids(strategy_id=strategy1.id)
-        assert position2_id not in self.cache.position_closed_ids(strategy_id=strategy2.id)
+        assert position1_id not in self.cache.position_closed_ids(
+            strategy_id=strategy1.id
+        )
+        assert position2_id not in self.cache.position_closed_ids(
+            strategy_id=strategy2.id
+        )
         assert position1_id not in self.cache.position_closed_ids()
         assert position2_id not in self.cache.position_closed_ids()
         assert self.cache.positions_total_count() == 2
@@ -1708,12 +1743,16 @@ class TestExecutionEngine:
         assert len(self.cache.positions_open()) == 1
         assert len(self.cache.positions_closed()) == 1
         assert len(self.cache.positions()) == 2
-        assert position_id1 not in self.cache.position_open_ids(strategy_id=strategy1.id)
+        assert position_id1 not in self.cache.position_open_ids(
+            strategy_id=strategy1.id
+        )
         assert position_id2 in self.cache.position_open_ids(strategy_id=strategy2.id)
         assert position_id1 not in self.cache.position_open_ids()
         assert position_id2 in self.cache.position_open_ids()
         assert position_id1 in self.cache.position_closed_ids(strategy_id=strategy1.id)
-        assert position_id2 not in self.cache.position_closed_ids(strategy_id=strategy2.id)
+        assert position_id2 not in self.cache.position_closed_ids(
+            strategy_id=strategy2.id
+        )
         assert position_id1 in self.cache.position_closed_ids()
         assert position_id2 not in self.cache.position_closed_ids()
         assert self.cache.positions_total_count() == 2
@@ -1880,7 +1919,9 @@ class TestExecutionEngine:
         assert self.cache.positions_open_count() == 1
         assert self.cache.positions_closed_count() == 1
 
-    def test_flip_position_on_flat_position_then_filled_reusing_position_id(self) -> None:
+    def test_flip_position_on_flat_position_then_filled_reusing_position_id(
+        self,
+    ) -> None:
         # Arrange
         self.exec_engine.start()
 
@@ -2128,7 +2169,9 @@ class TestExecutionEngine:
         assert order.is_closed
         assert isinstance(order.last_event, OrderDenied)
 
-    def test_submit_bracket_order_with_quote_quantity_and_no_prices_denies(self) -> None:
+    def test_submit_bracket_order_with_quote_quantity_and_no_prices_denies(
+        self,
+    ) -> None:
         # Arrange
         self.exec_engine.start()
 
@@ -2375,7 +2418,9 @@ class TestExecutionEngine:
             TimeInForce.IOC,
         ],
     )
-    def test_submit_ioc_fok_should_not_add_to_own_book(self, time_in_force: TimeInForce) -> None:
+    def test_submit_ioc_fok_should_not_add_to_own_book(
+        self, time_in_force: TimeInForce
+    ) -> None:
         # Arrange
         self.exec_engine.set_manage_own_order_books(True)
         self.exec_engine.start()
@@ -2438,7 +2483,9 @@ class TestExecutionEngine:
         assert own_order.price == Decimal("10.0")
         assert own_order.size == Decimal(100_000)
         assert own_order.status == nautilus_pyo3.OrderStatus.INITIALIZED
-        assert self.cache.own_bid_orders(order.instrument_id) == {Decimal("10.0"): [order]}
+        assert self.cache.own_bid_orders(order.instrument_id) == {
+            Decimal("10.0"): [order]
+        }
         assert self.cache.own_ask_orders(order.instrument_id) == {}
 
     def test_submit_order_adds_to_own_book_ask(self) -> None:
@@ -2476,7 +2523,9 @@ class TestExecutionEngine:
         assert own_order.price == Decimal("11.0")
         assert own_order.size == Decimal(100_000)
         assert own_order.status == nautilus_pyo3.OrderStatus.INITIALIZED
-        assert self.cache.own_ask_orders(order.instrument_id) == {Decimal("11.0"): [order]}
+        assert self.cache.own_ask_orders(order.instrument_id) == {
+            Decimal("11.0"): [order]
+        }
         assert self.cache.own_bid_orders(order.instrument_id) == {}
 
     def test_cancel_order_removes_from_own_book(self) -> None:
@@ -2684,8 +2733,12 @@ class TestExecutionEngine:
         # Act
         new_bid_price = Price.from_str("9.0")
         new_ask_price = Price.from_str("12.0")
-        self.exec_engine.process(TestEventStubs.order_updated(order_bid, price=new_bid_price))
-        self.exec_engine.process(TestEventStubs.order_updated(order_ask, price=new_ask_price))
+        self.exec_engine.process(
+            TestEventStubs.order_updated(order_bid, price=new_bid_price)
+        )
+        self.exec_engine.process(
+            TestEventStubs.order_updated(order_ask, price=new_ask_price)
+        )
 
         # Assert
         own_book = self.cache.own_order_book(instrument.id)
@@ -2705,10 +2758,14 @@ class TestExecutionEngine:
         assert own_order_ask.price == new_ask_price
         assert own_order_ask.status == nautilus_pyo3.OrderStatus.ACCEPTED
 
-        assert self.cache.own_bid_orders(instrument.id, status={OrderStatus.ACCEPTED}) == {
+        assert self.cache.own_bid_orders(
+            instrument.id, status={OrderStatus.ACCEPTED}
+        ) == {
             Decimal("9.0"): [order_bid],
         }
-        assert self.cache.own_ask_orders(instrument.id, status={OrderStatus.ACCEPTED}) == {
+        assert self.cache.own_ask_orders(
+            instrument.id, status={OrderStatus.ACCEPTED}
+        ) == {
             Decimal("12.0"): [order_ask],
         }
         self.cache.audit_own_order_books()
@@ -2762,7 +2819,9 @@ class TestExecutionEngine:
         self.exec_engine.process(TestEventStubs.order_submitted(sell_order))
         self.exec_engine.process(TestEventStubs.order_accepted(sell_order))
         self.exec_engine.process(
-            TestEventStubs.order_filled(sell_order, instrument, position_id=position_id),
+            TestEventStubs.order_filled(
+                sell_order, instrument, position_id=position_id
+            ),
         )
 
         # Instead of assuming a specific ID for the flipped position,
@@ -2849,11 +2908,15 @@ class TestExecutionEngine:
         # because it's just tracking the orders, not matching them
 
         # Check order status by status filtering
-        active_orders = self.cache.own_bid_orders(instrument.id, status={OrderStatus.ACCEPTED})
+        active_orders = self.cache.own_bid_orders(
+            instrument.id, status={OrderStatus.ACCEPTED}
+        )
         assert len(active_orders) == 1
         assert Decimal("1.05") in active_orders
 
-        active_orders = self.cache.own_ask_orders(instrument.id, status={OrderStatus.ACCEPTED})
+        active_orders = self.cache.own_ask_orders(
+            instrument.id, status={OrderStatus.ACCEPTED}
+        )
         assert len(active_orders) == 1
         assert Decimal("1.04") in active_orders
 
@@ -2954,7 +3017,10 @@ class TestExecutionEngine:
             (
                 OrderStatus.ACCEPTED,
                 "1.02",
-                [OrderStatus.SUBMITTED, OrderStatus.ACCEPTED],  # Process submission and acceptance
+                [
+                    OrderStatus.SUBMITTED,
+                    OrderStatus.ACCEPTED,
+                ],  # Process submission and acceptance
                 True,  # Should be in book
             ),
             (
@@ -2970,13 +3036,21 @@ class TestExecutionEngine:
             (
                 OrderStatus.FILLED,
                 "1.04",
-                [OrderStatus.SUBMITTED, OrderStatus.ACCEPTED, OrderStatus.FILLED],  # Complete fill
+                [
+                    OrderStatus.SUBMITTED,
+                    OrderStatus.ACCEPTED,
+                    OrderStatus.FILLED,
+                ],  # Complete fill
                 False,  # Should not be in book (filled)
             ),
             (
                 OrderStatus.CANCELED,
                 "1.05",
-                [OrderStatus.SUBMITTED, OrderStatus.ACCEPTED, OrderStatus.CANCELED],  # Cancellation
+                [
+                    OrderStatus.SUBMITTED,
+                    OrderStatus.ACCEPTED,
+                    OrderStatus.CANCELED,
+                ],  # Cancellation
                 False,  # Should not be in book (canceled)
             ),
         ],
@@ -3265,15 +3339,21 @@ class TestExecutionEngine:
 
         assert len(partially_after_complete) == 1
         assert orders[0].status == OrderStatus.FILLED, "Order should be FILLED"
-        assert orders[1].status == OrderStatus.PARTIALLY_FILLED, "Order should be PARTIALLY_FILLED"
+        assert (
+            orders[1].status == OrderStatus.PARTIALLY_FILLED
+        ), "Order should be PARTIALLY_FILLED"
         assert orders[2].status == OrderStatus.CANCELED, "Order should be CANCELED"
 
         # Check if order exists in own book with any status
         all_orders = self.cache.own_bid_orders(instrument.id)
         assert Decimal(prices[1]) in all_orders
 
-        filled_orders = self.cache.own_bid_orders(instrument.id, status={OrderStatus.FILLED})
-        assert len(filled_orders) == 0, "FILLED orders should not appear in the own book"
+        filled_orders = self.cache.own_bid_orders(
+            instrument.id, status={OrderStatus.FILLED}
+        )
+        assert (
+            len(filled_orders) == 0
+        ), "FILLED orders should not appear in the own book"
 
     def test_own_book_race_conditions_and_edge_cases(self) -> None:
         # Arrange
@@ -3325,7 +3405,9 @@ class TestExecutionEngine:
 
         # Order should be fully filled and removed from book
         all_orders = self.cache.own_bid_orders(instrument.id)
-        assert Decimal("1.00") not in all_orders, "Filled order should be removed from book"
+        assert (
+            Decimal("1.00") not in all_orders
+        ), "Filled order should be removed from book"
 
         # === Test Case 2: Multiple orders at same price level ===
         same_price_orders = []
@@ -3433,7 +3515,12 @@ class TestExecutionEngine:
         assert Decimal("1.15") in transitioning_bids
 
         # Rapid partial fills in sequence
-        fill_sizes = [25_000, 25_000, 25_000, 25_000]  # Four fills to complete the order
+        fill_sizes = [
+            25_000,
+            25_000,
+            25_000,
+            25_000,
+        ]  # Four fills to complete the order
 
         for i, size in enumerate(fill_sizes):
             self.exec_engine.process(
@@ -3541,7 +3628,9 @@ class TestExecutionEngine:
         order1 = strategy.order_factory.limit(
             instrument_id=instrument.id,
             order_side=OrderSide.BUY,
-            quantity=Quantity.from_int(10_000_000_000),  # <-- Size exceeds maximum for instrument
+            quantity=Quantity.from_int(
+                10_000_000_000
+            ),  # <-- Size exceeds maximum for instrument
             price=Price.from_str("1.00000"),
         )
 
@@ -3621,8 +3710,12 @@ class TestExecutionEngine:
         )
 
         # Test without buffer - should return both orders
-        bid_orders_no_buffer = self.cache.own_bid_orders(instrument.id, accepted_buffer_ns=0)
-        ask_orders_no_buffer = self.cache.own_ask_orders(instrument.id, accepted_buffer_ns=0)
+        bid_orders_no_buffer = self.cache.own_bid_orders(
+            instrument.id, accepted_buffer_ns=0
+        )
+        ask_orders_no_buffer = self.cache.own_ask_orders(
+            instrument.id, accepted_buffer_ns=0
+        )
 
         assert len(bid_orders_no_buffer) == 1
         assert len(ask_orders_no_buffer) == 1
@@ -3630,10 +3723,14 @@ class TestExecutionEngine:
         assert Decimal("1.10000") in ask_orders_no_buffer
 
         # Test validation: accepted_buffer_ns > 0 but ts_now == 0 should raise ValueError
-        with pytest.raises(ValueError, match="ts_now must be provided when accepted_buffer_ns > 0"):
+        with pytest.raises(
+            ValueError, match="ts_now must be provided when accepted_buffer_ns > 0"
+        ):
             self.cache.own_bid_orders(instrument.id, accepted_buffer_ns=2_000_000_000)
 
-        with pytest.raises(ValueError, match="ts_now must be provided when accepted_buffer_ns > 0"):
+        with pytest.raises(
+            ValueError, match="ts_now must be provided when accepted_buffer_ns > 0"
+        ):
             self.cache.own_ask_orders(instrument.id, accepted_buffer_ns=2_000_000_000)
 
         # Test with buffer and current time (should work properly now)

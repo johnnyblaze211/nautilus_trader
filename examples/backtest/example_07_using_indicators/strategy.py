@@ -101,7 +101,9 @@ class DemoStrategy(Strategy):
             # This demonstrates how to access previously calculated historical indicator values
             if len(self.ema10_history) > 1:
                 previous_ema = self.ema10_history[1]
-                self.log.info(f"Previous EMA(10): {previous_ema:.5f}", color=LogColor.BLUE)
+                self.log.info(
+                    f"Previous EMA(10): {previous_ema:.5f}", color=LogColor.BLUE
+                )
         else:
             # During initialization phase, we still log the incoming data
             # but note that we're waiting for enough data to calculate the EMA

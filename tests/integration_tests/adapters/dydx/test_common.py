@@ -26,9 +26,7 @@ def test_serialize_tags() -> None:
     """
     # Arrange
     tags = DYDXOrderTags()
-    expected_result = (
-        'DYDXOrderTags:{"is_short_term_order":true,"num_blocks_open":20,"market_order_price":null}'
-    )
+    expected_result = 'DYDXOrderTags:{"is_short_term_order":true,"num_blocks_open":20,"market_order_price":null}'
 
     # Act
     result = tags.value

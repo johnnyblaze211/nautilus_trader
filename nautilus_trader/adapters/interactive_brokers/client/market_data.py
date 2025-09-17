@@ -19,7 +19,8 @@ from collections import defaultdict
 from collections.abc import Callable
 from decimal import Decimal
 from inspect import iscoroutinefunction
-from typing import Any, ClassVar
+from typing import Any
+from typing import ClassVar
 from zoneinfo import ZoneInfo
 
 import pandas as pd
@@ -36,12 +37,20 @@ from nautilus_trader.adapters.interactive_brokers.client.common import IBKRBookL
 from nautilus_trader.adapters.interactive_brokers.client.common import Subscription
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
 from nautilus_trader.adapters.interactive_brokers.parsing.data import IB_SIDE
-from nautilus_trader.adapters.interactive_brokers.parsing.data import MKT_DEPTH_OPERATIONS
-from nautilus_trader.adapters.interactive_brokers.parsing.data import bar_spec_to_bar_size
+from nautilus_trader.adapters.interactive_brokers.parsing.data import (
+    MKT_DEPTH_OPERATIONS,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.data import (
+    bar_spec_to_bar_size,
+)
 from nautilus_trader.adapters.interactive_brokers.parsing.data import generate_trade_id
-from nautilus_trader.adapters.interactive_brokers.parsing.data import timedelta_to_duration_str
+from nautilus_trader.adapters.interactive_brokers.parsing.data import (
+    timedelta_to_duration_str,
+)
 from nautilus_trader.adapters.interactive_brokers.parsing.data import what_to_show
-from nautilus_trader.adapters.interactive_brokers.parsing.price_conversion import ib_price_to_nautilus_price
+from nautilus_trader.adapters.interactive_brokers.parsing.price_conversion import (
+    ib_price_to_nautilus_price,
+)
 from nautilus_trader.core.data import Data
 from nautilus_trader.model.data import Bar
 from nautilus_trader.model.data import BarType
@@ -103,7 +112,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             The market data type to be set
 
         """
-        self._log.info(f"Setting Market DataType to {MarketDataTypeEnum.toStr(market_data_type)}")
+        self._log.info(
+            f"Setting Market DataType to {MarketDataTypeEnum.toStr(market_data_type)}"
+        )
         self._eclient.reqMarketDataType(market_data_type)
 
     async def _subscribe(
@@ -151,7 +162,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
                     **kwargs,
                 )
             else:
-                handle_func = functools.partial(subscription_method, req_id, *args, **kwargs)
+                handle_func = functools.partial(
+                    subscription_method, req_id, *args, **kwargs
+                )
 
                 if subscription_method == self._eclient.reqMktDepth:
                     self._order_book_depth[req_id] = args[1]
@@ -244,7 +257,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             ignore_size,
         )
 
-    async def unsubscribe_ticks(self, instrument_id: InstrumentId, tick_type: str) -> None:
+    async def unsubscribe_ticks(
+        self, instrument_id: InstrumentId, tick_type: str
+    ) -> None:
         """
         Unsubscribes from tick data for a specified instrument.
 
@@ -531,7 +546,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             end_date_time = end_date_time.astimezone(ZoneInfo("UTC"))
 
         end_date_time_str = (
-            end_date_time.strftime("%Y%m%d %H:%M:%S %Z") if contract.secType != "CONTFUT" else ""
+            end_date_time.strftime("%Y%m%d %H:%M:%S %Z")
+            if contract.secType != "CONTFUT"
+            else ""
         )
         name = (bar_type, end_date_time_str)
 
@@ -554,7 +571,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
                     keepUpToDate=False,
                     chartOptions=[],
                 ),
-                cancel=functools.partial(self._eclient.cancelHistoricalData, reqId=req_id),
+                cancel=functools.partial(
+                    self._eclient.cancelHistoricalData, reqId=req_id
+                ),
             )
 
             if not request:
@@ -630,7 +649,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
                     ignoreSize=False,
                     miscOptions=[],
                 ),
-                cancel=functools.partial(self._eclient.cancelHistoricalData, reqId=req_id),
+                cancel=functools.partial(
+                    self._eclient.cancelHistoricalData, reqId=req_id
+                ),
             )
 
             if not request:
@@ -644,16 +665,22 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
 
             return None
 
-    async def process_market_data_type(self, *, req_id: int, market_data_type: int) -> None:
+    async def process_market_data_type(
+        self, *, req_id: int, market_data_type: int
+    ) -> None:
         """
         Return the market data type (real-time, frozen, delayed, delayed-frozen)
         of ticker sent by EClientSocket::reqMktData when TWS switches from real-time
         to frozen and back and from delayed to delayed-frozen and back.
         """
         if market_data_type == MarketDataTypeEnum.REALTIME:
-            self._log.debug(f"Market DataType is {MarketDataTypeEnum.toStr(market_data_type)}")
+            self._log.debug(
+                f"Market DataType is {MarketDataTypeEnum.toStr(market_data_type)}"
+            )
         else:
-            self._log.warning(f"Market DataType is {MarketDataTypeEnum.toStr(market_data_type)}")
+            self._log.warning(
+                f"Market DataType is {MarketDataTypeEnum.toStr(market_data_type)}"
+            )
 
     async def process_tick_by_tick_bid_ask(
         self,
@@ -691,7 +718,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             bid_size=instrument.make_qty(bid_size),
             ask_size=instrument.make_qty(ask_size),
             ts_event=ts_event,
-            ts_init=max(self._clock.timestamp_ns(), ts_event),  # `ts_event` <= `ts_init`
+            ts_init=max(
+                self._clock.timestamp_ns(), ts_event
+            ),  # `ts_event` <= `ts_init`
         )
 
         await self._handle_data(quote_tick)
@@ -734,9 +763,13 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             price=instrument.make_price(converted_price),
             size=instrument.make_qty(size),
             aggressor_side=AggressorSide.NO_AGGRESSOR,
-            trade_id=generate_trade_id(ts_event=ts_event, price=converted_price, size=size),
+            trade_id=generate_trade_id(
+                ts_event=ts_event, price=converted_price, size=size
+            ),
             ts_event=ts_event,
-            ts_init=max(self._clock.timestamp_ns(), ts_event),  # `ts_event` <= `ts_init`
+            ts_init=max(
+                self._clock.timestamp_ns(), ts_event
+            ),  # `ts_event` <= `ts_init`
         )
 
         await self._handle_data(trade_tick)
@@ -911,13 +944,17 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             self._log.debug(f"Received {bar=} on {req_id=}")
             return
 
-    async def process_historical_data_end(self, *, req_id: int, start: str, end: str) -> None:
+    async def process_historical_data_end(
+        self, *, req_id: int, start: str, end: str
+    ) -> None:
         """
         Mark the end of receiving historical bars.
         """
         self._end_request(req_id)
 
-    async def process_historical_data_update(self, *, req_id: int, bar: BarData) -> None:
+    async def process_historical_data_update(
+        self, *, req_id: int, bar: BarData
+    ) -> None:
         """
         Receive bars in real-time if keepUpToDate is set as True in reqHistoricalData.
 
@@ -931,12 +968,16 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             return
 
         if not isinstance(subscription.handle, functools.partial):
-            raise TypeError(f"Expecting partial type subscription method: {subscription=}")
+            raise TypeError(
+                f"Expecting partial type subscription method: {subscription=}"
+            )
 
         if bar := await self._process_bar_data(
             bar_type_str=str(subscription.name),
             bar=bar,
-            handle_revised_bars=subscription.handle.keywords.get("handle_revised_bars", False),
+            handle_revised_bars=subscription.handle.keywords.get(
+                "handle_revised_bars", False
+            ),
         ):
             if bar.is_single_price() and bar.open.as_double() == 0:
                 self._log.debug(f"Ignoring Zero priced {bar=}")
@@ -967,8 +1008,12 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
 
             for tick in ticks:
                 ts_event = pd.Timestamp.fromtimestamp(tick.time, tz=pytz.utc).value
-                converted_bid_price = ib_price_to_nautilus_price(tick.priceBid, price_magnifier)
-                converted_ask_price = ib_price_to_nautilus_price(tick.priceAsk, price_magnifier)
+                converted_bid_price = ib_price_to_nautilus_price(
+                    tick.priceBid, price_magnifier
+                )
+                converted_ask_price = ib_price_to_nautilus_price(
+                    tick.priceAsk, price_magnifier
+                )
 
                 quote_tick = QuoteTick(
                     instrument_id=instrument_id,
@@ -983,7 +1028,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
 
             self._end_request(req_id)
 
-    async def process_historical_ticks_last(self, *, req_id: int, ticks: list, done: bool) -> None:
+    async def process_historical_ticks_last(
+        self, *, req_id: int, ticks: list, done: bool
+    ) -> None:
         """
         Return the requested historic trades.
         """
@@ -992,7 +1039,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
 
         await self._process_trade_ticks(req_id, ticks)
 
-    async def process_historical_ticks(self, *, req_id: int, ticks: list, done: bool) -> None:
+    async def process_historical_ticks(
+        self, *, req_id: int, ticks: list, done: bool
+    ) -> None:
         """
         Return the requested historic ticks.
         """
@@ -1045,7 +1094,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
 
         return await self._await_request(request, timeout=60)
 
-    async def _schedule_bar_completion_timeout(self, bar_type_str: str, bar: BarData) -> None:
+    async def _schedule_bar_completion_timeout(
+        self, bar_type_str: str, bar: BarData
+    ) -> None:
         """
         Schedule a timeout to publish a bar after its period ends.
 
@@ -1080,7 +1131,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
                 current_bar = self._bar_type_to_last_bar.get(bar_type_str)
 
                 if current_bar and int(current_bar.date) == int(bar.date):
-                    self._log.debug(f"Publishing bar after period completion for {bar_type_str}")
+                    self._log.debug(
+                        f"Publishing bar after period completion for {bar_type_str}"
+                    )
                     ts_init = self._clock.timestamp_ns()
 
                     # Convert the bar to Nautilus format
@@ -1093,7 +1146,8 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
 
                     # Handle the bar
                     if nautilus_bar and not (
-                        nautilus_bar.is_single_price() and nautilus_bar.open.as_double() == 0
+                        nautilus_bar.is_single_price()
+                        and nautilus_bar.open.as_double() == 0
                     ):
                         await self._handle_data(nautilus_bar)
 
@@ -1186,7 +1240,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             is_revision=not is_new_bar,
         )
 
-    async def _process_trade_ticks(self, req_id: int, ticks: list[HistoricalTickLast]) -> None:
+    async def _process_trade_ticks(
+        self, req_id: int, ticks: list[HistoricalTickLast]
+    ) -> None:
         """
         Process received trade tick data, convert it to NautilusTrader TradeTick type,
         and add it to the relevant request's result.
@@ -1211,7 +1267,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
 
             for tick in ticks:
                 ts_event = pd.Timestamp.fromtimestamp(tick.time, tz=pytz.utc).value
-                converted_price = ib_price_to_nautilus_price(tick.price, price_magnifier)
+                converted_price = ib_price_to_nautilus_price(
+                    tick.price, price_magnifier
+                )
 
                 trade_tick = TradeTick(
                     instrument_id=instrument_id,
@@ -1371,7 +1429,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
         else:
             return ts + pd.Timedelta(bar_type.spec.timedelta).value
 
-    async def _convert_ib_bar_date_to_unix_nanos(self, bar: BarData, bar_type: BarType) -> int:
+    async def _convert_ib_bar_date_to_unix_nanos(
+        self, bar: BarData, bar_type: BarType
+    ) -> int:
         """
         Convert the date from BarData to unix nanoseconds.
 
@@ -1547,7 +1607,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
             for o in bids + asks
         ]
 
-        await self._handle_data(OrderBookDeltas(instrument_id=instrument_id, deltas=deltas))
+        await self._handle_data(
+            OrderBookDeltas(instrument_id=instrument_id, deltas=deltas)
+        )
 
     def _aggregate_order_book_by_price(
         self,
@@ -1576,7 +1638,9 @@ class InteractiveBrokersClientMarketDataMixin(BaseMixin):
                 price_aggregates[level.price] += level.size
 
             aggregated_book[side] = {
-                price: IBKRBookLevel(price=price, size=size, side=order_side, market_maker="")
+                price: IBKRBookLevel(
+                    price=price, size=size, side=order_side, market_maker=""
+                )
                 for price, size in price_aggregates.items()
             }
 

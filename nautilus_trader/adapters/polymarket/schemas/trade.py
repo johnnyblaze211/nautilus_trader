@@ -142,7 +142,9 @@ class PolymarketTradeReport(msgspec.Struct, frozen=True):
         last_qty = instrument.make_qty(self.last_qty(maker_address))
         last_px = instrument.make_price(self.last_px(maker_address))
         fee_rate_bps = self.get_fee_rate_bps(maker_address)
-        commission = float(last_qty * last_px) * basis_points_as_percentage(fee_rate_bps)
+        commission = float(last_qty * last_px) * basis_points_as_percentage(
+            fee_rate_bps
+        )
 
         return FillReport(
             account_id=account_id,

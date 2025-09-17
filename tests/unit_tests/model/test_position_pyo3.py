@@ -432,7 +432,9 @@ def test_position_filled_with_sell_order_then_buy_order():
     assert position.unrealized_pnl(last) == Money(0, USD)
     assert position.total_pnl(last) == Money(-8.000, USD)
     assert position.commissions() == [Money(6.00, USD)]
-    assert repr(position) == "Position(FLAT AUD/USD.SIM, id=P-19700101-000000-000-001-1)"
+    assert (
+        repr(position) == "Position(FLAT AUD/USD.SIM, id=P-19700101-000000-000-001-1)"
+    )
 
 
 def test_position_filled_with_no_change():
@@ -490,7 +492,9 @@ def test_position_filled_with_no_change():
     assert position.unrealized_pnl(last) == Money(0, USD)
     assert position.total_pnl(last) == Money(-4.00, USD)
     assert position.commissions() == [Money(4.00, USD)]
-    assert repr(position) == "Position(FLAT AUD/USD.SIM, id=P-19700101-000000-000-001-1)"
+    assert (
+        repr(position) == "Position(FLAT AUD/USD.SIM, id=P-19700101-000000-000-001-1)"
+    )
 
 
 def test_position_long_with_multiple_filled_orders():
@@ -875,7 +879,9 @@ def test_calculate_pnl_for_long_position_win() -> None:
     # Assert
     assert pnl == Money(120.00000000, USDT)
     assert position.realized_pnl == Money(-126.00000000, USDT)
-    assert position.unrealized_pnl(Price.from_str("10510.00")) == Money(120.00000000, USDT)
+    assert position.unrealized_pnl(Price.from_str("10510.00")) == Money(
+        120.00000000, USDT
+    )
     assert position.total_pnl(Price.from_str("10510.00")) == Money(-6.00000000, USDT)
     assert position.commissions() == [Money(126.00000000, USDT)]
 
@@ -905,7 +911,9 @@ def test_calculate_pnl_for_long_position_loss() -> None:
     # Assert
     assert pnl == Money(-195.00000000, USDT)
     assert position.realized_pnl == Money(-126.00000000, USDT)
-    assert position.unrealized_pnl(Price.from_str("10480.50")) == Money(-234.00000000, USDT)
+    assert position.unrealized_pnl(Price.from_str("10480.50")) == Money(
+        -234.00000000, USDT
+    )
     assert position.total_pnl(Price.from_str("10480.50")) == Money(-360.00000000, USDT)
     assert position.commissions() == [Money(126.00000000, USDT)]
 
@@ -934,10 +942,14 @@ def test_calculate_pnl_for_short_position_winning() -> None:
     )
 
     assert pnl == Money(1116.50000000, USDT)
-    assert position.unrealized_pnl(Price.from_str("10390.00")) == Money(1116.50000000, USDT)
+    assert position.unrealized_pnl(Price.from_str("10390.00")) == Money(
+        1116.50000000, USDT
+    )
     assert position.realized_pnl == Money(-106.57500000, USDT)
     assert position.commissions() == [Money(106.57500000, USDT)]
-    assert position.notional_value(Price.from_str("10390.00")) == Money(105458.50000000, USDT)
+    assert position.notional_value(Price.from_str("10390.00")) == Money(
+        105458.50000000, USDT
+    )
 
 
 def test_calculate_pnl_for_short_position_loss() -> None:
@@ -964,10 +976,14 @@ def test_calculate_pnl_for_short_position_loss() -> None:
 
     # Assert
     assert pnl == Money(-1705.00000000, USDT)
-    assert position.unrealized_pnl(Price.from_str("10670.50")) == Money(-1705.00000000, USDT)
+    assert position.unrealized_pnl(Price.from_str("10670.50")) == Money(
+        -1705.00000000, USDT
+    )
     assert position.realized_pnl == Money(-105.00000000, USDT)
     assert position.commissions() == [Money(105.00000000, USDT)]
-    assert position.notional_value(Price.from_str("10670.50")) == Money(106705.00000000, USDT)
+    assert position.notional_value(Price.from_str("10670.50")) == Money(
+        106705.00000000, USDT
+    )
 
 
 def test_calculate_pnl_for_inverse1() -> None:
@@ -993,7 +1009,9 @@ def test_calculate_pnl_for_inverse1() -> None:
     )
 
     assert pnl == Money(-0.90909091, BTC)
-    assert position.unrealized_pnl(Price.from_str("11000.00")) == Money(-0.90909091, BTC)
+    assert position.unrealized_pnl(Price.from_str("11000.00")) == Money(
+        -0.90909091, BTC
+    )
     assert position.realized_pnl == Money(-0.00750000, BTC)
     assert position.notional_value(Price.from_str("11000.00")) == Money(9.09090909, BTC)
 

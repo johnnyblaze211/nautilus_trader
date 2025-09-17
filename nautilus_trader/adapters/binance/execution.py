@@ -155,7 +155,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
             venue=config.venue,
             oms_type=OmsType.HEDGING if account_type.is_futures else OmsType.NETTING,
             instrument_provider=instrument_provider,
-            account_type=AccountType.CASH if account_type.is_spot else AccountType.MARGIN,
+            account_type=(
+                AccountType.CASH if account_type.is_spot else AccountType.MARGIN
+            ),
             base_currency=None,
             msgbus=msgbus,
             cache=cache,
@@ -174,7 +176,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
         self._recv_window = config.recv_window_ms
         self._max_retries = config.max_retries or 3
         self._log.info(f"Key type: {config.key_type.value}", LogColor.BLUE)
-        self._log.info(f"Account type: {self._binance_account_type.value}", LogColor.BLUE)
+        self._log.info(
+            f"Account type: {self._binance_account_type.value}", LogColor.BLUE
+        )
         self._log.info(f"{config.use_gtd=}", LogColor.BLUE)
         self._log.info(f"{config.use_reduce_only=}", LogColor.BLUE)
         self._log.info(f"{config.use_position_ids=}", LogColor.BLUE)
@@ -184,11 +188,15 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
         self._log.info(f"{config.retry_delay_initial_ms=}", LogColor.BLUE)
         self._log.info(f"{config.retry_delay_max_ms=}", LogColor.BLUE)
         self._log.info(f"{config.listen_key_ping_max_failures=}", LogColor.BLUE)
-        self._log.info(f"{config.log_rejected_due_post_only_as_warning=}", LogColor.BLUE)
+        self._log.info(
+            f"{config.log_rejected_due_post_only_as_warning=}", LogColor.BLUE
+        )
 
         self._is_dual_side_position: bool | None = None  # Initialized on connection
         self._set_account_id(
-            AccountId(f"{name or config.venue.value}-{self._binance_account_type.value}-master"),
+            AccountId(
+                f"{name or config.venue.value}-{self._binance_account_type.value}-master"
+            ),
         )
 
         # Enum parser
@@ -309,7 +317,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
 
         # Set up WebSocket listen key
         self._listen_key = response.listenKey
-        self._last_successful_ping_ns = self._clock.timestamp_ns()  # Initialize on connection
+        self._last_successful_ping_ns = (
+            self._clock.timestamp_ns()
+        )  # Initialize on connection
         self._log.info(f"Listen key {self._listen_key}")
         self._ping_listen_keys_task = self.create_task(self._ping_listen_keys())
 
@@ -340,7 +350,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
                 self._log.debug(f"Pinging WebSocket listen key {self._listen_key}")
 
                 try:
-                    await self._http_user.keepalive_listen_key(listen_key=self._listen_key)
+                    await self._http_user.keepalive_listen_key(
+                        listen_key=self._listen_key
+                    )
 
                     # Reset failure tracking on success
                     self._ping_consecutive_failures = 0
@@ -350,7 +362,8 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
                 except (BinanceClientError, BinanceError) as e:
                     self._ping_consecutive_failures += 1
                     time_since_success_secs = (
-                        (self._clock.timestamp_ns() - self._last_successful_ping_ns) / 1_000_000_000
+                        (self._clock.timestamp_ns() - self._last_successful_ping_ns)
+                        / 1_000_000_000
                         if self._last_successful_ping_ns > 0
                         else 0
                     )
@@ -402,9 +415,13 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
             # Check if graceful shutdown is configured
             if hasattr(self, "graceful_shutdown_on_exception"):
                 execution_engine = getattr(self, "_execution_engine", None)
-                if execution_engine and hasattr(execution_engine, "graceful_shutdown_on_exception"):
+                if execution_engine and hasattr(
+                    execution_engine, "graceful_shutdown_on_exception"
+                ):
                     if execution_engine.graceful_shutdown_on_exception:
-                        execution_engine.shutdown_system(f"Listen key recovery failed: {e}")
+                        execution_engine.shutdown_system(
+                            f"Listen key recovery failed: {e}"
+                        )
                         return
 
             self._log.error(
@@ -489,7 +506,8 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
                 if retries >= self._max_retries:
                     if (
                         command.client_order_id
-                        and command.client_order_id in self._generate_order_status_retries
+                        and command.client_order_id
+                        in self._generate_order_status_retries
                     ):
                         del self._generate_order_status_retries[command.client_order_id]
 
@@ -507,7 +525,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
                     )
             return None  # Error now handled
 
-        if not binance_order or (binance_order.origQty and Decimal(binance_order.origQty) == 0):
+        if not binance_order or (
+            binance_order.origQty and Decimal(binance_order.origQty) == 0
+        ):
             # Cannot proceed to generating report
             self._log.error(
                 f"Cannot generate `OrderStatusReport` for {command.client_order_id=!r}, {command.venue_order_id=!r}: "
@@ -568,10 +588,14 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
         try:
             # Check Binance for all order active symbols
             symbol = (
-                command.instrument_id.symbol.value if command.instrument_id is not None else None
+                command.instrument_id.symbol.value
+                if command.instrument_id is not None
+                else None
             )
             active_symbols = self._get_cache_active_symbols()
-            active_symbols.update(await self._get_binance_active_position_symbols(symbol))
+            active_symbols.update(
+                await self._get_binance_active_position_symbols(symbol)
+            )
             binance_open_orders = await self._http_account.query_open_orders(symbol)
             for order in binance_open_orders:
                 active_symbols.add(order.symbol)
@@ -585,14 +609,22 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
                     # randomly missing when these are specified. We filter on the Nautilus side below.
                     # Explicitly setting limit to the max lookback of 1000, in the future we should
                     # add pagination.
-                    response = await self._http_account.query_all_orders(symbol=symbol, limit=1_000)
+                    response = await self._http_account.query_all_orders(
+                        symbol=symbol, limit=1_000
+                    )
                     binance_orders.extend(response)
         except BinanceError as e:
             self._log.exception(f"Cannot generate OrderStatusReport: {e.message}", e)
             return []
 
-        start_ms = secs_to_millis(command.start.timestamp()) if command.start is not None else None
-        end_ms = secs_to_millis(command.end.timestamp()) if command.end is not None else None
+        start_ms = (
+            secs_to_millis(command.start.timestamp())
+            if command.start is not None
+            else None
+        )
+        end_ms = (
+            secs_to_millis(command.end.timestamp()) if command.end is not None else None
+        )
 
         reports: list[OrderStatusReport] = []
         for order in binance_orders:
@@ -633,10 +665,14 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
         try:
             # Check Binance for all trades on active symbols
             symbol = (
-                command.instrument_id.symbol.value if command.instrument_id is not None else None
+                command.instrument_id.symbol.value
+                if command.instrument_id is not None
+                else None
             )
             active_symbols = self._get_cache_active_symbols()
-            active_symbols.update(await self._get_binance_active_position_symbols(symbol))
+            active_symbols.update(
+                await self._get_binance_active_position_symbols(symbol)
+            )
             binance_trades: list[BinanceUserTrade] = []
             for symbol in active_symbols:
                 response = await self._http_account.query_user_trades(
@@ -647,7 +683,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
                         else None
                     ),
                     end_time=(
-                        secs_to_millis(command.end.timestamp()) if command.end is not None else None
+                        secs_to_millis(command.end.timestamp())
+                        if command.end is not None
+                        else None
                     ),
                 )
                 binance_trades.extend(response)
@@ -686,7 +724,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
     ) -> list[PositionStatusReport]:
         try:
             if command.instrument_id:
-                self._log.info(f"Requesting PositionStatusReport for {command.instrument_id}")
+                self._log.info(
+                    f"Requesting PositionStatusReport for {command.instrument_id}"
+                )
                 symbol = command.instrument_id.symbol.value
                 reports = await self._get_binance_position_status_reports(symbol)
                 if not reports:
@@ -722,8 +762,10 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
 
     def _determine_time_in_force(self, order: Order) -> BinanceTimeInForce:
         # Convert the internal TimeInForce enum to the Binance equivalent
-        time_in_force: BinanceTimeInForce = self._enum_parser.parse_internal_time_in_force(
-            order.time_in_force,
+        time_in_force: BinanceTimeInForce = (
+            self._enum_parser.parse_internal_time_in_force(
+                order.time_in_force,
+            )
         )
 
         # When the client is configured *not* to make use of the native GTD
@@ -748,10 +790,14 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
         if time_in_force is None or time_in_force != BinanceTimeInForce.GTD:
             return None
 
-        good_till_date = nanos_to_millis(order.expire_time_ns) if order.expire_time_ns else None
+        good_till_date = (
+            nanos_to_millis(order.expire_time_ns) if order.expire_time_ns else None
+        )
         if self._binance_account_type.is_spot_or_margin:
             good_till_date = None
-            self._log.warning("Cannot set GTD time in force with `expiry_time` for Binance Spot")
+            self._log.warning(
+                "Cannot set GTD time in force with `expiry_time` for Binance Spot"
+            )
         return good_till_date
 
     def _determine_reduce_only(self, order: Order) -> bool:
@@ -781,8 +827,10 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
 
         # For Binance Futures Hedge mode, the position side must be specified in the position_id
         PyCondition.not_none(position_id, "position_id")
-        position_side = self._enum_parser.parse_position_id_to_binance_futures_position_side(
-            position_id,
+        position_side = (
+            self._enum_parser.parse_position_id_to_binance_futures_position_side(
+                position_id,
+            )
         )
         # Check if the position side is valid
         PyCondition.is_in(
@@ -839,7 +887,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
                 # that would have executed immediately as a taker (GTX_ORDER_REJECT -5022).
                 exc = retry_manager.last_exception
                 due_post_only = (
-                    _is_post_only_rejection(exc) if isinstance(exc, BinanceError) else False
+                    _is_post_only_rejection(exc)
+                    if isinstance(exc, BinanceError)
+                    else False
                 )
 
                 self.generate_order_rejected(
@@ -888,7 +938,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
             good_till_date=self._determine_good_till_date(order, time_in_force),
             quantity=str(order.quantity),
             price=str(order.price),
-            iceberg_qty=str(order.display_qty) if order.display_qty is not None else None,
+            iceberg_qty=(
+                str(order.display_qty) if order.display_qty is not None else None
+            ),
             reduce_only=self._determine_reduce_only_str(order),
             new_client_order_id=order.client_order_id.value,
             recv_window=str(self._recv_window),
@@ -924,7 +976,9 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
             price=str(order.price),
             stop_price=str(order.trigger_price),
             working_type=working_type,
-            iceberg_qty=str(order.display_qty) if order.display_qty is not None else None,
+            iceberg_qty=(
+                str(order.display_qty) if order.display_qty is not None else None
+            ),
             reduce_only=self._determine_reduce_only_str(order),
             new_client_order_id=order.client_order_id.value,
             recv_window=str(self._recv_window),
@@ -1016,7 +1070,10 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
         # Round to 1 decimal place only if necessary to meet Binance requirements
         callback_rate = callback_rate.quantize(Decimal("0.1"))
 
-        if callback_rate < BINANCE_MIN_CALLBACK_RATE or callback_rate > BINANCE_MAX_CALLBACK_RATE:
+        if (
+            callback_rate < BINANCE_MIN_CALLBACK_RATE
+            or callback_rate > BINANCE_MAX_CALLBACK_RATE
+        ):
             self._log.error(
                 f"Cannot submit order: invalid `order.trailing_offset`, was "
                 f"{order.trailing_offset} {trailing_offset_type_to_str(order.trailing_offset_type)} "
@@ -1104,9 +1161,13 @@ class BinanceCommonExecutionClient(LiveExecutionClient):
                 [order.client_order_id, order.venue_order_id],
                 self._http_account.modify_order,
                 symbol=order.instrument_id.symbol.value,
-                order_id=int(order.venue_order_id.value) if order.venue_order_id else None,
+                order_id=(
+                    int(order.venue_order_id.value) if order.venue_order_id else None
+                ),
                 side=self._enum_parser.parse_internal_order_side(order.side),
-                quantity=str(command.quantity) if command.quantity else str(order.quantity),
+                quantity=(
+                    str(command.quantity) if command.quantity else str(order.quantity)
+                ),
                 price=str(command.price) if command.price else str(order.price),
             )
             if not retry_manager.result:

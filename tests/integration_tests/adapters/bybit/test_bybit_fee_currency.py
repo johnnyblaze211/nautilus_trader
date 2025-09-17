@@ -22,9 +22,15 @@ from nautilus_trader.model.currencies import ETH
 from nautilus_trader.model.currencies import USDC
 from nautilus_trader.model.currencies import USDT
 from nautilus_trader.model.enums import OrderSide
-from tests.integration_tests.adapters.bybit.conftest import create_bybit_inverse_perpetual
-from tests.integration_tests.adapters.bybit.conftest import create_bybit_linear_perpetual
-from tests.integration_tests.adapters.bybit.conftest import create_bybit_option_instrument
+from tests.integration_tests.adapters.bybit.conftest import (
+    create_bybit_inverse_perpetual,
+)
+from tests.integration_tests.adapters.bybit.conftest import (
+    create_bybit_linear_perpetual,
+)
+from tests.integration_tests.adapters.bybit.conftest import (
+    create_bybit_option_instrument,
+)
 from tests.integration_tests.adapters.bybit.conftest import create_bybit_spot_instrument
 
 

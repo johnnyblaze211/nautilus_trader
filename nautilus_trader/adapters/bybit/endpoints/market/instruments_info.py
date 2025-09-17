@@ -22,10 +22,18 @@ import msgspec
 from nautilus_trader.adapters.bybit.common.enums import BybitEndpointType
 from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 from nautilus_trader.adapters.bybit.endpoints.endpoint import BybitHttpEndpoint
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsInverseResponse
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsLinearResponse
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsOptionResponse
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsSpotResponse
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsInverseResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsLinearResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsOptionResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsSpotResponse,
+)
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 
@@ -54,7 +62,9 @@ class BybitInstrumentsInfoEndpoint(BybitHttpEndpoint):
             endpoint_type=BybitEndpointType.MARKET,
             url_path=url_path,
         )
-        self._response_decoder_instrument_spot = msgspec.json.Decoder(BybitInstrumentsSpotResponse)
+        self._response_decoder_instrument_spot = msgspec.json.Decoder(
+            BybitInstrumentsSpotResponse
+        )
         self._response_decoder_instrument_linear = msgspec.json.Decoder(
             BybitInstrumentsLinearResponse,
         )

@@ -36,8 +36,18 @@ from nautilus_trader.adapters.binance.common.urls import get_ws_base_url
         (BinanceAccountType.SPOT, True, False, "https://testnet.binance.vision"),
         (BinanceAccountType.SPOT, True, True, "https://testnet.binance.vision"),
         (BinanceAccountType.MARGIN, True, False, "https://testnet.binance.vision"),
-        (BinanceAccountType.USDT_FUTURES, True, False, "https://testnet.binancefuture.com"),
-        (BinanceAccountType.COIN_FUTURES, True, False, "https://testnet.binancefuture.com"),
+        (
+            BinanceAccountType.USDT_FUTURES,
+            True,
+            False,
+            "https://testnet.binancefuture.com",
+        ),
+        (
+            BinanceAccountType.COIN_FUTURES,
+            True,
+            False,
+            "https://testnet.binancefuture.com",
+        ),
     ],
 )
 def test_get_http_base_url(account_type, is_testnet, is_us, expected):
@@ -61,7 +71,12 @@ def test_get_http_base_url(account_type, is_testnet, is_us, expected):
         (BinanceAccountType.SPOT, True, False, "wss://stream.testnet.binance.vision"),
         (BinanceAccountType.SPOT, True, True, "wss://stream.testnet.binance.vision"),
         (BinanceAccountType.MARGIN, True, False, "wss://stream.testnet.binance.vision"),
-        (BinanceAccountType.USDT_FUTURES, True, False, "wss://stream.binancefuture.com"),
+        (
+            BinanceAccountType.USDT_FUTURES,
+            True,
+            False,
+            "wss://stream.binancefuture.com",
+        ),
     ],
 )
 def test_get_ws_base_url(account_type, is_testnet, is_us, expected):

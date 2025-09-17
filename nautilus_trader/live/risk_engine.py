@@ -104,7 +104,9 @@ class LiveRiskEngine(RiskEngine):
         self._kill: bool = False
 
         # Configuration
-        self.graceful_shutdown_on_exception: bool = config.graceful_shutdown_on_exception
+        self.graceful_shutdown_on_exception: bool = (
+            config.graceful_shutdown_on_exception
+        )
         self._shutdown_initiated: bool = False
         self._log.info(f"{config.graceful_shutdown_on_exception=}", LogColor.BLUE)
 
@@ -238,8 +240,12 @@ class LiveRiskEngine(RiskEngine):
         if not self._loop.is_running():
             self._log.warning("Started when loop is not running")
 
-        self._cmd_queue_task = self._loop.create_task(self._run_cmd_queue(), name="cmd_queue")
-        self._evt_queue_task = self._loop.create_task(self._run_evt_queue(), name="evt_queue")
+        self._cmd_queue_task = self._loop.create_task(
+            self._run_cmd_queue(), name="cmd_queue"
+        )
+        self._evt_queue_task = self._loop.create_task(
+            self._run_evt_queue(), name="evt_queue"
+        )
 
         self._log.debug(f"Scheduled task '{self._cmd_queue_task.get_name()}'")
         self._log.debug(f"Scheduled task '{self._evt_queue_task.get_name()}'")
@@ -270,7 +276,9 @@ class LiveRiskEngine(RiskEngine):
         finally:
             stopped_msg = "Command message queue stopped"
             if not self._cmd_queue.empty():
-                self._log.warning(f"{stopped_msg} with {self.cmd_qsize()} message(s) on queue")
+                self._log.warning(
+                    f"{stopped_msg} with {self.cmd_qsize()} message(s) on queue"
+                )
             else:
                 self._log.debug(stopped_msg)
 
@@ -294,6 +302,8 @@ class LiveRiskEngine(RiskEngine):
         finally:
             stopped_msg = "Event message queue stopped"
             if not self._evt_queue.empty():
-                self._log.warning(f"{stopped_msg} with {self.evt_qsize()} message(s) on queue")
+                self._log.warning(
+                    f"{stopped_msg} with {self.evt_qsize()} message(s) on queue"
+                )
             else:
                 self._log.debug(stopped_msg)

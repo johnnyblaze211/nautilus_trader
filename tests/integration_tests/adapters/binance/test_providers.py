@@ -19,9 +19,13 @@ import msgspec
 import pytest
 
 from nautilus_trader.adapters.binance.common.enums import BinanceAccountType
-from nautilus_trader.adapters.binance.futures.providers import BinanceFuturesInstrumentProvider
+from nautilus_trader.adapters.binance.futures.providers import (
+    BinanceFuturesInstrumentProvider,
+)
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
-from nautilus_trader.adapters.binance.spot.providers import BinanceSpotInstrumentProvider
+from nautilus_trader.adapters.binance.spot.providers import (
+    BinanceSpotInstrumentProvider,
+)
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.identifiers import Symbol
@@ -82,8 +86,14 @@ class TestBinanceInstrumentProvider:
 
         # Assert
         assert self.provider.count == 2
-        assert self.provider.find(InstrumentId(Symbol("BTCUSDT"), Venue("BINANCE"))) is not None
-        assert self.provider.find(InstrumentId(Symbol("ETHUSDT"), Venue("BINANCE"))) is not None
+        assert (
+            self.provider.find(InstrumentId(Symbol("BTCUSDT"), Venue("BINANCE")))
+            is not None
+        )
+        assert (
+            self.provider.find(InstrumentId(Symbol("ETHUSDT"), Venue("BINANCE")))
+            is not None
+        )
         assert len(self.provider.currencies()) == 3
         assert "BTC" in self.provider.currencies()
         assert "ETH" in self.provider.currencies()
@@ -138,13 +148,16 @@ class TestBinanceInstrumentProvider:
         # Assert
         assert self.provider.count == 3
         assert (
-            self.provider.find(InstrumentId(Symbol("BTCUSDT-PERP"), Venue("BINANCE"))) is not None
+            self.provider.find(InstrumentId(Symbol("BTCUSDT-PERP"), Venue("BINANCE")))
+            is not None
         )
         assert (
-            self.provider.find(InstrumentId(Symbol("ETHUSDT-PERP"), Venue("BINANCE"))) is not None
+            self.provider.find(InstrumentId(Symbol("ETHUSDT-PERP"), Venue("BINANCE")))
+            is not None
         )
         assert (
-            self.provider.find(InstrumentId(Symbol("BTCUSDT_220325"), Venue("BINANCE"))) is not None
+            self.provider.find(InstrumentId(Symbol("BTCUSDT_220325"), Venue("BINANCE")))
+            is not None
         )
         assert len(self.provider.currencies()) == 3
         assert "BTC" in self.provider.currencies()

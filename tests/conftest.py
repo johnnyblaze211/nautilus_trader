@@ -142,7 +142,9 @@ def memory_tracker(request):
             for index, stat in enumerate(top_stats[:10], 1):
                 traceback = f"{stat.traceback}"
                 size_mb = stat.size / 1024 / 1024
-                print(f"  {index:2d}. {traceback:<60} {size_mb:>8.2f} MB ({stat.count:,} blocks)")
+                print(
+                    f"  {index:2d}. {traceback:<60} {size_mb:>8.2f} MB ({stat.count:,} blocks)"
+                )
             print("  " + "-" * 80)
 
             raise MemoryError("Memory leak detected during test execution")

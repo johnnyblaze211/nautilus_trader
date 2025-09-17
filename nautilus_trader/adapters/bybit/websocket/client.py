@@ -31,14 +31,30 @@ from nautilus_trader.adapters.bybit.common.enums import BybitTriggerType
 from nautilus_trader.adapters.bybit.common.enums import BybitWsOrderRequestMsgOP
 
 # fmt: off
-from nautilus_trader.adapters.bybit.endpoints.trade.amend_order import BybitAmendOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_amend_order import BybitBatchAmendOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import BybitBatchCancelOrder
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import BybitBatchCancelOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import BybitBatchPlaceOrder
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import BybitBatchPlaceOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.cancel_order import BybitCancelOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.place_order import BybitPlaceOrderPostParams
+from nautilus_trader.adapters.bybit.endpoints.trade.amend_order import (
+    BybitAmendOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_amend_order import (
+    BybitBatchAmendOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import (
+    BybitBatchCancelOrder,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import (
+    BybitBatchCancelOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import (
+    BybitBatchPlaceOrder,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import (
+    BybitBatchPlaceOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.cancel_order import (
+    BybitCancelOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.place_order import (
+    BybitPlaceOrderPostParams,
+)
 from nautilus_trader.adapters.bybit.http.errors import BybitError
 from nautilus_trader.adapters.bybit.schemas.ws import BybitWsAmendOrderResponseMsg
 from nautilus_trader.adapters.bybit.schemas.ws import BybitWsBatchAmendOrderResponseMsg
@@ -131,7 +147,9 @@ class BybitWebSocketClient:
 
         self._base_url: str = base_url
         self._handler: Callable[[bytes], None] = handler
-        self._handler_reconnect: Callable[..., Awaitable[None]] | None = handler_reconnect
+        self._handler_reconnect: Callable[..., Awaitable[None]] | None = (
+            handler_reconnect
+        )
         self._loop = loop
         self._ws_trade_timeout_secs = ws_trade_timeout_secs
 
@@ -157,15 +175,25 @@ class BybitWebSocketClient:
         self._pending_order_requests: dict[str, WsOrderResponseMsgFuture] = {}
 
         self._decoder_ws_message_general = msgspec_json.Decoder(BybitWsMessageGeneral)
-        self._decoder_ws_private_channel_auth = msgspec_json.Decoder(BybitWsPrivateChannelAuthMsg)
+        self._decoder_ws_private_channel_auth = msgspec_json.Decoder(
+            BybitWsPrivateChannelAuthMsg
+        )
         self._decoder_ws_trade_auth = msgspec_json.Decoder(BybitWsTradeAuthMsg)
 
         # Decoders for WebSocket order response messages
-        self._decoder_ws_order_resp_general = msgspec_json.Decoder(BybitWsOrderResponseMsgGeneral)
+        self._decoder_ws_order_resp_general = msgspec_json.Decoder(
+            BybitWsOrderResponseMsgGeneral
+        )
 
-        self._decoder_ws_order_resp_place = msgspec_json.Decoder(BybitWsPlaceOrderResponseMsg)
-        self._decoder_ws_order_resp_amend = msgspec_json.Decoder(BybitWsAmendOrderResponseMsg)
-        self._decoder_ws_order_resp_cancel = msgspec_json.Decoder(BybitWsCancelOrderResponseMsg)
+        self._decoder_ws_order_resp_place = msgspec_json.Decoder(
+            BybitWsPlaceOrderResponseMsg
+        )
+        self._decoder_ws_order_resp_amend = msgspec_json.Decoder(
+            BybitWsAmendOrderResponseMsg
+        )
+        self._decoder_ws_order_resp_cancel = msgspec_json.Decoder(
+            BybitWsCancelOrderResponseMsg
+        )
         self._decoder_ws_order_resp_batch_place = msgspec_json.Decoder(
             BybitWsBatchPlaceOrderResponseMsg,
         )
@@ -313,7 +341,9 @@ class BybitWebSocketClient:
             self._auth_event.set()
             self._log.info(f"{self.channel_type} channel authenticated", LogColor.GREEN)
         else:
-            raise RuntimeError(f"{self.channel_type} channel authentication failed: {msg}")
+            raise RuntimeError(
+                f"{self.channel_type} channel authentication failed: {msg}"
+            )
 
     async def _authenticate(self) -> None:
         self._is_authenticated = False
@@ -370,7 +400,9 @@ class BybitWebSocketClient:
         # You can input up to 10 args for each subscription request sent to one connection
         subscription_lists = [
             self._subscriptions[i : i + MAX_ARGS_PER_SUBSCRIPTION_REQUEST]
-            for i in range(0, len(self._subscriptions), MAX_ARGS_PER_SUBSCRIPTION_REQUEST)
+            for i in range(
+                0, len(self._subscriptions), MAX_ARGS_PER_SUBSCRIPTION_REQUEST
+            )
         ]
 
         for subscriptions in subscription_lists:
@@ -467,7 +499,9 @@ class BybitWebSocketClient:
 
     def _handle_order_ack(self, raw: bytes) -> None:
         try:
-            msg: BybitWsOrderResponseMsgGeneral = self._decoder_ws_order_resp_general.decode(raw)
+            msg: BybitWsOrderResponseMsgGeneral = (
+                self._decoder_ws_order_resp_general.decode(raw)
+            )
         except Exception as e:
             self._log.exception(f"Failed to decode order ack response {raw!r}", e)
             return
@@ -490,7 +524,9 @@ class BybitWebSocketClient:
             except Exception as e:
                 self._log.exception(f"Failed to decode order ack response {raw!r}", e)
         else:
-            self._log.warning(f"Received ack for `unknown/timeout` reqId={req_id}, msg={msg}")
+            self._log.warning(
+                f"Received ack for `unknown/timeout` reqId={req_id}, msg={msg}"
+            )
 
     async def _order(
         self,
@@ -576,16 +612,38 @@ class BybitWebSocketClient:
                     isLeverage=int(is_leverage) if is_leverage is not None else None,
                     reduceOnly=reduce_only,
                     closeOnTrigger=close_on_trigger,
-                    tpslMode=tpsl_mode if product_type != BybitProductType.SPOT else None,
+                    tpslMode=(
+                        tpsl_mode if product_type != BybitProductType.SPOT else None
+                    ),
                     triggerPrice=trigger_price,
                     triggerDirection=trigger_direction,
                     triggerBy=trigger_type,
-                    takeProfit=tp_trigger_price if product_type == BybitProductType.SPOT else None,
-                    stopLoss=sl_trigger_price if product_type == BybitProductType.SPOT else None,
-                    slTriggerBy=trigger_type if product_type != BybitProductType.SPOT else None,
-                    tpTriggerBy=trigger_type if product_type != BybitProductType.SPOT else None,
-                    tpLimitPrice=tp_limit_price if product_type != BybitProductType.SPOT else None,
-                    slLimitPrice=sl_limit_price if product_type != BybitProductType.SPOT else None,
+                    takeProfit=(
+                        tp_trigger_price
+                        if product_type == BybitProductType.SPOT
+                        else None
+                    ),
+                    stopLoss=(
+                        sl_trigger_price
+                        if product_type == BybitProductType.SPOT
+                        else None
+                    ),
+                    slTriggerBy=(
+                        trigger_type if product_type != BybitProductType.SPOT else None
+                    ),
+                    tpTriggerBy=(
+                        trigger_type if product_type != BybitProductType.SPOT else None
+                    ),
+                    tpLimitPrice=(
+                        tp_limit_price
+                        if product_type != BybitProductType.SPOT
+                        else None
+                    ),
+                    slLimitPrice=(
+                        sl_limit_price
+                        if product_type != BybitProductType.SPOT
+                        else None
+                    ),
                     tpOrderType=tp_order_type,
                     slOrderType=sl_order_type,
                 ),

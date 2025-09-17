@@ -21,7 +21,9 @@ from nautilus_trader.serialization.arrow.schema import NAUTILUS_ARROW_SCHEMA
 
 def serialize(command: ShutdownSystem) -> pa.RecordBatch:
     data = command.to_dict(command)
-    return pa.RecordBatch.from_pylist([data], schema=NAUTILUS_ARROW_SCHEMA[type(command)])
+    return pa.RecordBatch.from_pylist(
+        [data], schema=NAUTILUS_ARROW_SCHEMA[type(command)]
+    )
 
 
 def deserialize(cls):

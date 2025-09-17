@@ -97,7 +97,9 @@ class BetfairStreamClient:
                 return
 
             if not self._client.is_active():
-                self._log.warning(f"Cannot reconnect: client in {self._client.mode()} mode")
+                self._log.warning(
+                    f"Cannot reconnect: client in {self._client.mode()} mode"
+                )
                 return
 
             self._log.info("Reconnecting...")
@@ -259,7 +261,9 @@ class BetfairOrderStreamClient(BetfairStreamClient):
                 await self.send(msgspec.json.encode(subscribe_msg))
                 return
             except Exception as e:
-                self._log.error(f"Failed to send auth message({e}), retrying {i + 1}/{retries}...")
+                self._log.error(
+                    f"Failed to send auth message({e}), retrying {i + 1}/{retries}..."
+                )
                 await asyncio.sleep(1.0)
 
 
@@ -378,5 +382,7 @@ class BetfairMarketStreamClient(BetfairStreamClient):
                 await self.send(msgspec.json.encode(self.auth_message()))
                 return
             except Exception as e:
-                self._log.error(f"Failed to send auth message({e}), retrying {i + 1}/{retries}...")
+                self._log.error(
+                    f"Failed to send auth message({e}), retrying {i + 1}/{retries}..."
+                )
                 await asyncio.sleep(1.0)

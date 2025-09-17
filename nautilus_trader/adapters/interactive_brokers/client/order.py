@@ -130,7 +130,9 @@ class InteractiveBrokersClientOrderMixin(BaseMixin):
         all_orders: list[IBOrder] | None = await self._await_request(request, 30)
 
         if all_orders:
-            orders: list[IBOrder] = [order for order in all_orders if order.account == account_id]
+            orders: list[IBOrder] = [
+                order for order in all_orders if order.account == account_id
+            ]
         else:
             orders = []
 
@@ -188,7 +190,8 @@ class InteractiveBrokersClientOrderMixin(BaseMixin):
             # Validate and add reverse mapping, if not exists
             if order_ref := self._order_id_to_order_ref.get(order.orderId):
                 if not (
-                    order_ref.account_id == order.account and order_ref.order_id == order.orderRef
+                    order_ref.account_id == order.account
+                    and order_ref.order_id == order.orderRef
                 ):
                     self._log.warning(
                         f"Discrepancy found in order, expected {order_ref}, "
@@ -294,7 +297,9 @@ class InteractiveBrokersClientOrderMixin(BaseMixin):
 
         cache["commission_report"] = commission_report
 
-        if cache.get("execution") and (account := getattr(cache["execution"], "acctNumber", None)):
+        if cache.get("execution") and (
+            account := getattr(cache["execution"], "acctNumber", None)
+        ):
             name = f"execDetails-{account}"
 
             if handler := self._event_subscriptions.get(name, None):

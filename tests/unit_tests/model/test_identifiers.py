@@ -303,7 +303,9 @@ def test_instrument_id_new_spread_single_positive_ratio() -> None:
     id1 = InstrumentId(Symbol("AAPL"), Venue("NASDAQ"))
 
     # Act, Assert - single leg spreads should raise an error
-    with pytest.raises(ValueError, match="instrument_ratios list needs to have at least 2 legs"):
+    with pytest.raises(
+        ValueError, match="instrument_ratios list needs to have at least 2 legs"
+    ):
         InstrumentId.new_spread([(id1, 1)])
 
 
@@ -312,7 +314,9 @@ def test_instrument_id_new_spread_single_negative_ratio() -> None:
     id1 = InstrumentId(Symbol("AAPL"), Venue("NASDAQ"))
 
     # Act, Assert - single leg spreads should raise an error
-    with pytest.raises(ValueError, match="instrument_ratios list needs to have at least 2 legs"):
+    with pytest.raises(
+        ValueError, match="instrument_ratios list needs to have at least 2 legs"
+    ):
         InstrumentId.new_spread([(id1, -2)])
 
 
@@ -332,7 +336,9 @@ def test_instrument_id_new_spread_multiple_instruments_sorted() -> None:
 
 def test_instrument_id_new_spread_empty_list_raises_error() -> None:
     # Arrange, Act, Assert
-    with pytest.raises(ValueError, match="instrument_ratios list needs to have at least 2 legs"):
+    with pytest.raises(
+        ValueError, match="instrument_ratios list needs to have at least 2 legs"
+    ):
         InstrumentId.new_spread([])
 
 

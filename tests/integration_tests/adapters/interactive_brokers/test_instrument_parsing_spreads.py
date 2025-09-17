@@ -23,14 +23,21 @@ import pytest
 
 # fmt: off
 # ruff: noqa: I001
-from nautilus_trader.adapters.interactive_brokers.common import IBContract, IBContractDetails
+from nautilus_trader.adapters.interactive_brokers.common import IBContract
+from nautilus_trader.adapters.interactive_brokers.common import IBContractDetails
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
     parse_option_spread,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
     parse_spread_instrument_id,
 )
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.instruments import OptionSpread
-from nautilus_trader.model.objects import Currency, Price, Quantity
+from nautilus_trader.model.objects import Currency
+from nautilus_trader.model.objects import Price
+from nautilus_trader.model.objects import Quantity
+
+
 # fmt: on
 
 
@@ -49,14 +56,18 @@ class TestSpreadInstrumentParsing:
         spread_id = InstrumentId.new_spread([(leg1_id, 1), (leg2_id, -1)])
 
         # Create mock contract details for legs
-        leg1_contract = IBContract(secType="OPT", symbol="SPY", currency="USD", multiplier="100")
+        leg1_contract = IBContract(
+            secType="OPT", symbol="SPY", currency="USD", multiplier="100"
+        )
         leg1_details = IBContractDetails(
             contract=leg1_contract,
             minTick=0.01,
             underSymbol="SPY",
         )
 
-        leg2_contract = IBContract(secType="OPT", symbol="SPY", currency="USD", multiplier="100")
+        leg2_contract = IBContract(
+            secType="OPT", symbol="SPY", currency="USD", multiplier="100"
+        )
         leg2_details = IBContractDetails(
             contract=leg2_contract,
             minTick=0.01,
@@ -87,14 +98,18 @@ class TestSpreadInstrumentParsing:
         spread_id = InstrumentId.new_spread([(leg1_id, 1), (leg2_id, -2)])
 
         # Create mock contract details for futures options legs
-        leg1_contract = IBContract(secType="FOP", symbol="ES", currency="USD", multiplier="50")
+        leg1_contract = IBContract(
+            secType="FOP", symbol="ES", currency="USD", multiplier="50"
+        )
         leg1_details = IBContractDetails(
             contract=leg1_contract,
             minTick=0.05,
             underSymbol="ES",
         )
 
-        leg2_contract = IBContract(secType="FOP", symbol="ES", currency="USD", multiplier="50")
+        leg2_contract = IBContract(
+            secType="FOP", symbol="ES", currency="USD", multiplier="50"
+        )
         leg2_details = IBContractDetails(
             contract=leg2_contract,
             minTick=0.05,
@@ -126,8 +141,12 @@ class TestSpreadInstrumentParsing:
         # Create mock contract details for legs
         leg_contract_details = []
         for leg_id, ratio in [(leg1_id, 1), (leg2_id, -2), (leg3_id, 1)]:
-            contract = IBContract(secType="OPT", symbol="SPY", currency="USD", multiplier="100")
-            details = IBContractDetails(contract=contract, minTick=0.01, underSymbol="SPY")
+            contract = IBContract(
+                secType="OPT", symbol="SPY", currency="USD", multiplier="100"
+            )
+            details = IBContractDetails(
+                contract=contract, minTick=0.01, underSymbol="SPY"
+            )
             leg_contract_details.append((details, ratio))
 
         instrument = parse_spread_instrument_id(spread_id, leg_contract_details)
@@ -155,8 +174,12 @@ class TestSpreadInstrumentParsing:
         # Create mock contract details for legs
         leg_contract_details = []
         for leg_id, ratio in [(leg1_id, 1), (leg2_id, -1), (leg3_id, 1), (leg4_id, -1)]:
-            contract = IBContract(secType="OPT", symbol="SPY", currency="USD", multiplier="100")
-            details = IBContractDetails(contract=contract, minTick=0.01, underSymbol="SPY")
+            contract = IBContract(
+                secType="OPT", symbol="SPY", currency="USD", multiplier="100"
+            )
+            details = IBContractDetails(
+                contract=contract, minTick=0.01, underSymbol="SPY"
+            )
             leg_contract_details.append((details, ratio))
 
         instrument = parse_spread_instrument_id(spread_id, leg_contract_details)
@@ -288,11 +311,19 @@ def test_spread_instrument_parsing_integration():
     spread_id = InstrumentId.new_spread([(leg1_id, 1), (leg2_id, -1)])
 
     # Create mock contract details
-    leg1_contract = IBContract(secType="OPT", symbol="SPY", currency="USD", multiplier="100")
-    leg1_details = IBContractDetails(contract=leg1_contract, minTick=0.01, underSymbol="SPY")
+    leg1_contract = IBContract(
+        secType="OPT", symbol="SPY", currency="USD", multiplier="100"
+    )
+    leg1_details = IBContractDetails(
+        contract=leg1_contract, minTick=0.01, underSymbol="SPY"
+    )
 
-    leg2_contract = IBContract(secType="OPT", symbol="SPY", currency="USD", multiplier="100")
-    leg2_details = IBContractDetails(contract=leg2_contract, minTick=0.01, underSymbol="SPY")
+    leg2_contract = IBContract(
+        secType="OPT", symbol="SPY", currency="USD", multiplier="100"
+    )
+    leg2_details = IBContractDetails(
+        contract=leg2_contract, minTick=0.01, underSymbol="SPY"
+    )
 
     leg_contract_details = [(leg1_details, 1), (leg2_details, -1)]
 

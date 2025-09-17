@@ -21,11 +21,21 @@ from nautilus_trader.adapters.binance.common.enums import BinanceAccountType
 from nautilus_trader.adapters.binance.config import BinanceDataClientConfig
 from nautilus_trader.adapters.binance.data import BinanceCommonDataClient
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesEnumParser
-from nautilus_trader.adapters.binance.futures.http.market import BinanceFuturesMarketHttpAPI
-from nautilus_trader.adapters.binance.futures.schemas.market import BinanceFuturesMarkPriceAllMsg
-from nautilus_trader.adapters.binance.futures.schemas.market import BinanceFuturesMarkPriceData
-from nautilus_trader.adapters.binance.futures.schemas.market import BinanceFuturesMarkPriceMsg
-from nautilus_trader.adapters.binance.futures.schemas.market import BinanceFuturesTradeMsg
+from nautilus_trader.adapters.binance.futures.http.market import (
+    BinanceFuturesMarketHttpAPI,
+)
+from nautilus_trader.adapters.binance.futures.schemas.market import (
+    BinanceFuturesMarkPriceAllMsg,
+)
+from nautilus_trader.adapters.binance.futures.schemas.market import (
+    BinanceFuturesMarkPriceData,
+)
+from nautilus_trader.adapters.binance.futures.schemas.market import (
+    BinanceFuturesMarkPriceMsg,
+)
+from nautilus_trader.adapters.binance.futures.schemas.market import (
+    BinanceFuturesTradeMsg,
+)
 from nautilus_trader.adapters.binance.futures.types import BinanceFuturesMarkPriceUpdate
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
 from nautilus_trader.cache.cache import Cache
@@ -117,7 +127,9 @@ class BinanceFuturesDataClient(BinanceCommonDataClient):
 
         # Websocket msgspec decoders
         self._decoder_futures_trade_msg = msgspec.json.Decoder(BinanceFuturesTradeMsg)
-        self._decoder_futures_mark_price_msg = msgspec.json.Decoder(BinanceFuturesMarkPriceMsg)
+        self._decoder_futures_mark_price_msg = msgspec.json.Decoder(
+            BinanceFuturesMarkPriceMsg
+        )
         self._decoder_futures_mark_price_all_msg = msgspec.json.Decoder(
             BinanceFuturesMarkPriceAllMsg,
         )
@@ -133,8 +145,10 @@ class BinanceFuturesDataClient(BinanceCommonDataClient):
             snapshot=True,
         )
         # Check if book buffer active
-        book_buffer: list[OrderBookDelta | OrderBookDeltas] | None = self._book_buffer.get(
-            instrument_id,
+        book_buffer: list[OrderBookDelta | OrderBookDeltas] | None = (
+            self._book_buffer.get(
+                instrument_id,
+            )
         )
         if book_buffer is not None:
             book_buffer.append(book_snapshot)

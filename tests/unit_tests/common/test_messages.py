@@ -64,7 +64,9 @@ def test_component_state_changed_event():
     )
 
     # Act, Assert
-    assert ComponentStateChanged.from_dict(ComponentStateChanged.to_dict(event)) == event
+    assert (
+        ComponentStateChanged.from_dict(ComponentStateChanged.to_dict(event)) == event
+    )
     assert (
         str(event)
         == f"ComponentStateChanged(trader_id=TESTER-000, component_id=MyActor-001, component_type=MyActor, state=RUNNING, config={{'do_something': True}}, event_id={uuid})"  # noqa
@@ -75,7 +77,9 @@ def test_component_state_changed_event():
     )
 
 
-def test_serializing_component_state_changed_with_unserializable_config_raises() -> None:
+def test_serializing_component_state_changed_with_unserializable_config_raises() -> (
+    None
+):
     # Arrange
     class MyType(ActorConfig, frozen=True):
         values: list[int]

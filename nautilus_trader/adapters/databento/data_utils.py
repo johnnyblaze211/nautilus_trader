@@ -73,7 +73,9 @@ def databento_definition_dates(start_time):
     return definition_date, used_end_date
 
 
-def databento_cost(symbols, start_time, end_time, schema, dataset="GLBX.MDP3", **kwargs) -> float:
+def databento_cost(
+    symbols, start_time, end_time, schema, dataset="GLBX.MDP3", **kwargs
+) -> float:
     """
     Calculate the cost of retrieving data from the Databento API for the given
     parameters.
@@ -184,10 +186,16 @@ def databento_data(
             **kwargs,
         )
     else:
-        definition = load_databento_data(definition_file) if load_databento_files_if_exist else None
+        definition = (
+            load_databento_data(definition_file)
+            if load_databento_files_if_exist
+            else None
+        )
 
     # downloading and saving data
-    data_file_name = f"{file_prefix}_{schema}_{start_time}_{end_time}.dbn.zst".replace(":", "h")
+    data_file_name = f"{file_prefix}_{schema}_{start_time}_{end_time}.dbn.zst".replace(
+        ":", "h"
+    )
     data_file = used_path / data_file_name
 
     if schema != "definition":
@@ -202,7 +210,11 @@ def databento_data(
                 **kwargs,
             )
         else:
-            data = load_databento_data(data_file) if load_databento_files_if_exist else None
+            data = (
+                load_databento_data(data_file)
+                if load_databento_files_if_exist
+                else None
+            )
     else:
         data = None
         data_file = None

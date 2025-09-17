@@ -18,7 +18,9 @@ from nautilus_trader.adapters.env import get_env_key
 
 def get_api_key(is_demo: bool, is_testnet: bool) -> str:
     if is_demo and is_testnet:
-        raise ValueError("Invalid configuration: both `is_demo` and `is_testnet` were True")
+        raise ValueError(
+            "Invalid configuration: both `is_demo` and `is_testnet` were True"
+        )
 
     if is_demo:
         key = get_env_key("BYBIT_DEMO_API_KEY")
@@ -43,7 +45,9 @@ def get_api_key(is_demo: bool, is_testnet: bool) -> str:
 
 def get_api_secret(is_demo: bool, is_testnet: bool) -> str:
     if is_demo and is_testnet:
-        raise ValueError("Invalid configuration: both `is_demo` and `is_testnet` were True")
+        raise ValueError(
+            "Invalid configuration: both `is_demo` and `is_testnet` were True"
+        )
 
     if is_demo:
         secret = get_env_key("BYBIT_DEMO_API_SECRET")

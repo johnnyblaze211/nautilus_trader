@@ -78,7 +78,10 @@ class CachePostgresAdapter(CacheDatabaseFacade):
 
     def load_currencies(self) -> dict[str, Currency]:
         currencies = self._backing.load_currencies()
-        return {currency.code: transform_currency_from_pyo3(currency) for currency in currencies}
+        return {
+            currency.code: transform_currency_from_pyo3(currency)
+            for currency in currencies
+        }
 
     def load_currency(self, code: str) -> Currency | None:
         currency_pyo3 = self._backing.load_currency(code)
@@ -122,7 +125,9 @@ class CachePostgresAdapter(CacheDatabaseFacade):
         self,
         client_order_id: ClientOrderId,
     ) -> nautilus_pyo3.OrderSnapshot | None:
-        client_order_id_pyo3 = nautilus_pyo3.ClientOrderId.from_str(str(client_order_id))
+        client_order_id_pyo3 = nautilus_pyo3.ClientOrderId.from_str(
+            str(client_order_id)
+        )
         snapshot_pyo3 = self._backing.load_order_snapshot(client_order_id_pyo3)
         return snapshot_pyo3
 

@@ -183,7 +183,9 @@ class LiveExecutionClient(ExecutionClient):
         asyncio.Task
 
         """
-        task_name = log_msg or getattr(coro, "__name__", None) or coro.__class__.__name__
+        task_name = (
+            log_msg or getattr(coro, "__name__", None) or coro.__class__.__name__
+        )
         self._log.debug(f"Creating task '{task_name}'")
         task = self._loop.create_task(
             coro,
@@ -284,9 +286,13 @@ class LiveExecutionClient(ExecutionClient):
 
     def modify_order(self, command: ModifyOrder) -> None:
         venue_order_id_str = (
-            " " + repr(command.venue_order_id) if command.venue_order_id is not None else ""
+            " " + repr(command.venue_order_id)
+            if command.venue_order_id is not None
+            else ""
         )
-        self._log.info(f"Modify {command.client_order_id!r}{venue_order_id_str}", LogColor.BLUE)
+        self._log.info(
+            f"Modify {command.client_order_id!r}{venue_order_id_str}", LogColor.BLUE
+        )
         self.create_task(
             self._modify_order(command),
             log_msg=f"modify_order: {command}",
@@ -294,16 +300,22 @@ class LiveExecutionClient(ExecutionClient):
 
     def cancel_order(self, command: CancelOrder) -> None:
         venue_order_id_str = (
-            " " + repr(command.venue_order_id) if command.venue_order_id is not None else ""
+            " " + repr(command.venue_order_id)
+            if command.venue_order_id is not None
+            else ""
         )
-        self._log.info(f"Cancel {command.client_order_id!r}{venue_order_id_str}", LogColor.BLUE)
+        self._log.info(
+            f"Cancel {command.client_order_id!r}{venue_order_id_str}", LogColor.BLUE
+        )
         self.create_task(
             self._cancel_order(command),
             log_msg=f"cancel_order: {command}",
         )
 
     def cancel_all_orders(self, command: CancelAllOrders) -> None:
-        side_str = f" {order_side_to_str(command.order_side)} " if command.order_side else " "
+        side_str = (
+            f" {order_side_to_str(command.order_side)} " if command.order_side else " "
+        )
         self._log.info(f"Cancel all{side_str}orders", LogColor.BLUE)
         self.create_task(
             self._cancel_all_orders(command),
@@ -516,7 +528,9 @@ class LiveExecutionClient(ExecutionClient):
             command_id=UUID4(),
             ts_init=self._clock.timestamp_ns(),
         )
-        report: OrderStatusReport | None = await self.generate_order_status_report(command)
+        report: OrderStatusReport | None = await self.generate_order_status_report(
+            command
+        )
 
         if report is None:
             self._log.warning("Did not receive `OrderStatusReport` from request")

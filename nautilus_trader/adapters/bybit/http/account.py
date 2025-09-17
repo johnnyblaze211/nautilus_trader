@@ -15,7 +15,8 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
+from typing import Any
 
 from nautilus_trader.adapters.bybit.common.enums import BybitOrderSide
 from nautilus_trader.adapters.bybit.common.enums import BybitOrderType
@@ -25,44 +26,116 @@ from nautilus_trader.adapters.bybit.common.enums import BybitTimeInForce
 from nautilus_trader.adapters.bybit.common.enums import BybitTpSlMode
 from nautilus_trader.adapters.bybit.common.enums import BybitTriggerDirection
 from nautilus_trader.adapters.bybit.common.enums import BybitTriggerType
-from nautilus_trader.adapters.bybit.endpoints.account.fee_rate import BybitFeeRateEndpoint
-from nautilus_trader.adapters.bybit.endpoints.account.fee_rate import BybitFeeRateGetParams
-from nautilus_trader.adapters.bybit.endpoints.account.info import BybitAccountInfoEndpoint
-from nautilus_trader.adapters.bybit.endpoints.account.position_info import BybitPositionInfoEndpoint
-from nautilus_trader.adapters.bybit.endpoints.account.position_info import PositionInfoGetParams
-from nautilus_trader.adapters.bybit.endpoints.account.set_leverage import BybitSetLeverageEndpoint
-from nautilus_trader.adapters.bybit.endpoints.account.set_leverage import BybitSetLeveragePostParams
+from nautilus_trader.adapters.bybit.endpoints.account.fee_rate import (
+    BybitFeeRateEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.fee_rate import (
+    BybitFeeRateGetParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.info import (
+    BybitAccountInfoEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.position_info import (
+    BybitPositionInfoEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.position_info import (
+    PositionInfoGetParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.set_leverage import (
+    BybitSetLeverageEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.set_leverage import (
+    BybitSetLeveragePostParams,
+)
 
 # fmt: off
-from nautilus_trader.adapters.bybit.endpoints.account.set_margin_mode import BybitSetMarginModeEndpoint
-from nautilus_trader.adapters.bybit.endpoints.account.set_margin_mode import BybitSetMarginModePostParams
-from nautilus_trader.adapters.bybit.endpoints.account.switch_mode import BybitSwitchModeEndpoint
-from nautilus_trader.adapters.bybit.endpoints.account.switch_mode import BybitSwitchModePostParams
-from nautilus_trader.adapters.bybit.endpoints.account.wallet_balance import BybitWalletBalanceEndpoint
-from nautilus_trader.adapters.bybit.endpoints.account.wallet_balance import BybitWalletBalanceGetParams
-from nautilus_trader.adapters.bybit.endpoints.trade.amend_order import BybitAmendOrderEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.amend_order import BybitAmendOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_amend_order import BybitBatchAmendOrderEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import BybitBatchCancelOrder
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import BybitBatchCancelOrderEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import BybitBatchCancelOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import BybitBatchPlaceOrder
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import BybitBatchPlaceOrderEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import BybitBatchPlaceOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.cancel_all_orders import BybitCancelAllOrdersEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.cancel_all_orders import BybitCancelAllOrdersPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.cancel_order import BybitCancelOrderEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.cancel_order import BybitCancelOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.open_orders import BybitOpenOrdersEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.open_orders import BybitOpenOrdersGetParams
-from nautilus_trader.adapters.bybit.endpoints.trade.order_history import BybitOrderHistoryEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.order_history import BybitOrderHistoryGetParams
-from nautilus_trader.adapters.bybit.endpoints.trade.place_order import BybitPlaceOrderEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.place_order import BybitPlaceOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.set_trading_stop import BybitSetTradingStopEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.set_trading_stop import BybitSetTradingStopPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.trade_history import BybitTradeHistoryEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.trade_history import BybitTradeHistoryGetParams
+from nautilus_trader.adapters.bybit.endpoints.account.set_margin_mode import (
+    BybitSetMarginModeEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.set_margin_mode import (
+    BybitSetMarginModePostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.switch_mode import (
+    BybitSwitchModeEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.switch_mode import (
+    BybitSwitchModePostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.wallet_balance import (
+    BybitWalletBalanceEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.account.wallet_balance import (
+    BybitWalletBalanceGetParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.amend_order import (
+    BybitAmendOrderEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.amend_order import (
+    BybitAmendOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_amend_order import (
+    BybitBatchAmendOrderEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import (
+    BybitBatchCancelOrder,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import (
+    BybitBatchCancelOrderEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import (
+    BybitBatchCancelOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import (
+    BybitBatchPlaceOrder,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import (
+    BybitBatchPlaceOrderEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import (
+    BybitBatchPlaceOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.cancel_all_orders import (
+    BybitCancelAllOrdersEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.cancel_all_orders import (
+    BybitCancelAllOrdersPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.cancel_order import (
+    BybitCancelOrderEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.cancel_order import (
+    BybitCancelOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.open_orders import (
+    BybitOpenOrdersEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.open_orders import (
+    BybitOpenOrdersGetParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.order_history import (
+    BybitOrderHistoryEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.order_history import (
+    BybitOrderHistoryGetParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.place_order import (
+    BybitPlaceOrderEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.place_order import (
+    BybitPlaceOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.set_trading_stop import (
+    BybitSetTradingStopEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.set_trading_stop import (
+    BybitSetTradingStopPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.trade_history import (
+    BybitTradeHistoryEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.trade_history import (
+    BybitTradeHistoryGetParams,
+)
 from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
 from nautilus_trader.adapters.bybit.schemas.order import BybitBatchCancelOrderResponse
 from nautilus_trader.adapters.bybit.schemas.order import BybitBatchPlaceOrderResponse
@@ -74,12 +147,20 @@ if TYPE_CHECKING:
     from nautilus_trader.adapters.bybit.common.enums import BybitMarginMode
     from nautilus_trader.adapters.bybit.common.enums import BybitPositionMode
     from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
-    from nautilus_trader.adapters.bybit.schemas.account.balance import BybitWalletBalance
+    from nautilus_trader.adapters.bybit.schemas.account.balance import (
+        BybitWalletBalance,
+    )
     from nautilus_trader.adapters.bybit.schemas.account.fee_rate import BybitFeeRate
     from nautilus_trader.adapters.bybit.schemas.account.info import BybitAccountInfo
-    from nautilus_trader.adapters.bybit.schemas.account.set_leverage import BybitSetLeverageResponse
-    from nautilus_trader.adapters.bybit.schemas.account.set_margin_mode import BybitSetMarginModeResponse
-    from nautilus_trader.adapters.bybit.schemas.account.switch_mode import BybitSwitchModeResponse
+    from nautilus_trader.adapters.bybit.schemas.account.set_leverage import (
+        BybitSetLeverageResponse,
+    )
+    from nautilus_trader.adapters.bybit.schemas.account.set_margin_mode import (
+        BybitSetMarginModeResponse,
+    )
+    from nautilus_trader.adapters.bybit.schemas.account.switch_mode import (
+        BybitSwitchModeResponse,
+    )
     from nautilus_trader.adapters.bybit.schemas.order import BybitAmendOrder
     from nautilus_trader.adapters.bybit.schemas.order import BybitCancelOrderResponse
     from nautilus_trader.adapters.bybit.schemas.order import BybitOrder
@@ -105,32 +186,58 @@ class BybitAccountHttpAPI:
         self.default_settle_coin = "USDT"
 
         self._endpoint_fee_rate = BybitFeeRateEndpoint(client, self.base_endpoint)
-        self._endpoint_wallet_balance = BybitWalletBalanceEndpoint(client, self.base_endpoint)
-        self._endpoint_position_info = BybitPositionInfoEndpoint(client, self.base_endpoint)
+        self._endpoint_wallet_balance = BybitWalletBalanceEndpoint(
+            client, self.base_endpoint
+        )
+        self._endpoint_position_info = BybitPositionInfoEndpoint(
+            client, self.base_endpoint
+        )
         self._endpoint_open_orders = BybitOpenOrdersEndpoint(client, self.base_endpoint)
-        self._endpoint_order_history = BybitOrderHistoryEndpoint(client, self.base_endpoint)
-        self._endpoint_trade_history = BybitTradeHistoryEndpoint(client, self.base_endpoint)
+        self._endpoint_order_history = BybitOrderHistoryEndpoint(
+            client, self.base_endpoint
+        )
+        self._endpoint_trade_history = BybitTradeHistoryEndpoint(
+            client, self.base_endpoint
+        )
         self._endpoint_place_order = BybitPlaceOrderEndpoint(client, self.base_endpoint)
-        self._endpoint_set_trading_stop = BybitSetTradingStopEndpoint(client, self.base_endpoint)
+        self._endpoint_set_trading_stop = BybitSetTradingStopEndpoint(
+            client, self.base_endpoint
+        )
         self._endpoint_amend_order = BybitAmendOrderEndpoint(client, self.base_endpoint)
-        self._endpoint_cancel_order = BybitCancelOrderEndpoint(client, self.base_endpoint)
-        self._endpoint_cancel_all_orders = BybitCancelAllOrdersEndpoint(client, self.base_endpoint)
-        self._endpoint_batch_place_order = BybitBatchPlaceOrderEndpoint(client, self.base_endpoint)
-        self._endpoint_batch_amend_order = BybitBatchAmendOrderEndpoint(client, self.base_endpoint)
+        self._endpoint_cancel_order = BybitCancelOrderEndpoint(
+            client, self.base_endpoint
+        )
+        self._endpoint_cancel_all_orders = BybitCancelAllOrdersEndpoint(
+            client, self.base_endpoint
+        )
+        self._endpoint_batch_place_order = BybitBatchPlaceOrderEndpoint(
+            client, self.base_endpoint
+        )
+        self._endpoint_batch_amend_order = BybitBatchAmendOrderEndpoint(
+            client, self.base_endpoint
+        )
         self._endpoint_batch_cancel_order = BybitBatchCancelOrderEndpoint(
             client,
             self.base_endpoint,
         )
-        self._endpoint_account_info = BybitAccountInfoEndpoint(client, self.base_endpoint)
-        self._endpoint_set_margin_mode = BybitSetMarginModeEndpoint(client, self.base_endpoint)
-        self._endpoint_set_leverage = BybitSetLeverageEndpoint(client, self.base_endpoint)
+        self._endpoint_account_info = BybitAccountInfoEndpoint(
+            client, self.base_endpoint
+        )
+        self._endpoint_set_margin_mode = BybitSetMarginModeEndpoint(
+            client, self.base_endpoint
+        )
+        self._endpoint_set_leverage = BybitSetLeverageEndpoint(
+            client, self.base_endpoint
+        )
         self._endpoint_switch_mode = BybitSwitchModeEndpoint(client, self.base_endpoint)
 
     async def fetch_account_info(self) -> BybitAccountInfo:
         response = await self._endpoint_account_info.get()
         return response.result
 
-    async def set_margin_mode(self, margin_mode: BybitMarginMode) -> BybitSetMarginModeResponse:
+    async def set_margin_mode(
+        self, margin_mode: BybitMarginMode
+    ) -> BybitSetMarginModeResponse:
         response = await self._endpoint_set_margin_mode.post(
             BybitSetMarginModePostParams(
                 setMarginMode=margin_mode,
@@ -223,7 +330,10 @@ class BybitAccountHttpAPI:
             )
             all_positions.extend(response.result.list)
 
-            if hasattr(response.result, "nextPageCursor") and response.result.nextPageCursor:
+            if (
+                hasattr(response.result, "nextPageCursor")
+                and response.result.nextPageCursor
+            ):
                 cursor = response.result.nextPageCursor
             else:
                 break
@@ -346,12 +456,24 @@ class BybitAccountHttpAPI:
                 triggerPrice=trigger_price,
                 triggerDirection=trigger_direction,
                 triggerBy=trigger_type,
-                takeProfit=tp_trigger_price if product_type == BybitProductType.SPOT else None,
-                stopLoss=sl_trigger_price if product_type == BybitProductType.SPOT else None,
-                slTriggerBy=trigger_type if product_type != BybitProductType.SPOT else None,
-                tpTriggerBy=trigger_type if product_type != BybitProductType.SPOT else None,
-                tpLimitPrice=tp_limit_price if product_type != BybitProductType.SPOT else None,
-                slLimitPrice=sl_limit_price if product_type != BybitProductType.SPOT else None,
+                takeProfit=(
+                    tp_trigger_price if product_type == BybitProductType.SPOT else None
+                ),
+                stopLoss=(
+                    sl_trigger_price if product_type == BybitProductType.SPOT else None
+                ),
+                slTriggerBy=(
+                    trigger_type if product_type != BybitProductType.SPOT else None
+                ),
+                tpTriggerBy=(
+                    trigger_type if product_type != BybitProductType.SPOT else None
+                ),
+                tpLimitPrice=(
+                    tp_limit_price if product_type != BybitProductType.SPOT else None
+                ),
+                slLimitPrice=(
+                    sl_limit_price if product_type != BybitProductType.SPOT else None
+                ),
                 tpOrderType=tp_order_type,
                 slOrderType=sl_order_type,
             ),
@@ -382,8 +504,12 @@ class BybitAccountHttpAPI:
                 takeProfit=take_profit,
                 stopLoss=stop_loss,
                 trailingStop=trailing_offset,
-                slTriggerBy=trigger_type if product_type != BybitProductType.SPOT else None,
-                tpTriggerBy=trigger_type if product_type != BybitProductType.SPOT else None,
+                slTriggerBy=(
+                    trigger_type if product_type != BybitProductType.SPOT else None
+                ),
+                tpTriggerBy=(
+                    trigger_type if product_type != BybitProductType.SPOT else None
+                ),
                 activePrice=None,  # Immediately active
                 tpslMode=tpsl_mode,
                 tpSize=tp_quantity,

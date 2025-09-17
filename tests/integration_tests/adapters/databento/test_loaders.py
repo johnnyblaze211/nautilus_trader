@@ -132,7 +132,9 @@ def test_loader_definition_glbx_options() -> None:
     instrument = data[0]
     assert instrument.id == InstrumentId.from_str("ESM4 C4250.GLBX")
     assert instrument.raw_symbol == Symbol("ESM4 C4250")
-    assert instrument.asset_class == AssetClass.COMMODITY  # <-- TODO: This should be EQUITY
+    assert (
+        instrument.asset_class == AssetClass.COMMODITY
+    )  # <-- TODO: This should be EQUITY
     assert instrument.instrument_class == InstrumentClass.OPTION
     assert instrument.quote_currency == USD
     assert not instrument.is_inverse
@@ -162,7 +164,9 @@ def test_loader_definition_opra_pillar() -> None:
     assert isinstance(data[0], OptionContract)
     assert isinstance(data[1], OptionContract)
     instrument = data[0]
-    assert instrument.id == InstrumentId.from_str("SPY   240119P00340000.OPRA")  # OSS symbol
+    assert instrument.id == InstrumentId.from_str(
+        "SPY   240119P00340000.OPRA"
+    )  # OSS symbol
     assert instrument.raw_symbol == Symbol("SPY   240119P00340000")
     assert instrument.asset_class == AssetClass.EQUITY
     assert instrument.instrument_class == InstrumentClass.OPTION
@@ -582,11 +586,15 @@ def test_loader_trades_pyo3() -> None:
 def test_loader_with_trades_large() -> None:
     # Arrange
     loader = DatabentoDataLoader()
-    path = DATABENTO_TEST_DATA_DIR / "temp" / "tsla-xnas-20240107-20240206.trades.dbn.zst"
+    path = (
+        DATABENTO_TEST_DATA_DIR / "temp" / "tsla-xnas-20240107-20240206.trades.dbn.zst"
+    )
     instrument_id = InstrumentId.from_str("TSLA.XNAS")
 
     # Act
-    data = loader.from_dbn_file(path, instrument_id=instrument_id, as_legacy_cython=True)
+    data = loader.from_dbn_file(
+        path, instrument_id=instrument_id, as_legacy_cython=True
+    )
 
     # Assert
     assert len(data) == 6_885_435
@@ -620,7 +628,11 @@ def test_loader_ohlcv_1s() -> None:
     ("bars_timestamp_on_close", "expected_ts_event", "expected_ts_init"),
     [
         (True, 1715248860000000000, 1715248860000000000),  # Both close time
-        (False, 1715248800000000000, 1715248860000000000),  # ts_event=open, ts_init=close
+        (
+            False,
+            1715248800000000000,
+            1715248860000000000,
+        ),  # ts_event=open, ts_init=close
     ],
 )
 def test_loader_with_ohlcv_1m(
@@ -659,7 +671,11 @@ def test_loader_with_ohlcv_1m(
     ("bars_timestamp_on_close", "expected_ts_event", "expected_ts_init"),
     [
         (True, 1715248860000000000, 1715248860000000000),  # Close time (default)
-        (False, 1715248800000000000, 1715248860000000000),  # ts_event=open, ts_init=close
+        (
+            False,
+            1715248800000000000,
+            1715248860000000000,
+        ),  # ts_event=open, ts_init=close
     ],
 )
 def test_loader_with_ohlcv_1m_and_xcme(
@@ -670,7 +686,10 @@ def test_loader_with_ohlcv_1m_and_xcme(
     # Arrange
     loader = DatabentoDataLoader()
     definition_path = (
-        DATABENTO_TEST_DATA_DIR / "options_catalog" / "databento" / "futures_definition.dbn.zst"
+        DATABENTO_TEST_DATA_DIR
+        / "options_catalog"
+        / "databento"
+        / "futures_definition.dbn.zst"
     )
     path = (
         DATABENTO_TEST_DATA_DIR
@@ -732,7 +751,9 @@ def test_loader_with_ohlcv_1m_pyo3(
     assert isinstance(data[0], nautilus_pyo3.Bar)
     assert isinstance(data[1], nautilus_pyo3.Bar)
     bar = data[0]
-    assert bar.bar_type == nautilus_pyo3.BarType.from_str("ESH1.GLBX-1-MINUTE-LAST-EXTERNAL")
+    assert bar.bar_type == nautilus_pyo3.BarType.from_str(
+        "ESH1.GLBX-1-MINUTE-LAST-EXTERNAL"
+    )
     assert bar.open == nautilus_pyo3.Price.from_str("3720.25")
     assert bar.ts_event == expected_ts_event
     assert bar.ts_init == expected_ts_init
@@ -1007,7 +1028,9 @@ def test_load_status_pyo3_large() -> None:
 
     # Act (conversion to Cython objects creates significant overhead)
     instrument_id = InstrumentId.from_str("SPY.XNAS")
-    data = loader.from_dbn_file(path, instrument_id=instrument_id, as_legacy_cython=False)
+    data = loader.from_dbn_file(
+        path, instrument_id=instrument_id, as_legacy_cython=False
+    )
 
     # Assert
     assert len(data) == 4_673_675

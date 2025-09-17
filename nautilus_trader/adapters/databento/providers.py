@@ -128,7 +128,9 @@ class DatabentoInstrumentProvider(InstrumentProvider):
             bars_timestamp_on_close=True,  # Default as only subscribing for instruments
         )
 
-        parent_symbols = list(filters.get("parent_symbols", [])) if filters is not None else None
+        parent_symbols = (
+            list(filters.get("parent_symbols", [])) if filters is not None else None
+        )
         pyo3_instruments = []
 
         success_msg = "instrument(s) received and decoded"
@@ -156,7 +158,10 @@ class DatabentoInstrumentProvider(InstrumentProvider):
         live_client.subscribe(
             schema=DatabentoSchema.DEFINITION.value,
             instrument_ids=sorted(  # type: ignore[type-var]
-                [instrument_id_to_pyo3(instrument_id) for instrument_id in instrument_ids],
+                [
+                    instrument_id_to_pyo3(instrument_id)
+                    for instrument_id in instrument_ids
+                ],
             ),
             start=0,  # From start of current week (latest definitions)
         )
@@ -166,7 +171,9 @@ class DatabentoInstrumentProvider(InstrumentProvider):
             live_client.subscribe(
                 schema=DatabentoSchema.DEFINITION.value,
                 instrument_ids=[
-                    instrument_id_to_pyo3(InstrumentId.from_str(f"{parent_symbol}.GLBX"))
+                    instrument_id_to_pyo3(
+                        InstrumentId.from_str(f"{parent_symbol}.GLBX")
+                    )
                     for parent_symbol in parent_symbols
                 ],
                 start=0,  # From start of current week (latest definitions)
@@ -181,12 +188,16 @@ class DatabentoInstrumentProvider(InstrumentProvider):
                 if started_receiving and (
                     self._clock.timestamp() - last_received_time > timeout_secs
                 ):
-                    raise asyncio.CancelledError(f"{len(pyo3_instruments)} {success_msg}")
+                    raise asyncio.CancelledError(
+                        f"{len(pyo3_instruments)} {success_msg}"
+                    )
 
         try:
             await asyncio.gather(
                 asyncio.ensure_future(
-                    live_client.start(callback=receive_instruments, callback_pyo3=print),
+                    live_client.start(
+                        callback=receive_instruments, callback_pyo3=print
+                    ),
                 ),
                 monitor_inactivity(),
             )
@@ -271,7 +282,9 @@ class DatabentoInstrumentProvider(InstrumentProvider):
         # placeholder to conform to instrument ID conventions.
         pyo3_instruments = await self._http_client.get_range_instruments(
             dataset=dataset,
-            instrument_ids=[instrument_id_to_pyo3(InstrumentId.from_str(f"{ALL_SYMBOLS}.NULL"))],
+            instrument_ids=[
+                instrument_id_to_pyo3(InstrumentId.from_str(f"{ALL_SYMBOLS}.NULL"))
+            ],
             start=pd.Timestamp(start, tz=pytz.utc).value,
             end=pd.Timestamp(end, tz=pytz.utc).value if end is not None else None,
         )

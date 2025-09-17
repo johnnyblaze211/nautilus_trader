@@ -70,17 +70,23 @@ class InteractiveBrokersClientConnectionMixin(BaseMixin):
         except ConnectionError:
             self._log.error("Connection failed")
             if self._eclient.wrapper:
-                self._eclient.wrapper.error(NO_VALID_ID, CONNECT_FAIL.code(), CONNECT_FAIL.msg())
+                self._eclient.wrapper.error(
+                    NO_VALID_ID, CONNECT_FAIL.code(), CONNECT_FAIL.msg()
+                )
         except TimeoutError:
             self._log.warning("Connection timeout")
             if self._eclient.wrapper:
-                self._eclient.wrapper.error(NO_VALID_ID, CONNECT_FAIL.code(), CONNECT_FAIL.msg())
+                self._eclient.wrapper.error(
+                    NO_VALID_ID, CONNECT_FAIL.code(), CONNECT_FAIL.msg()
+                )
         except asyncio.CancelledError:
             self._log.info("Connection cancelled")
         except Exception as e:
             self._log.exception("Connection failed", e)
             if self._eclient.wrapper:
-                self._eclient.wrapper.error(NO_VALID_ID, CONNECT_FAIL.code(), CONNECT_FAIL.msg())
+                self._eclient.wrapper.error(
+                    NO_VALID_ID, CONNECT_FAIL.code(), CONNECT_FAIL.msg()
+                )
 
     def _msgspec_decoding_hook(self, byte_data: bytes) -> str:
         """
@@ -101,7 +107,9 @@ class InteractiveBrokersClientConnectionMixin(BaseMixin):
             self._eclient.disconnect()
 
             if self._is_ib_connected.is_set():
-                self._log.debug("`_is_ib_connected` unset by `_disconnect`", LogColor.BLUE)
+                self._log.debug(
+                    "`_is_ib_connected` unset by `_disconnect`", LogColor.BLUE
+                )
                 self._is_ib_connected.clear()
 
             self._log.info("Disconnected from Interactive Brokers API")
@@ -239,5 +247,7 @@ class InteractiveBrokersClientConnectionMixin(BaseMixin):
                 future.set_exception(ConnectionError("Socket disconnected."))
 
         if self._is_ib_connected.is_set():
-            self._log.debug("`_is_ib_connected` unset by `connectionClosed`", LogColor.BLUE)
+            self._log.debug(
+                "`_is_ib_connected` unset by `connectionClosed`", LogColor.BLUE
+            )
             self._is_ib_connected.clear()

@@ -22,7 +22,9 @@ import msgspec
 from nautilus_trader.adapters.dydx.common.enums import DYDXEndpointType
 from nautilus_trader.adapters.dydx.endpoints.endpoint import DYDXHttpEndpoint
 from nautilus_trader.adapters.dydx.http.client import DYDXHttpClient
-from nautilus_trader.adapters.dydx.schemas.ws import DYDXWsOrderbookMessageSnapshotContents
+from nautilus_trader.adapters.dydx.schemas.ws import (
+    DYDXWsOrderbookMessageSnapshotContents,
+)
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 

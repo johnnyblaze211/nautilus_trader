@@ -45,12 +45,16 @@ class TestMoney:
         with pytest.raises(TypeError):
             Money(1.0, None)
 
-    def test_instantiate_with_value_exceeding_positive_limit_raises_value_error(self) -> None:
+    def test_instantiate_with_value_exceeding_positive_limit_raises_value_error(
+        self,
+    ) -> None:
         # Arrange, Act, Assert
         with pytest.raises(ValueError):
             Money(MONEY_MAX + 1, currency=USD)
 
-    def test_instantiate_with_value_exceeding_negative_limit_raises_value_error(self) -> None:
+    def test_instantiate_with_value_exceeding_negative_limit_raises_value_error(
+        self,
+    ) -> None:
         # Arrange, Act, Assert
         with pytest.raises(ValueError):
             Money(MONEY_MIN - 1, currency=USD)
@@ -293,7 +297,9 @@ class TestMoney:
     )
     def test_from_str_invalid_input_raises_value_error(self, invalid_input):
         # Arrange, Act, Assert
-        with pytest.raises(Exception):  # Various exceptions can be raised for invalid input
+        with pytest.raises(
+            Exception
+        ):  # Various exceptions can be raised for invalid input
             Money.from_str(invalid_input)
 
     def test_from_str_precision_handling(self):

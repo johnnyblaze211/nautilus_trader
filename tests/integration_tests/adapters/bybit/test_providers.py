@@ -112,7 +112,9 @@ class TestBybitInstrumentProvider:
 
     @pytest.mark.asyncio()
     async def test_linear_load_all_async(self, monkeypatch):
-        instrument_provider = self.get_target_instrument_provider([BybitProductType.LINEAR])
+        instrument_provider = self.get_target_instrument_provider(
+            [BybitProductType.LINEAR]
+        )
         instrument_response = pkgutil.get_data(
             "tests.integration_tests.adapters.bybit.resources.http_responses.linear",
             "instruments.json",

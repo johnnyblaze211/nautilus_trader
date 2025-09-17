@@ -281,9 +281,15 @@ class TestSimulatedExchangeContingencyAdvancedOrders:
 
         # Assert: Entry order should be ACCEPTED, TP/SL should be PENDING_UPDATE after modification
         assert entry_order.status == OrderStatus.ACCEPTED
-        assert sl_order.status == OrderStatus.PENDING_UPDATE  # Modified while entry not filled
-        assert tp_order.status == OrderStatus.PENDING_UPDATE  # Modified while entry not filled
-        assert sl_order.trigger_price == new_sl_trigger_price  # Modification should work
+        assert (
+            sl_order.status == OrderStatus.PENDING_UPDATE
+        )  # Modified while entry not filled
+        assert (
+            tp_order.status == OrderStatus.PENDING_UPDATE
+        )  # Modified while entry not filled
+        assert (
+            sl_order.trigger_price == new_sl_trigger_price
+        )  # Modification should work
         assert tp_order.price == new_tp_price  # Modification should work
 
     def test_submit_bracket_market_entry_with_immediate_cancel(self):

@@ -208,9 +208,18 @@ class TestOrderEmulatorWithOrderLists:
 
         # Assert
         assert len(self.emulator.get_submit_order_commands()) == 3
-        assert stop1 in self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
-        assert stop2 in self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
-        assert stop3 in self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        assert (
+            stop1
+            in self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        )
+        assert (
+            stop2
+            in self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        )
+        assert (
+            stop3
+            in self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        )
 
     def test_submit_bracket_order_with_limit_entry_then_emulates_sl_tp(self) -> None:
         # Arrange
@@ -234,11 +243,15 @@ class TestOrderEmulatorWithOrderLists:
 
         # Assert
         assert len(self.emulator.get_submit_order_commands()) == 1
-        assert self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders() == [
+        assert self.emulator.get_matching_core(
+            ETHUSDT_PERP_BINANCE.id
+        ).get_orders() == [
             bracket.first,
         ]
 
-    def test_submit_bracket_order_with_stop_limit_entry_then_emulates_sl_tp(self) -> None:
+    def test_submit_bracket_order_with_stop_limit_entry_then_emulates_sl_tp(
+        self,
+    ) -> None:
         # Arrange
         bracket = self.strategy.order_factory.bracket(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -262,7 +275,9 @@ class TestOrderEmulatorWithOrderLists:
 
         # Assert
         assert len(self.emulator.get_submit_order_commands()) == 1
-        assert self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders() == [
+        assert self.emulator.get_matching_core(
+            ETHUSDT_PERP_BINANCE.id
+        ).get_orders() == [
             bracket.first,
         ]
 
@@ -324,7 +339,9 @@ class TestOrderEmulatorWithOrderLists:
         )
 
         # Assert
-        matching_core = self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        matching_core = self.emulator.get_matching_core(
+            ETHUSDT_PERP_BINANCE.id
+        ).get_orders()
         assert len(self.emulator.get_submit_order_commands()) == 3
         assert bracket.orders[0] not in matching_core
         assert bracket.orders[1] in matching_core
@@ -373,7 +390,9 @@ class TestOrderEmulatorWithOrderLists:
         )
 
         # Assert
-        matching_core = self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        matching_core = self.emulator.get_matching_core(
+            ETHUSDT_PERP_BINANCE.id
+        ).get_orders()
         assert len(self.emulator.get_submit_order_commands()) == 3
         assert bracket.orders[0] not in matching_core
         assert bracket.orders[1] in matching_core
@@ -424,7 +443,9 @@ class TestOrderEmulatorWithOrderLists:
         )
 
         # Assert
-        matching_core = self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        matching_core = self.emulator.get_matching_core(
+            ETHUSDT_PERP_BINANCE.id
+        ).get_orders()
         assert len(self.emulator.get_submit_order_commands()) == 3
         assert bracket.orders[0] not in matching_core
         assert bracket.orders[1] in matching_core
@@ -435,7 +456,9 @@ class TestOrderEmulatorWithOrderLists:
         assert bracket.orders[1].position_id == position_id
         assert bracket.orders[2].position_id == position_id
 
-    def test_submit_bracket_when_stop_limit_entry_filled_then_emulates_sl_and_tp(self) -> None:
+    def test_submit_bracket_when_stop_limit_entry_filled_then_emulates_sl_and_tp(
+        self,
+    ) -> None:
         # Arrange
         bracket = self.strategy.order_factory.bracket(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -474,7 +497,9 @@ class TestOrderEmulatorWithOrderLists:
         self.data_engine.process(tick)
 
         # Assert
-        matching_core = self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        matching_core = self.emulator.get_matching_core(
+            ETHUSDT_PERP_BINANCE.id
+        ).get_orders()
         assert len(self.emulator.get_submit_order_commands()) == 0
         assert bracket.orders[0] not in matching_core
         assert bracket.orders[1] not in matching_core
@@ -705,7 +730,9 @@ class TestOrderEmulatorWithOrderLists:
         )
 
         # Assert
-        matching_core = self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders()
+        matching_core = self.emulator.get_matching_core(
+            ETHUSDT_PERP_BINANCE.id
+        ).get_orders()
         assert bracket.orders[0] in matching_core
         assert self.exec_engine.command_count == 0
         assert bracket.orders[0].quantity == new_quantity
@@ -1158,7 +1185,9 @@ class TestOrderEmulatorWithOrderLists:
 
         # Assert
         assert len(self.emulator.get_submit_order_commands()) == 1
-        assert self.emulator.get_matching_core(ETHUSDT_PERP_BINANCE.id).get_orders() == [
+        assert self.emulator.get_matching_core(
+            ETHUSDT_PERP_BINANCE.id
+        ).get_orders() == [
             bracket.first,
         ]
         assert bracket.orders[0].status == OrderStatus.EMULATED

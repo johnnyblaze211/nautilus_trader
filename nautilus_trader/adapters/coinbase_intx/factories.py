@@ -20,7 +20,9 @@ from nautilus_trader.adapters.coinbase_intx.config import CoinbaseIntxDataClient
 from nautilus_trader.adapters.coinbase_intx.config import CoinbaseIntxExecClientConfig
 from nautilus_trader.adapters.coinbase_intx.data import CoinbaseIntxDataClient
 from nautilus_trader.adapters.coinbase_intx.execution import CoinbaseIntxExecutionClient
-from nautilus_trader.adapters.coinbase_intx.providers import CoinbaseIntxInstrumentProvider
+from nautilus_trader.adapters.coinbase_intx.providers import (
+    CoinbaseIntxInstrumentProvider,
+)
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.common.component import MessageBus

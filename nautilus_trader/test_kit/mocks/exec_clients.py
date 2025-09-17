@@ -198,7 +198,9 @@ class MockLiveExecutionClient(LiveExecutionClient):
         self._set_account_id(AccountId(f"{client_id}-001"))
         self._order_status_reports: dict[VenueOrderId, OrderStatusReport] = {}
         self._trades_reports: dict[VenueOrderId, list[FillReport]] = {}
-        self._position_status_reports: dict[InstrumentId, list[PositionStatusReport]] = {}
+        self._position_status_reports: dict[
+            InstrumentId, list[PositionStatusReport]
+        ] = {}
 
         self.calls: list[str] = []
         self.commands: list[TradingCommand] = []
@@ -212,7 +214,9 @@ class MockLiveExecutionClient(LiveExecutionClient):
     def add_order_status_report(self, report: OrderStatusReport) -> None:
         self._order_status_reports[report.venue_order_id] = report
 
-    def add_fill_reports(self, venue_order_id: VenueOrderId, trades: list[FillReport]) -> None:
+    def add_fill_reports(
+        self, venue_order_id: VenueOrderId, trades: list[FillReport]
+    ) -> None:
         self._trades_reports[venue_order_id] = trades
 
     def add_position_status_report(self, report: PositionStatusReport) -> None:

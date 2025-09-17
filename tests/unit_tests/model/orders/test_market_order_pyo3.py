@@ -103,7 +103,10 @@ def test_would_reduce_only_with_various_values_returns_expected(
     )
 
     # Act, Assert
-    assert order.would_reduce_only(side=position_side, position_qty=position_qty) == expected
+    assert (
+        order.would_reduce_only(side=position_side, position_qty=position_qty)
+        == expected
+    )
 
 
 def test_market_order_with_quantity_zero_raises_value_error():
@@ -142,6 +145,8 @@ def test_pyo3_cython_conversion():
     market_order_pyo3_dict = market_order_pyo3.to_dict()
     market_order_cython = MarketOrder.from_pyo3(market_order_pyo3)
     market_order_cython_dict = MarketOrder.to_dict(market_order_cython)
-    market_order_pyo3_back = nautilus_pyo3.MarketOrder.from_dict(market_order_cython_dict)
+    market_order_pyo3_back = nautilus_pyo3.MarketOrder.from_dict(
+        market_order_cython_dict
+    )
     assert market_order_pyo3_dict == market_order_cython_dict
     assert market_order_pyo3 == market_order_pyo3_back

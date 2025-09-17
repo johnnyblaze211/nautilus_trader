@@ -13,7 +13,10 @@
 #  limitations under the License.
 # -------------------------------------------------------------------------------------------------
 
-from typing import Any, Final, Generic, TypeVar
+from typing import Any
+from typing import Final
+from typing import Generic
+from typing import TypeVar
 
 import msgspec
 

@@ -31,8 +31,12 @@ def client_order_id_helper(cache):
     return ClientOrderIdHelper(cache=cache)
 
 
-@pytest.mark.parametrize("order_string", ["839ca109-f2c8-46b5-88f2-345eeeb01058", str(12345)])
-def test_generate_client_order_id_int_uuid(client_order_id_helper, order_string) -> None:
+@pytest.mark.parametrize(
+    "order_string", ["839ca109-f2c8-46b5-88f2-345eeeb01058", str(12345)]
+)
+def test_generate_client_order_id_int_uuid(
+    client_order_id_helper, order_string
+) -> None:
     """
     Test the generate_client_order_id_int method with a UUID4.
     """
@@ -110,7 +114,9 @@ def test_retrieve_client_order_id_integer_from_cache(client_order_id_helper) -> 
     assert result == expected_result
 
 
-def test_retrieve_client_order_id_integer_from_empty_cache(client_order_id_helper) -> None:
+def test_retrieve_client_order_id_integer_from_empty_cache(
+    client_order_id_helper,
+) -> None:
     """
     Test the generate_client_order_id_int method with an integer.
     """

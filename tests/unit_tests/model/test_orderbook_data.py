@@ -176,7 +176,10 @@ def test_book_order_from_raw() -> None:
 
 def test_delta_fully_qualified_name() -> None:
     # Arrange, Act, Assert
-    assert OrderBookDelta.fully_qualified_name() == "nautilus_trader.model.data:OrderBookDelta"
+    assert (
+        OrderBookDelta.fully_qualified_name()
+        == "nautilus_trader.model.data:OrderBookDelta"
+    )
 
 
 def test_delta_from_raw() -> None:
@@ -394,7 +397,10 @@ def test_delta_from_dict_returns_expected_clear() -> None:
 
 def test_deltas_fully_qualified_name() -> None:
     # Arrange, Act, Assert
-    assert OrderBookDeltas.fully_qualified_name() == "nautilus_trader.model.data:OrderBookDeltas"
+    assert (
+        OrderBookDeltas.fully_qualified_name()
+        == "nautilus_trader.model.data:OrderBookDeltas"
+    )
 
 
 def test_deltas_pickle_round_trip() -> None:
@@ -691,7 +697,10 @@ def test_deltas_from_pyo3_list():
 
 def test_depth10_fully_qualified_name() -> None:
     # Arrange, Act, Assert
-    assert OrderBookDepth10.fully_qualified_name() == "nautilus_trader.model.data:OrderBookDepth10"
+    assert (
+        OrderBookDepth10.fully_qualified_name()
+        == "nautilus_trader.model.data:OrderBookDepth10"
+    )
 
 
 def test_depth10_new() -> None:
@@ -788,27 +797,141 @@ def test_depth10_to_dict_from_dict_round_trip() -> None:
         "type": "OrderBookDepth10",
         "instrument_id": "AAPL.XNAS",
         "bids": [
-            {"type": "BookOrder", "side": "BUY", "price": "99.00", "size": "100", "order_id": 1},
-            {"type": "BookOrder", "side": "BUY", "price": "98.00", "size": "200", "order_id": 2},
-            {"type": "BookOrder", "side": "BUY", "price": "97.00", "size": "300", "order_id": 3},
-            {"type": "BookOrder", "side": "BUY", "price": "96.00", "size": "400", "order_id": 4},
-            {"type": "BookOrder", "side": "BUY", "price": "95.00", "size": "500", "order_id": 5},
-            {"type": "BookOrder", "side": "BUY", "price": "94.00", "size": "600", "order_id": 6},
-            {"type": "BookOrder", "side": "BUY", "price": "93.00", "size": "700", "order_id": 7},
-            {"type": "BookOrder", "side": "BUY", "price": "92.00", "size": "800", "order_id": 8},
-            {"type": "BookOrder", "side": "BUY", "price": "91.00", "size": "900", "order_id": 9},
-            {"type": "BookOrder", "side": "BUY", "price": "90.00", "size": "1000", "order_id": 10},
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "99.00",
+                "size": "100",
+                "order_id": 1,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "98.00",
+                "size": "200",
+                "order_id": 2,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "97.00",
+                "size": "300",
+                "order_id": 3,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "96.00",
+                "size": "400",
+                "order_id": 4,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "95.00",
+                "size": "500",
+                "order_id": 5,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "94.00",
+                "size": "600",
+                "order_id": 6,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "93.00",
+                "size": "700",
+                "order_id": 7,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "92.00",
+                "size": "800",
+                "order_id": 8,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "91.00",
+                "size": "900",
+                "order_id": 9,
+            },
+            {
+                "type": "BookOrder",
+                "side": "BUY",
+                "price": "90.00",
+                "size": "1000",
+                "order_id": 10,
+            },
         ],
         "asks": [
-            {"type": "BookOrder", "side": "SELL", "price": "100.00", "size": "100", "order_id": 11},
-            {"type": "BookOrder", "side": "SELL", "price": "101.00", "size": "200", "order_id": 12},
-            {"type": "BookOrder", "side": "SELL", "price": "102.00", "size": "300", "order_id": 13},
-            {"type": "BookOrder", "side": "SELL", "price": "103.00", "size": "400", "order_id": 14},
-            {"type": "BookOrder", "side": "SELL", "price": "104.00", "size": "500", "order_id": 15},
-            {"type": "BookOrder", "side": "SELL", "price": "105.00", "size": "600", "order_id": 16},
-            {"type": "BookOrder", "side": "SELL", "price": "106.00", "size": "700", "order_id": 17},
-            {"type": "BookOrder", "side": "SELL", "price": "107.00", "size": "800", "order_id": 18},
-            {"type": "BookOrder", "side": "SELL", "price": "108.00", "size": "900", "order_id": 19},
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "100.00",
+                "size": "100",
+                "order_id": 11,
+            },
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "101.00",
+                "size": "200",
+                "order_id": 12,
+            },
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "102.00",
+                "size": "300",
+                "order_id": 13,
+            },
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "103.00",
+                "size": "400",
+                "order_id": 14,
+            },
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "104.00",
+                "size": "500",
+                "order_id": 15,
+            },
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "105.00",
+                "size": "600",
+                "order_id": 16,
+            },
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "106.00",
+                "size": "700",
+                "order_id": 17,
+            },
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "107.00",
+                "size": "800",
+                "order_id": 18,
+            },
+            {
+                "type": "BookOrder",
+                "side": "SELL",
+                "price": "108.00",
+                "size": "900",
+                "order_id": 19,
+            },
             {
                 "type": "BookOrder",
                 "side": "SELL",

@@ -43,7 +43,9 @@ instrument_type = OKXInstrumentType.SWAP  # SPOT, SWAP, FUTURES, OPTION
 # Symbol mapping based on instrument type
 if instrument_type == OKXInstrumentType.SPOT:
     symbol = "ETH-USDT"
-    contract_types: tuple[OKXContractType, ...] | None = None  # SPOT doesn't use contract types
+    contract_types: tuple[OKXContractType, ...] | None = (
+        None  # SPOT doesn't use contract types
+    )
     order_qty = Decimal("0.005")
 elif instrument_type == OKXInstrumentType.SWAP:
     symbol = "ETH-USDT-SWAP"

@@ -20,10 +20,16 @@ import msgspec
 from nautilus_trader.adapters.bybit.schemas.account.fee_rate import BybitFeeRate
 from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentLinear
 from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentOption
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsLinearResponse
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsOptionResponse
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsLinearResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsOptionResponse,
+)
 from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentSpot
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsSpotResponse
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsSpotResponse,
+)
 
 
 fee_rate: BybitFeeRate = BybitFeeRate(

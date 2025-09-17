@@ -53,7 +53,9 @@ class BybitOpenOrdersEndpoint(BybitHttpEndpoint):
         )
         self._get_resp_decoder = msgspec.json.Decoder(BybitOpenOrdersResponseStruct)
 
-    async def get(self, params: BybitOpenOrdersGetParams) -> BybitOpenOrdersResponseStruct:
+    async def get(
+        self, params: BybitOpenOrdersGetParams
+    ) -> BybitOpenOrdersResponseStruct:
         method_type = HttpMethod.GET
         raw = await self._method(method_type, params)
         try:

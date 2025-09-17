@@ -161,7 +161,9 @@ def test_account_subscribed_message() -> None:
     decoder = msgspec.json.Decoder(DYDXWsSubaccountsSubscribed)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_accounts_subscribed.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_accounts_subscribed.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -176,7 +178,9 @@ def test_markets_subscribed_message() -> None:
     decoder = msgspec.json.Decoder(DYDXWsMarketSubscribedData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_markets_subscribed.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_markets_subscribed.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -192,7 +196,9 @@ def test_markets_channel_message() -> None:
     decoder = msgspec.json.Decoder(DYDXWsMarketChannelData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_markets_channel_data.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_markets_channel_data.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -229,7 +235,9 @@ def test_markets_channel_market_type() -> None:
     decoder = msgspec.json.Decoder(DYDXWsMarketChannelData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_markets_cross.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_markets_cross.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -247,7 +255,9 @@ def test_markets_channel_trade_message() -> None:
     decoder = msgspec.json.Decoder(DYDXWsMarketChannelData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_markets_trading_data.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_markets_trading_data.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -265,7 +275,9 @@ def test_markets_channel_oracle_price_message() -> None:
     decoder = msgspec.json.Decoder(DYDXWsMarketChannelData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_markets_oracle_price.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_markets_oracle_price.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -289,7 +301,9 @@ def test_account_parse_to_account_balances() -> None:
         ),
     ]
 
-    with Path("tests/test_data/dydx/websocket/v4_accounts_subscribed.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_accounts_subscribed.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     result = msg.contents.parse_to_account_balances()
@@ -341,7 +355,9 @@ def test_account_parse_to_margin_balances() -> None:
 
     assert msg.contents.subaccount is not None
 
-    result = msg.contents.subaccount.openPerpetualPositions["ETH-USD"].parse_margin_balance(
+    result = msg.contents.subaccount.openPerpetualPositions[
+        "ETH-USD"
+    ].parse_margin_balance(
         margin_init=Decimal("0.0005"),
         margin_maint=Decimal("0.0003"),
     )
@@ -398,7 +414,9 @@ def test_account_channel_data_msg() -> None:
     decoder = msgspec.json.Decoder(DYDXWsSubaccountsChannelData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_accounts_channel_data.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_accounts_channel_data.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -527,7 +545,9 @@ def test_account_channel_data_rewards() -> None:
     decoder = msgspec.json.Decoder(DYDXWsSubaccountsChannelData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_accounts_rewards.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_accounts_rewards.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -545,7 +565,9 @@ def test_account_channel_data_fills() -> None:
     decoder = msgspec.json.Decoder(DYDXWsSubaccountsChannelData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/v4_accounts_fills.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_accounts_fills.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Assert
@@ -976,7 +998,9 @@ def test_klines_channel_data(instrument_id: InstrumentId) -> None:
         ts_init=0,
     )
 
-    with Path("tests/test_data/dydx/websocket/v4_candles_channel_data.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_candles_channel_data.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Act
@@ -1088,7 +1112,9 @@ def test_orderbook_snapshot(instrument_id: InstrumentId) -> None:
     )
     decoder = msgspec.json.Decoder(DYDXWsOrderbookSnapshotChannelData)
 
-    with Path("tests/test_data/dydx/websocket/v4_orderbook_snapshot.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/v4_orderbook_snapshot.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     # Act
@@ -1157,7 +1183,9 @@ def test_orderbook_batched_data(instrument_id: InstrumentId) -> None:
     assert len(deltas.deltas) == expected_num_deltas
     assert deltas.deltas[0] == expected_delta
     assert deltas.deltas[0].order.price == expected_delta.order.price
-    assert deltas.deltas[0].order.price.precision == expected_delta.order.price.precision
+    assert (
+        deltas.deltas[0].order.price.precision == expected_delta.order.price.precision
+    )
     assert deltas.deltas[0].order.size == expected_delta.order.size
     assert deltas.deltas[0].order.size.precision == expected_delta.order.size.precision
     assert deltas.deltas[0].order.side == expected_delta.order.side
@@ -1227,7 +1255,9 @@ def test_trades_deleveraged(instrument_id: InstrumentId) -> None:
     decoder = msgspec.json.Decoder(DYDXWsTradeChannelData)
 
     # Act
-    with Path("tests/test_data/dydx/websocket/trade_deleveraged.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/websocket/trade_deleveraged.json"
+    ).open() as file_reader:
         msg = decoder.decode(file_reader.read())
 
     trade_tick = msg.contents.trades[2].parse_to_trade_tick(

@@ -89,22 +89,30 @@ def transform_currency_to_pyo3(currency: Currency) -> nautilus_pyo3.Currency:
 ################################################################################
 def transform_instrument_to_pyo3(instrument: Instrument):
     if isinstance(instrument, BettingInstrument):
-        return nautilus_pyo3.BettingInstrument.from_dict(BettingInstrument.to_dict(instrument))
+        return nautilus_pyo3.BettingInstrument.from_dict(
+            BettingInstrument.to_dict(instrument)
+        )
     elif isinstance(instrument, BinaryOption):
         return nautilus_pyo3.BinaryOption.from_dict(BinaryOption.to_dict(instrument))
     elif isinstance(instrument, CryptoFuture):
         return nautilus_pyo3.CryptoFuture.from_dict(CryptoFuture.to_dict(instrument))
     elif isinstance(instrument, CryptoPerpetual):
-        return nautilus_pyo3.CryptoPerpetual.from_dict(CryptoPerpetual.to_dict(instrument))
+        return nautilus_pyo3.CryptoPerpetual.from_dict(
+            CryptoPerpetual.to_dict(instrument)
+        )
     elif isinstance(instrument, CurrencyPair):
         currency_pair_dict = CurrencyPair.to_dict(instrument)
         return nautilus_pyo3.CurrencyPair.from_dict(currency_pair_dict)
     elif isinstance(instrument, Equity):
         return nautilus_pyo3.Equity.from_dict(Equity.to_dict(instrument))
     elif isinstance(instrument, FuturesContract):
-        return nautilus_pyo3.FuturesContract.from_dict(FuturesContract.to_dict(instrument))
+        return nautilus_pyo3.FuturesContract.from_dict(
+            FuturesContract.to_dict(instrument)
+        )
     elif isinstance(instrument, OptionContract):
-        return nautilus_pyo3.OptionContract.from_dict(OptionContract.to_dict(instrument))
+        return nautilus_pyo3.OptionContract.from_dict(
+            OptionContract.to_dict(instrument)
+        )
     else:
         raise ValueError(f"Unknown instrument type: {instrument}")
 
@@ -141,7 +149,9 @@ def transform_instrument_from_pyo3(instrument_pyo3) -> Instrument | None:  # noq
 ################################################################################
 def transform_order_event_to_pyo3(order_event):  # noqa: C901
     if isinstance(order_event, OrderInitialized):
-        return nautilus_pyo3.OrderInitialized.from_dict(OrderInitialized.to_dict(order_event))
+        return nautilus_pyo3.OrderInitialized.from_dict(
+            OrderInitialized.to_dict(order_event)
+        )
     elif isinstance(order_event, OrderDenied):
         return nautilus_pyo3.OrderDenied.from_dict(OrderDenied.to_dict(order_event))
     elif isinstance(order_event, OrderEmulated):
@@ -149,7 +159,9 @@ def transform_order_event_to_pyo3(order_event):  # noqa: C901
     elif isinstance(order_event, OrderReleased):
         return nautilus_pyo3.OrderReleased.from_dict(OrderReleased.to_dict(order_event))
     elif isinstance(order_event, OrderSubmitted):
-        return nautilus_pyo3.OrderSubmitted.from_dict(OrderSubmitted.to_dict(order_event))
+        return nautilus_pyo3.OrderSubmitted.from_dict(
+            OrderSubmitted.to_dict(order_event)
+        )
     elif isinstance(order_event, OrderAccepted):
         return nautilus_pyo3.OrderAccepted.from_dict(OrderAccepted.to_dict(order_event))
     elif isinstance(order_event, OrderRejected):
@@ -159,15 +171,25 @@ def transform_order_event_to_pyo3(order_event):  # noqa: C901
     elif isinstance(order_event, OrderExpired):
         return nautilus_pyo3.OrderExpired.from_dict(OrderExpired.to_dict(order_event))
     elif isinstance(order_event, OrderTriggered):
-        return nautilus_pyo3.OrderTriggered.from_dict(OrderTriggered.to_dict(order_event))
+        return nautilus_pyo3.OrderTriggered.from_dict(
+            OrderTriggered.to_dict(order_event)
+        )
     elif isinstance(order_event, OrderPendingUpdate):
-        return nautilus_pyo3.OrderPendingUpdate.from_dict(OrderPendingUpdate.to_dict(order_event))
+        return nautilus_pyo3.OrderPendingUpdate.from_dict(
+            OrderPendingUpdate.to_dict(order_event)
+        )
     elif isinstance(order_event, OrderPendingCancel):
-        return nautilus_pyo3.OrderPendingCancel.from_dict(OrderPendingCancel.to_dict(order_event))
+        return nautilus_pyo3.OrderPendingCancel.from_dict(
+            OrderPendingCancel.to_dict(order_event)
+        )
     elif isinstance(order_event, OrderCancelRejected):
-        return nautilus_pyo3.OrderCancelRejected.from_dict(OrderCancelRejected.to_dict(order_event))
+        return nautilus_pyo3.OrderCancelRejected.from_dict(
+            OrderCancelRejected.to_dict(order_event)
+        )
     elif isinstance(order_event, OrderModifyRejected):
-        return nautilus_pyo3.OrderModifyRejected.from_dict(OrderModifyRejected.to_dict(order_event))
+        return nautilus_pyo3.OrderModifyRejected.from_dict(
+            OrderModifyRejected.to_dict(order_event)
+        )
     elif isinstance(order_event, OrderUpdated):
         return nautilus_pyo3.OrderUpdated.from_dict(OrderUpdated.to_dict(order_event))
     elif isinstance(order_event, OrderFilled):
@@ -283,7 +305,9 @@ def transform_position_to_snapshot_pyo3(
     unrealized_pnl: Money | None = None,
 ) -> nautilus_pyo3.PositionSnapshot:
     values = position.to_dict()
-    values["unrealized_pnl"] = str(unrealized_pnl) if unrealized_pnl is not None else None
+    values["unrealized_pnl"] = (
+        str(unrealized_pnl) if unrealized_pnl is not None else None
+    )
 
     return nautilus_pyo3.PositionSnapshot.from_dict(values)
 
@@ -337,7 +361,9 @@ def transform_account_to_pyo3(account: Account):
         raise ValueError("Missing events in account")
     init_event = events.pop(0)
     calculate_account_state = account.calculate_account_state
-    account_pyo3 = from_account_state_cython_to_account_pyo3(init_event, calculate_account_state)
+    account_pyo3 = from_account_state_cython_to_account_pyo3(
+        init_event, calculate_account_state
+    )
     for account_state_cython in events:
         event_pyo3 = transform_account_state_cython_to_pyo3(account_state_cython)
         account_pyo3.apply(event_pyo3)
@@ -350,7 +376,9 @@ def transform_account_from_pyo3(account_pyo3) -> Account:
         raise ValueError("Missing events in account")
     init_event = events_pyo3.pop(0)
     calculate_account_state = account_pyo3.calculate_account_state
-    account = from_account_state_pyo3_to_account_cython(init_event, calculate_account_state)
+    account = from_account_state_pyo3_to_account_cython(
+        init_event, calculate_account_state
+    )
     for account_state_pyo3 in events_pyo3:
         event = transform_account_state_pyo3_to_cython(account_state_pyo3)
         account.apply(event)
@@ -391,7 +419,9 @@ def transform_signal_to_pyo3(signal: Data) -> nautilus_pyo3.Signal:
     )
 
 
-def transform_signal_from_pyo3(signal_cls: type, signal_pyo3: nautilus_pyo3.Signal) -> object:
+def transform_signal_from_pyo3(
+    signal_cls: type, signal_pyo3: nautilus_pyo3.Signal
+) -> object:
     return signal_cls(
         signal_pyo3.value,
         signal_pyo3.ts_event,

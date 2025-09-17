@@ -39,8 +39,14 @@ def test_quote_tick_data_wrangler() -> None:
     assert len(pyo3_quotes) == 100_000
     assert len(quotes) == 100_000
     assert isinstance(quotes[0], QuoteTick)
-    assert str(pyo3_quotes[0]) == "AUD/USD.SIM,0.67067,0.67070,1000000,1000000,1580398089820000000"
-    assert str(pyo3_quotes[-1]) == "AUD/USD.SIM,0.66934,0.66938,1000000,1000000,1580504394501000000"
+    assert (
+        str(pyo3_quotes[0])
+        == "AUD/USD.SIM,0.67067,0.67070,1000000,1000000,1580398089820000000"
+    )
+    assert (
+        str(pyo3_quotes[-1])
+        == "AUD/USD.SIM,0.66934,0.66938,1000000,1000000,1580504394501000000"
+    )
 
 
 def test_trade_tick_data_wrangler() -> None:
@@ -60,8 +66,10 @@ def test_trade_tick_data_wrangler() -> None:
     assert len(trades) == 69806
     assert isinstance(trades[0], TradeTick)
     assert (
-        str(pyo3_trades[0]) == "ETHUSDT.BINANCE,423.76,2.67900,BUYER,148568980,1597399200223000000"
+        str(pyo3_trades[0])
+        == "ETHUSDT.BINANCE,423.76,2.67900,BUYER,148568980,1597399200223000000"
     )
     assert (
-        str(pyo3_trades[-1]) == "ETHUSDT.BINANCE,426.89,0.16100,BUYER,148638715,1597417198693000000"
+        str(pyo3_trades[-1])
+        == "ETHUSDT.BINANCE,426.89,0.16100,BUYER,148638715,1597417198693000000"
     )

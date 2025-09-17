@@ -76,7 +76,9 @@ class TestDataStubs:
         ts_event: int = 0,
         ts_init: int = 0,
     ) -> QuoteTick:
-        inst: Instrument = instrument or TestInstrumentProvider.default_fx_ccy("AUD/USD")
+        inst: Instrument = instrument or TestInstrumentProvider.default_fx_ccy(
+            "AUD/USD"
+        )
         return QuoteTick(
             instrument_id=inst.id,
             bid_price=inst.make_price(bid_price),
@@ -97,7 +99,9 @@ class TestDataStubs:
         ts_event: int = 0,
         ts_init: int = 0,
     ) -> TradeTick:
-        inst: Instrument = instrument or TestInstrumentProvider.default_fx_ccy("AUD/USD")
+        inst: Instrument = instrument or TestInstrumentProvider.default_fx_ccy(
+            "AUD/USD"
+        )
         return TradeTick(
             instrument_id=inst.id,
             price=inst.make_price(price),
@@ -189,11 +193,15 @@ class TestDataStubs:
 
     @staticmethod
     def bartype_btcusdt_binance_100tick_last() -> BarType:
-        return BarType(TestIdStubs.btcusdt_binance_id(), TestDataStubs.bar_spec_100tick_last())
+        return BarType(
+            TestIdStubs.btcusdt_binance_id(), TestDataStubs.bar_spec_100tick_last()
+        )
 
     @staticmethod
     def bartype_adabtc_binance_1min_last() -> BarType:
-        return BarType(TestIdStubs.adabtc_binance_id(), TestDataStubs.bar_spec_1min_last())
+        return BarType(
+            TestIdStubs.adabtc_binance_id(), TestDataStubs.bar_spec_1min_last()
+        )
 
     @staticmethod
     def bar_5decimal(ts_event=0, ts_init=0) -> Bar:
@@ -253,7 +261,8 @@ class TestDataStubs:
         value: Price | None = None,
     ) -> MarkPriceUpdate:
         return MarkPriceUpdate(
-            instrument_id=instrument_id or InstrumentId(Symbol("BTCUSDT"), Venue("BINANCE")),
+            instrument_id=instrument_id
+            or InstrumentId(Symbol("BTCUSDT"), Venue("BINANCE")),
             value=value or Price.from_str("100_000"),
             ts_event=0,
             ts_init=0,
@@ -265,7 +274,8 @@ class TestDataStubs:
         value: Price | None = None,
     ) -> IndexPriceUpdate:
         return IndexPriceUpdate(
-            instrument_id=instrument_id or InstrumentId(Symbol("BTCUSDT"), Venue("BINANCE")),
+            instrument_id=instrument_id
+            or InstrumentId(Symbol("BTCUSDT"), Venue("BINANCE")),
             value=value or Price.from_str("100_000"),
             ts_event=0,
             ts_init=0,
@@ -292,7 +302,8 @@ class TestDataStubs:
         action: MarketStatusAction | None = None,
     ) -> InstrumentStatus:
         return InstrumentStatus(
-            instrument_id=instrument_id or InstrumentId(Symbol("BTCUSDT"), Venue("BINANCE")),
+            instrument_id=instrument_id
+            or InstrumentId(Symbol("BTCUSDT"), Venue("BINANCE")),
             action=action or MarketStatusAction.PAUSE,
             ts_event=0,
             ts_init=0,
@@ -384,7 +395,9 @@ class TestDataStubs:
 
         deltas = [OrderBookDelta.clear(instrument.id, 0, ts_event, ts_init)]
         deltas += [
-            OrderBookDelta(instrument.id, BookAction.ADD, order, 0, 0, ts_event, ts_init)
+            OrderBookDelta(
+                instrument.id, BookAction.ADD, order, 0, 0, ts_event, ts_init
+            )
             for order in bids + asks
         ]
         return OrderBookDeltas(
@@ -644,7 +657,9 @@ class TestDataStubs:
                         ),
                     }
 
-        return [msg for data in json.loads(open(filename).read()) for msg in parser(data)]
+        return [
+            msg for data in json.loads(open(filename).read()) for msg in parser(data)
+        ]
 
     @staticmethod
     def bar_data_from_csv(

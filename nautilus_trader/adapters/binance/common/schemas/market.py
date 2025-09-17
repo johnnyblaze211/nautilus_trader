@@ -148,7 +148,9 @@ class BinanceDepth(msgspec.Struct, frozen=True):
             for o in self.asks or []
         ]
 
-        deltas = [OrderBookDelta.clear(instrument_id, self.lastUpdateId, ts_init, ts_init)]
+        deltas = [
+            OrderBookDelta.clear(instrument_id, self.lastUpdateId, ts_init, ts_init)
+        ]
         deltas += [
             OrderBookDelta(
                 instrument_id,
@@ -189,7 +191,9 @@ class BinanceTrade(msgspec.Struct, frozen=True):
             instrument_id=instrument_id,
             price=Price.from_str(self.price),
             size=Quantity.from_str(self.qty),
-            aggressor_side=AggressorSide.SELLER if self.isBuyerMaker else AggressorSide.BUYER,
+            aggressor_side=(
+                AggressorSide.SELLER if self.isBuyerMaker else AggressorSide.BUYER
+            ),
             trade_id=TradeId(str(self.id)),
             ts_event=millis_to_nanos(self.time),
             ts_init=ts_init,
@@ -406,7 +410,9 @@ class BinanceOrderBookData(msgspec.Struct, frozen=True):
         ts_init: int,
         snapshot: bool = False,
     ) -> OrderBookDeltas:
-        ts_event: int = millis_to_nanos(self.T) if self.T is not None else millis_to_nanos(self.E)
+        ts_event: int = (
+            millis_to_nanos(self.T) if self.T is not None else millis_to_nanos(self.E)
+        )
 
         deltas: list[OrderBookDelta] = []
 
@@ -582,7 +588,9 @@ class BinanceTickerData(msgspec.Struct, kw_only=True, frozen=True):
     p: str  # Price change
     P: str  # Price change percent
     w: str  # Weighted average price
-    x: str | None = None  # First trade(F)-1 price (first trade before the 24hr rolling window)
+    x: str | None = (
+        None  # First trade(F)-1 price (first trade before the 24hr rolling window)
+    )
     c: str  # Last price
     Q: str  # Last quantity
     b: str | None = None  # Best bid price

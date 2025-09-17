@@ -32,7 +32,9 @@ class DemoStrategy(Strategy):
 
         # Save the 1-minute bar configuration and create a counter to track how many bars we receive
         self.bar_type_1min = bar_type_1min
-        self.count_1min_bars = 0  # This will increment each time we receive a 1-minute bar
+        self.count_1min_bars = (
+            0  # This will increment each time we receive a 1-minute bar
+        )
 
         # ==================================================================
         # POINT OF FOCUS: Creating a 5-minute bar configuration
@@ -49,7 +51,9 @@ class DemoStrategy(Strategy):
         # ------------------------------------------------------------------
 
         # Aggregated 5-min bar data
-        self.bar_type_5min = BarType.from_str(f"{self.instrument_id}-5-MINUTE-LAST-INTERNAL")
+        self.bar_type_5min = BarType.from_str(
+            f"{self.instrument_id}-5-MINUTE-LAST-INTERNAL"
+        )
         self.count_5min_bars = 0  # Counter for received 5-minute bars
 
         # Track when the strategy starts and ends
@@ -81,7 +85,9 @@ class DemoStrategy(Strategy):
         # ------------------------------------------------------------------
 
         # Start receiving 5-minute bar updates (created from 1-minute external data)
-        bar_type_5min_subscribe = BarType.from_str(f"{self.bar_type_5min}@1-MINUTE-EXTERNAL")
+        bar_type_5min_subscribe = BarType.from_str(
+            f"{self.bar_type_5min}@1-MINUTE-EXTERNAL"
+        )
         self.subscribe_bars(bar_type_5min_subscribe)
 
         # The on_bar() method below will handle all bars (both 1-minute and 5-minute bar updates).

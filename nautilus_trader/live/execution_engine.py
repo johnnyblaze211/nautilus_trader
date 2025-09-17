@@ -20,7 +20,9 @@ import uuid
 from asyncio import Queue
 from collections import Counter
 from decimal import Decimal
-from typing import Any, Final, cast
+from typing import Any
+from typing import Final
+from typing import cast
 
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
@@ -158,28 +160,48 @@ class LiveExecutionEngine(ExecutionEngine):
 
         # Configuration
         self._reconciliation: bool = config.reconciliation
-        self.reconciliation_lookback_mins: int = config.reconciliation_lookback_mins or 0
+        self.reconciliation_lookback_mins: int = (
+            config.reconciliation_lookback_mins or 0
+        )
         self.reconciliation_instrument_ids: list[InstrumentId] = (
             config.reconciliation_instrument_ids or []
         )
-        self.filter_unclaimed_external_orders: bool = config.filter_unclaimed_external_orders
+        self.filter_unclaimed_external_orders: bool = (
+            config.filter_unclaimed_external_orders
+        )
         self.filter_position_reports: bool = config.filter_position_reports
-        self.filtered_client_order_ids: list[ClientOrderId] = config.filtered_client_order_ids or []
+        self.filtered_client_order_ids: list[ClientOrderId] = (
+            config.filtered_client_order_ids or []
+        )
         self.generate_missing_orders: bool = config.generate_missing_orders
         self.inflight_check_interval_ms: int = config.inflight_check_interval_ms
         self.inflight_check_threshold_ms: int = config.inflight_check_threshold_ms
         self.inflight_check_max_retries: int = config.inflight_check_retries
-        self.own_books_audit_interval_secs: float | None = config.own_books_audit_interval_secs
+        self.own_books_audit_interval_secs: float | None = (
+            config.own_books_audit_interval_secs
+        )
         self.open_check_interval_secs: float | None = config.open_check_interval_secs
         self.open_check_open_only: bool = config.open_check_open_only
-        self.purge_closed_orders_interval_mins = config.purge_closed_orders_interval_mins
+        self.purge_closed_orders_interval_mins = (
+            config.purge_closed_orders_interval_mins
+        )
         self.purge_closed_orders_buffer_mins = config.purge_closed_orders_buffer_mins
-        self.purge_closed_positions_interval_mins = config.purge_closed_positions_interval_mins
-        self.purge_closed_positions_buffer_mins = config.purge_closed_positions_buffer_mins
-        self.purge_account_events_interval_mins = config.purge_account_events_interval_mins
-        self.purge_account_events_lookback_mins = config.purge_account_events_lookback_mins
+        self.purge_closed_positions_interval_mins = (
+            config.purge_closed_positions_interval_mins
+        )
+        self.purge_closed_positions_buffer_mins = (
+            config.purge_closed_positions_buffer_mins
+        )
+        self.purge_account_events_interval_mins = (
+            config.purge_account_events_interval_mins
+        )
+        self.purge_account_events_lookback_mins = (
+            config.purge_account_events_lookback_mins
+        )
         self.purge_from_database = config.purge_from_database
-        self.graceful_shutdown_on_exception: bool = config.graceful_shutdown_on_exception
+        self.graceful_shutdown_on_exception: bool = (
+            config.graceful_shutdown_on_exception
+        )
 
         self._log.info(f"{config.reconciliation=}", LogColor.BLUE)
         self._log.info(f"{config.reconciliation_lookback_mins=}", LogColor.BLUE)
@@ -202,7 +224,9 @@ class LiveExecutionEngine(ExecutionEngine):
         self._log.info(f"{config.purge_from_database=}", LogColor.BLUE)
         self._log.info(f"{config.graceful_shutdown_on_exception=}", LogColor.BLUE)
 
-        self._inflight_check_threshold_ns: int = millis_to_nanos(self.inflight_check_threshold_ms)
+        self._inflight_check_threshold_ns: int = millis_to_nanos(
+            self.inflight_check_threshold_ms
+        )
         self._shutdown_initiated: bool = False
 
         # Register endpoints
@@ -406,8 +430,12 @@ class LiveExecutionEngine(ExecutionEngine):
         if not self._loop.is_running():
             self._log.warning("Started when loop is not running")
 
-        self._cmd_queue_task = self._loop.create_task(self._run_cmd_queue(), name="cmd_queue")
-        self._evt_queue_task = self._loop.create_task(self._run_evt_queue(), name="evt_queue")
+        self._cmd_queue_task = self._loop.create_task(
+            self._run_cmd_queue(), name="cmd_queue"
+        )
+        self._evt_queue_task = self._loop.create_task(
+            self._run_evt_queue(), name="evt_queue"
+        )
         self._log.debug(f"Scheduled task '{self._cmd_queue_task.get_name()}'")
         self._log.debug(f"Scheduled task '{self._evt_queue_task.get_name()}'")
 
@@ -428,21 +456,34 @@ class LiveExecutionEngine(ExecutionEngine):
                 name="own_books_audit",
             )
 
-        if self.purge_closed_orders_interval_mins and not self._purge_closed_orders_task:
+        if (
+            self.purge_closed_orders_interval_mins
+            and not self._purge_closed_orders_task
+        ):
             self._purge_closed_orders_task = self._loop.create_task(
                 self._purge_closed_orders_loop(self.purge_closed_orders_interval_mins),
                 name="purge_closed_orders",
             )
 
-        if self.purge_closed_positions_interval_mins and not self._purge_closed_positions_task:
+        if (
+            self.purge_closed_positions_interval_mins
+            and not self._purge_closed_positions_task
+        ):
             self._purge_closed_positions_task = self._loop.create_task(
-                self._purge_closed_positions_loop(self.purge_closed_positions_interval_mins),
+                self._purge_closed_positions_loop(
+                    self.purge_closed_positions_interval_mins
+                ),
                 name="purge_closed_positions",
             )
 
-        if self.purge_account_events_interval_mins and not self._purge_account_events_task:
+        if (
+            self.purge_account_events_interval_mins
+            and not self._purge_account_events_task
+        ):
             self._purge_account_events_task = self._loop.create_task(
-                self._purge_account_events_loop(self.purge_account_events_interval_mins),
+                self._purge_account_events_loop(
+                    self.purge_account_events_interval_mins
+                ),
                 name="purge_account_events",
             )
 
@@ -458,7 +499,9 @@ class LiveExecutionEngine(ExecutionEngine):
             self._own_books_audit_task = None
 
         if self._purge_closed_orders_task:
-            self._log.debug(f"Canceling task '{self._purge_closed_orders_task.get_name()}'")
+            self._log.debug(
+                f"Canceling task '{self._purge_closed_orders_task.get_name()}'"
+            )
             self._purge_closed_orders_task.cancel()
             self._purge_closed_orders_task = None
 
@@ -469,12 +512,16 @@ class LiveExecutionEngine(ExecutionEngine):
             )
 
         if self._purge_closed_positions_task:
-            self._log.debug(f"Canceling task '{self._purge_closed_positions_task.get_name()}'")
+            self._log.debug(
+                f"Canceling task '{self._purge_closed_positions_task.get_name()}'"
+            )
             self._purge_closed_positions_task.cancel()
             self._purge_closed_positions_task = None
 
         if self._purge_account_events_task:
-            self._log.debug(f"Canceling task '{self._purge_account_events_task.get_name()}'")
+            self._log.debug(
+                f"Canceling task '{self._purge_account_events_task.get_name()}'"
+            )
             self._purge_account_events_task.cancel()
             self._purge_account_events_task = None
 
@@ -505,7 +552,9 @@ class LiveExecutionEngine(ExecutionEngine):
             stopped_msg = "Command message queue stopped"
 
             if not self._cmd_queue.empty():
-                self._log.warning(f"{stopped_msg} with {self.cmd_qsize()} message(s) on queue")
+                self._log.warning(
+                    f"{stopped_msg} with {self.cmd_qsize()} message(s) on queue"
+                )
             else:
                 self._log.debug(stopped_msg)
 
@@ -530,7 +579,9 @@ class LiveExecutionEngine(ExecutionEngine):
             stopped_msg = "Event message queue stopped"
 
             if not self._evt_queue.empty():
-                self._log.warning(f"{stopped_msg} with {self.evt_qsize()} message(s) on queue")
+                self._log.warning(
+                    f"{stopped_msg} with {self.evt_qsize()} message(s) on queue"
+                )
             else:
                 self._log.debug(stopped_msg)
 
@@ -568,7 +619,9 @@ class LiveExecutionEngine(ExecutionEngine):
             self._log.debug(f"Generated {canceled}")
             self._handle_event(canceled)
         else:
-            raise RuntimeError(f"Invalid status for in-flight order, was '{order.status_string()}'")
+            raise RuntimeError(
+                f"Invalid status for in-flight order, was '{order.status_string()}'"
+            )
 
     async def _own_books_audit_loop(self, interval_secs: float) -> None:
         try:
@@ -593,7 +646,9 @@ class LiveExecutionEngine(ExecutionEngine):
                 else 0
             )
             consistency_check_interval_ns = (
-                secs_to_nanos(self.open_check_interval_secs) if self.open_check_interval_secs else 0
+                secs_to_nanos(self.open_check_interval_secs)
+                if self.open_check_interval_secs
+                else 0
             )
 
             # Determine minimum sleep interval (in seconds)
@@ -630,7 +685,8 @@ class LiveExecutionEngine(ExecutionEngine):
                 # Lower-frequency consistency check (if configured)
                 if (
                     consistency_check_interval_ns > 0
-                    and ts_now - ts_last_consistency_check >= consistency_check_interval_ns
+                    and ts_now - ts_last_consistency_check
+                    >= consistency_check_interval_ns
                 ):
                     try:
                         await self._check_orders_consistency()
@@ -686,13 +742,17 @@ class LiveExecutionEngine(ExecutionEngine):
 
     async def _check_orders_consistency(self) -> None:
         try:
-            self._log.debug("Checking order consistency between cached-state and venues")
+            self._log.debug(
+                "Checking order consistency between cached-state and venues"
+            )
 
             # Get current open orders from cache
             open_order_ids: set[ClientOrderId] = self._cache.client_order_ids_open()
             open_orders: list[Order] = self._cache.orders_open()
             open_len = len(open_orders)
-            self._log.debug(f"Found {open_len} order{'' if open_len == 1 else 's'} open in cache")
+            self._log.debug(
+                f"Found {open_len} order{'' if open_len == 1 else 's'} open in cache"
+            )
 
             check_open_only = self.open_check_open_only
 
@@ -817,7 +877,9 @@ class LiveExecutionEngine(ExecutionEngine):
 
     # -- RECONCILIATION -------------------------------------------------------------------------------
 
-    def _log_reconciliation_result(self, value: ClientId | InstrumentId, result: bool) -> None:
+    def _log_reconciliation_result(
+        self, value: ClientId | InstrumentId, result: bool
+    ) -> None:
         if result:
             self._log.info(f"Reconciliation for {value} succeeded", LogColor.GREEN)
         else:
@@ -829,21 +891,27 @@ class LiveExecutionEngine(ExecutionEngine):
 
         return True
 
-    def _log_skipping_reconciliation_on_instrument_id(self, report: ExecutionReport) -> None:
+    def _log_skipping_reconciliation_on_instrument_id(
+        self, report: ExecutionReport
+    ) -> None:
         self._log.debug(
             f"Skipping {type(report).__name__} reconciliation for {report.instrument_id}: "
             f"not in `reconciliation_instrument_ids` include list",
             LogColor.MAGENTA,
         )
 
-    def _log_skipping_reconciliation_on_client_order_id(self, report: ExecutionReport) -> None:
+    def _log_skipping_reconciliation_on_client_order_id(
+        self, report: ExecutionReport
+    ) -> None:
         self._log.debug(
             f"Skipping {type(report).__name__} reconciliation for {report.client_order_id!r}: "
             f"in `filtered_client_order_ids` list",
             LogColor.MAGENTA,
         )
 
-    def generate_execution_mass_status(self, command: GenerateExecutionMassStatus) -> None:
+    def generate_execution_mass_status(
+        self, command: GenerateExecutionMassStatus
+    ) -> None:
         self._log.info(f"Received {command!r}", LogColor.BLUE)
         self._loop.create_task(self.reconcile_execution_state())
 
@@ -898,17 +966,24 @@ class LiveExecutionEngine(ExecutionEngine):
 
         # Request execution mass status report from clients
         reconciliation_lookback_mins: int | None = (
-            self.reconciliation_lookback_mins if self.reconciliation_lookback_mins > 0 else None
+            self.reconciliation_lookback_mins
+            if self.reconciliation_lookback_mins > 0
+            else None
         )
         mass_status_coros = [
-            c.generate_mass_status(reconciliation_lookback_mins) for c in self._clients.values()
+            c.generate_mass_status(reconciliation_lookback_mins)
+            for c in self._clients.values()
         ]
-        mass_status_all = await asyncio.gather(*mass_status_coros, return_exceptions=True)
+        mass_status_all = await asyncio.gather(
+            *mass_status_coros, return_exceptions=True
+        )
 
         # Reconcile each mass status with the execution engine
         for mass_status_or_exception in mass_status_all:
             if isinstance(mass_status_or_exception, Exception):
-                self._log.error(f"Failed to generate mass status: {mass_status_or_exception}")
+                self._log.error(
+                    f"Failed to generate mass status: {mass_status_or_exception}"
+                )
                 results.append(False)
                 continue
 
@@ -941,7 +1016,9 @@ class LiveExecutionEngine(ExecutionEngine):
                 instrument_id = position.instrument_id
 
                 if instrument_id in mass_status.position_reports:
-                    self._log.debug(f"Position {instrument_id} for {client_id} already reconciled")
+                    self._log.debug(
+                        f"Position {instrument_id} for {client_id} already reconciled"
+                    )
                     continue  # Already reconciled
 
                 self._log.info(f"{position} pending reconciliation")
@@ -958,7 +1035,9 @@ class LiveExecutionEngine(ExecutionEngine):
 
             if report_tasks:
                 # Reconcile specific internal open positions
-                self._log.info(f"Awaiting {len(report_tasks)} position reports for {client_id}")
+                self._log.info(
+                    f"Awaiting {len(report_tasks)} position reports for {client_id}"
+                )
                 position_results: list[bool] = []
 
                 for task_result_or_exception in await asyncio.gather(
@@ -972,11 +1051,15 @@ class LiveExecutionEngine(ExecutionEngine):
                         position_results.append(False)
                         continue
 
-                    task_result = cast("list[PositionStatusReport]", task_result_or_exception)
+                    task_result = cast(
+                        "list[PositionStatusReport]", task_result_or_exception
+                    )
 
                     for report in task_result:
                         position_result = self._reconcile_position_report(report)
-                        self._log_reconciliation_result(report.instrument_id, position_result)
+                        self._log_reconciliation_result(
+                            report.instrument_id, position_result
+                        )
                         position_results.append(position_result)
 
                 result = result and all(position_results)
@@ -1048,10 +1131,13 @@ class LiveExecutionEngine(ExecutionEngine):
         """
         self._reconcile_execution_mass_status(report)
 
-    def _reconcile_execution_mass_status(  # noqa: C901 (too complex)
-        self,
-        mass_status: ExecutionMassStatus,
-    ) -> bool:
+    def _reconcile_execution_mass_status(self, mass_status: ExecutionMassStatus) -> bool:
+        """
+        Reconcile execution mass status report.
+        
+        This method has been refactored to improve readability and maintainability
+        by breaking down the complex logic into smaller, focused methods.
+        """
         self._log.debug(f"<--[RPT] {mass_status}")
         self.report_count += 1
 
@@ -1060,62 +1146,108 @@ class LiveExecutionEngine(ExecutionEngine):
             color=LogColor.BLUE,
         )
 
+        # Reconcile orders and collect results
+        order_results = self._reconcile_mass_status_orders(mass_status)
+        
+        # Reconcile positions if not filtered
+        position_results = self._reconcile_mass_status_positions(mass_status)
+        
+        # Combine all results
+        all_results = order_results + position_results
+        return all(all_results) if all_results else True
+
+    def _reconcile_mass_status_orders(self, mass_status: ExecutionMassStatus) -> list[bool]:
+        """Reconcile all order reports in the mass status."""
         results: list[bool] = []
         reconciled_orders: set[ClientOrderId] = set()
         reconciled_trades: set[TradeId] = set()
 
-        # Reconcile all reported orders
         for venue_order_id, order_report in mass_status.order_reports.items():
             trades = mass_status.fill_reports.get(venue_order_id, [])
 
-            if not self._consider_for_reconciliation(order_report.instrument_id):
-                self._log_skipping_reconciliation_on_instrument_id(order_report)
+            if not self._should_reconcile_order_report(order_report, reconciled_orders):
                 continue
 
-            # Check and handle duplicate client order IDs
-            client_order_id = order_report.client_order_id
+            # Process trade duplicates
+            self._process_trade_duplicates(trades, reconciled_trades)
 
-            if client_order_id is not None:
-                if client_order_id in self.filtered_client_order_ids:
-                    self._log_skipping_reconciliation_on_client_order_id(order_report)
-                    continue
-
-                if client_order_id in reconciled_orders:
-                    self._log.error(f"Duplicate {client_order_id!r} detected: {order_report}")
-                    results.append(False)
-                    continue  # Determine how to handle this
-
-            # Check for duplicate trade IDs
-            for fill_report in trades:
-                if fill_report.trade_id in reconciled_trades:
-                    self._log.warning(
-                        f"Duplicate {fill_report.trade_id!r} detected: {fill_report}",
-                    )
-
-                reconciled_trades.add(fill_report.trade_id)
-
-            try:
-                result = self._reconcile_order_report(order_report, trades)
-            except InvalidStateTrigger as e:
-                self._log.error(str(e))
-                result = False
-
+            # Reconcile the order report
+            result = self._reconcile_single_order_report(order_report, trades)
             results.append(result)
+            
             if order_report.client_order_id is not None:
                 reconciled_orders.add(order_report.client_order_id)
 
-        if not self.filter_position_reports:
-            position_reports: list[PositionStatusReport]
+        return results
 
-            # Reconcile all reported positions
-            for position_reports in mass_status.position_reports.values():
-                for report in position_reports:
-                    if not self._consider_for_reconciliation(report.instrument_id):
-                        self._log_skipping_reconciliation_on_instrument_id(report)
-                        continue
+    def _should_reconcile_order_report(
+        self, 
+        order_report: OrderStatusReport, 
+        reconciled_orders: set[ClientOrderId]
+    ) -> bool:
+        """Check if order report should be reconciled."""
+        if not self._consider_for_reconciliation(order_report.instrument_id):
+            self._log_skipping_reconciliation_on_instrument_id(order_report)
+            return False
 
-                    result = self._reconcile_position_report(report)
-                    results.append(result)
+        client_order_id = order_report.client_order_id
+        if client_order_id is None:
+            return True
+
+        if client_order_id in self.filtered_client_order_ids:
+            self._log_skipping_reconciliation_on_client_order_id(order_report)
+            return False
+
+        if client_order_id in reconciled_orders:
+            self._log.error(f"Duplicate {client_order_id!r} detected: {order_report}")
+            return False
+
+        return True
+
+    def _process_trade_duplicates(
+        self, 
+        trades: list[FillReport], 
+        reconciled_trades: set[TradeId]
+    ) -> None:
+        """Process and log duplicate trade IDs."""
+        for fill_report in trades:
+            if fill_report.trade_id in reconciled_trades:
+                self._log.warning(
+                    f"Duplicate {fill_report.trade_id!r} detected: {fill_report}",
+                )
+            reconciled_trades.add(fill_report.trade_id)
+
+    def _reconcile_single_order_report(
+        self, 
+        order_report: OrderStatusReport, 
+        trades: list[FillReport]
+    ) -> bool:
+        """Reconcile a single order report with error handling."""
+        try:
+            return self._reconcile_order_report(order_report, trades)
+        except InvalidStateTrigger as e:
+            self._log.error(str(e))
+            return False
+
+    def _reconcile_mass_status_positions(self, mass_status: ExecutionMassStatus) -> list[bool]:
+        """Reconcile all position reports in the mass status."""
+        if self.filter_position_reports:
+            return []
+
+        results: list[bool] = []
+        position_reports: list[PositionStatusReport]
+
+        # Reconcile all reported positions
+        for position_reports in mass_status.position_reports.values():
+            for report in position_reports:
+                if not self._consider_for_reconciliation(report.instrument_id):
+                    self._log_skipping_reconciliation_on_instrument_id(report)
+                    continue
+
+                result = self._reconcile_position_report(report)
+                results.append(result)
+
+        return results
 
         # Publish mass status
         self._msgbus.publish(
@@ -1244,7 +1376,9 @@ class LiveExecutionEngine(ExecutionEngine):
             # information loss if multiple fills occurred to reach the reported
             # state, or if commissions differed from the default.
             try:
-                fill: OrderFilled = self._generate_inferred_fill(order, report, instrument)
+                fill: OrderFilled = self._generate_inferred_fill(
+                    order, report, instrument
+                )
                 self._handle_event(fill)
             except ValueError as e:
                 self._log.error(
@@ -1318,19 +1452,37 @@ class LiveExecutionEngine(ExecutionEngine):
 
                     # Last quantity
                     if existing_fill.last_qty != report.last_qty:
-                        differences.append(f"qty: {existing_fill.last_qty} vs {report.last_qty}")
+                        differences.append(
+                            f"qty: {existing_fill.last_qty} vs {report.last_qty}"
+                        )
 
                     # Last price
                     if existing_fill.last_px != report.last_px:
-                        differences.append(f"px: {existing_fill.last_px} vs {report.last_px}")
+                        differences.append(
+                            f"px: {existing_fill.last_px} vs {report.last_px}"
+                        )
 
                     # Commission
-                    if existing_fill.commission is None and report.commission is not None:
+                    if (
+                        existing_fill.commission is None
+                        and report.commission is not None
+                    ):
                         differences.append(f"commission: None vs {report.commission}")
-                    elif existing_fill.commission is not None and report.commission is None:
-                        differences.append(f"commission: {existing_fill.commission} vs None")
-                    elif existing_fill.commission is not None and report.commission is not None:
-                        if existing_fill.commission.currency != report.commission.currency:
+                    elif (
+                        existing_fill.commission is not None
+                        and report.commission is None
+                    ):
+                        differences.append(
+                            f"commission: {existing_fill.commission} vs None"
+                        )
+                    elif (
+                        existing_fill.commission is not None
+                        and report.commission is not None
+                    ):
+                        if (
+                            existing_fill.commission.currency
+                            != report.commission.currency
+                        ):
                             differences.append(
                                 f"commission currency: {existing_fill.commission.currency} vs {report.commission.currency}",
                             )
@@ -1442,7 +1594,9 @@ class LiveExecutionEngine(ExecutionEngine):
         self,
         report: PositionStatusReport,
     ) -> bool:
-        self._log.info(f"Reconciling NET position for {report.instrument_id}", LogColor.BLUE)
+        self._log.info(
+            f"Reconciling NET position for {report.instrument_id}", LogColor.BLUE
+        )
 
         instrument = self._cache.instrument(report.instrument_id)
 
@@ -1637,7 +1791,9 @@ class LiveExecutionEngine(ExecutionEngine):
                 last_px = instrument.make_price(report.avg_px)
 
         notional_value: Money = instrument.notional_value(last_qty, last_px)
-        commission: Money = Money(notional_value * instrument.taker_fee, instrument.quote_currency)
+        commission: Money = Money(
+            notional_value * instrument.taker_fee, instrument.quote_currency
+        )
 
         filled = OrderFilled(
             trader_id=order.trader_id,
@@ -1646,7 +1802,8 @@ class LiveExecutionEngine(ExecutionEngine):
             client_order_id=order.client_order_id,
             venue_order_id=report.venue_order_id,
             account_id=report.account_id,
-            position_id=report.venue_position_id or PositionId(f"{instrument.id}-EXTERNAL"),
+            position_id=report.venue_position_id
+            or PositionId(f"{instrument.id}-EXTERNAL"),
             trade_id=TradeId(UUID4().value),
             order_side=order.side,
             order_type=order.order_type,
@@ -1669,7 +1826,9 @@ class LiveExecutionEngine(ExecutionEngine):
         report: OrderStatusReport,
         is_external: bool = True,
     ) -> Order | None:
-        self._log.debug(f"Generating order {report.client_order_id!r}", color=LogColor.MAGENTA)
+        self._log.debug(
+            f"Generating order {report.client_order_id!r}", color=LogColor.MAGENTA
+        )
 
         options: dict[str, Any] = {}
 
@@ -1788,7 +1947,9 @@ class LiveExecutionEngine(ExecutionEngine):
         self._log.debug(f"Generated {accepted}")
         self._handle_event(accepted)
 
-    def _generate_order_triggered(self, order: Order, report: OrderStatusReport) -> None:
+    def _generate_order_triggered(
+        self, order: Order, report: OrderStatusReport
+    ) -> None:
         triggered = OrderTriggered(
             trader_id=self.trader_id,
             strategy_id=order.strategy_id,
@@ -1898,7 +2059,10 @@ class LiveExecutionEngine(ExecutionEngine):
         ):
             return True
 
-        if order.order_type in [OrderType.STOP_LIMIT, OrderType.TRAILING_STOP_LIMIT] and (
+        if order.order_type in [
+            OrderType.STOP_LIMIT,
+            OrderType.TRAILING_STOP_LIMIT,
+        ] and (
             report.trigger_price != order.trigger_price or report.price != order.price
         ):
             return True

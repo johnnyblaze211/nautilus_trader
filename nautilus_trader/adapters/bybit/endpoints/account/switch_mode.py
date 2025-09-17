@@ -22,7 +22,9 @@ import msgspec
 from nautilus_trader.adapters.bybit.common.enums import BybitEndpointType
 from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 from nautilus_trader.adapters.bybit.endpoints.endpoint import BybitHttpEndpoint
-from nautilus_trader.adapters.bybit.schemas.account.switch_mode import BybitSwitchModeResponse
+from nautilus_trader.adapters.bybit.schemas.account.switch_mode import (
+    BybitSwitchModeResponse,
+)
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 
@@ -31,7 +33,9 @@ if TYPE_CHECKING:
     from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
 
 
-class BybitSwitchModePostParams(msgspec.Struct, omit_defaults=True, frozen=True, kw_only=True):
+class BybitSwitchModePostParams(
+    msgspec.Struct, omit_defaults=True, frozen=True, kw_only=True
+):
     category: BybitProductType
     symbol: str | None = None
     coin: str | None = None

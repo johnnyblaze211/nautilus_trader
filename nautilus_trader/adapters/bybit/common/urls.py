@@ -18,7 +18,9 @@ from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 
 def get_http_base_url(is_demo: bool, is_testnet: bool) -> str:
     if is_demo and is_testnet:
-        raise ValueError("Invalid configuration: both `is_demo` and `is_testnet` were True")
+        raise ValueError(
+            "Invalid configuration: both `is_demo` and `is_testnet` were True"
+        )
 
     if is_demo:
         return "https://api-demo.bybit.com"
@@ -34,7 +36,9 @@ def get_ws_base_url_public(
     is_testnet: bool,
 ) -> str:
     if is_demo and is_testnet:
-        raise ValueError("Invalid configuration: both `is_demo` and `is_testnet` were True")
+        raise ValueError(
+            "Invalid configuration: both `is_demo` and `is_testnet` were True"
+        )
 
     if is_demo:
         subdomain = "stream-demo"

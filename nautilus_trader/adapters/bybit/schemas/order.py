@@ -14,7 +14,8 @@
 # -------------------------------------------------------------------------------------------------
 
 from decimal import Decimal
-from typing import Any, List  # noqa: UP035
+from typing import Any  # noqa: UP035
+from typing import List
 
 import msgspec
 
@@ -106,9 +107,14 @@ class BybitOrder(msgspec.Struct, omit_defaults=True, kw_only=True):
             self.side,
             self.triggerDirection,
         )
-        order_status = enum_parser.parse_bybit_order_status(order_type, self.orderStatus)
+        order_status = enum_parser.parse_bybit_order_status(
+            order_type, self.orderStatus
+        )
 
-        if order_type in (OrderType.TRAILING_STOP_MARKET, OrderType.TRAILING_STOP_LIMIT):
+        if order_type in (
+            OrderType.TRAILING_STOP_MARKET,
+            OrderType.TRAILING_STOP_LIMIT,
+        ):
             trigger_price = Decimal(self.triggerPrice)
             last_price = Decimal(self.lastPriceOnCreated)
             trailing_offset = abs(trigger_price - last_price)

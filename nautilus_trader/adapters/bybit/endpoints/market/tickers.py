@@ -22,10 +22,16 @@ import msgspec
 from nautilus_trader.adapters.bybit.common.enums import BybitEndpointType
 from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 from nautilus_trader.adapters.bybit.endpoints.endpoint import BybitHttpEndpoint
-from nautilus_trader.adapters.bybit.schemas.market.ticker import BybitTickersLinearResponse
-from nautilus_trader.adapters.bybit.schemas.market.ticker import BybitTickersOptionResponse
+from nautilus_trader.adapters.bybit.schemas.market.ticker import (
+    BybitTickersLinearResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.market.ticker import (
+    BybitTickersOptionResponse,
+)
 from nautilus_trader.adapters.bybit.schemas.market.ticker import BybitTickersResponse
-from nautilus_trader.adapters.bybit.schemas.market.ticker import BybitTickersSpotResponse
+from nautilus_trader.adapters.bybit.schemas.market.ticker import (
+    BybitTickersSpotResponse,
+)
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 

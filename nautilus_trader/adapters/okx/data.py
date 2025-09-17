@@ -108,7 +108,9 @@ class OKXDataClient(LiveMarketDataClient):
 
         instrument_types = [i.name.upper() for i in config.instrument_types]
         contract_types = (
-            [c.name.upper() for c in config.contract_types] if config.contract_types else None
+            [c.name.upper() for c in config.contract_types]
+            if config.contract_types
+            else None
         )
 
         # Configuration
@@ -123,7 +125,8 @@ class OKXDataClient(LiveMarketDataClient):
 
         # WebSocket API (using public endpoint for market data - no auth needed)
         self._ws_client = nautilus_pyo3.OKXWebSocketClient(
-            url=config.base_url_ws or nautilus_pyo3.get_okx_ws_url_public(config.is_demo),
+            url=config.base_url_ws
+            or nautilus_pyo3.get_okx_ws_url_public(config.is_demo),
             api_key=None,  # Public endpoints don't need authentication
             api_secret=None,
             api_passphrase=None,
@@ -157,7 +160,9 @@ class OKXDataClient(LiveMarketDataClient):
 
         # Wait for connection to be established
         await self._ws_client.wait_until_active(timeout_secs=10.0)
-        self._log.info(f"Connected to public websocket {self._ws_client.url}", LogColor.BLUE)
+        self._log.info(
+            f"Connected to public websocket {self._ws_client.url}", LogColor.BLUE
+        )
 
         await self._ws_business_client.connect(
             instruments=instruments,
@@ -243,21 +248,27 @@ class OKXDataClient(LiveMarketDataClient):
             )
             return
 
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         vip_level = self._config.vip_level or 0
 
         if command.depth == 50:
             if vip_level >= 4:
                 await self._ws_client.subscribe_book50_l2_tbt(pyo3_instrument_id)
             else:
-                self._log.error(f"Insufficient VIP level {vip_level} for depth {command.depth}")
+                self._log.error(
+                    f"Insufficient VIP level {vip_level} for depth {command.depth}"
+                )
         else:
             if vip_level >= 5:
                 await self._ws_client.subscribe_book_l2_tbt(pyo3_instrument_id)
             else:
                 await self._ws_client.subscribe_book(pyo3_instrument_id)
 
-    async def _subscribe_order_book_snapshots(self, command: SubscribeOrderBook) -> None:
+    async def _subscribe_order_book_snapshots(
+        self, command: SubscribeOrderBook
+    ) -> None:
         if command.book_type != BookType.L2_MBP:
             self._log.warning(
                 f"Book type {book_type_to_str(command.book_type)} not supported by OKX, skipping subscription",
@@ -272,16 +283,22 @@ class OKXDataClient(LiveMarketDataClient):
             )
             return
 
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
 
         await self._ws_client.subscribe_book_depth5(pyo3_instrument_id)
 
     async def _subscribe_quote_ticks(self, command: SubscribeQuoteTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_quotes(pyo3_instrument_id)
 
     async def _subscribe_trade_ticks(self, command: SubscribeTradeTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_trades(pyo3_instrument_id, aggregated=False)
 
     async def _subscribe_bars(self, command: SubscribeBars) -> None:
@@ -289,19 +306,29 @@ class OKXDataClient(LiveMarketDataClient):
         await self._ws_business_client.subscribe_bars(pyo3_bar_type)
 
     async def _subscribe_mark_prices(self, command: SubscribeMarkPrices) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_mark_prices(pyo3_instrument_id)
 
     async def _subscribe_index_prices(self, command: SubscribeIndexPrices) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_index_prices(pyo3_instrument_id)
 
     async def _subscribe_funding_rates(self, command: SubscribeFundingRates) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_funding_rates(pyo3_instrument_id)
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         active_channels = self._ws_client.get_subscriptions(pyo3_instrument_id)
 
         tasks = []
@@ -310,26 +337,38 @@ class OKXDataClient(LiveMarketDataClient):
             if channel == "books":
                 tasks.append(self._ws_client.unsubscribe_book(pyo3_instrument_id))
             elif channel == "books50-l2-tbt":
-                tasks.append(self._ws_client.unsubscribe_book50_l2_tbt(pyo3_instrument_id))
+                tasks.append(
+                    self._ws_client.unsubscribe_book50_l2_tbt(pyo3_instrument_id)
+                )
             elif channel == "books-l2-tbt":
-                tasks.append(self._ws_client.unsubscribe_book_l2_tbt(pyo3_instrument_id))
+                tasks.append(
+                    self._ws_client.unsubscribe_book_l2_tbt(pyo3_instrument_id)
+                )
 
         if tasks:
             await asyncio.gather(*tasks)
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         active_channels = self._ws_client.get_subscriptions(pyo3_instrument_id)
 
         if "books5" in active_channels:
             await self._ws_client.unsubscribe_book_depth5(pyo3_instrument_id)
 
     async def _unsubscribe_quote_ticks(self, command: UnsubscribeQuoteTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_quotes(pyo3_instrument_id)
 
     async def _unsubscribe_trade_ticks(self, command: UnsubscribeTradeTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_trades(pyo3_instrument_id, aggregated=False)
 
     async def _unsubscribe_bars(self, command: UnsubscribeBars) -> None:
@@ -337,15 +376,23 @@ class OKXDataClient(LiveMarketDataClient):
         await self._ws_business_client.unsubscribe_bars(pyo3_bar_type)
 
     async def _unsubscribe_mark_prices(self, command: UnsubscribeMarkPrices) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_mark_prices(pyo3_instrument_id)
 
     async def _unsubscribe_index_prices(self, command: UnsubscribeIndexPrices) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_index_prices(pyo3_instrument_id)
 
-    async def _unsubscribe_funding_rates(self, command: UnsubscribeFundingRates) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+    async def _unsubscribe_funding_rates(
+        self, command: UnsubscribeFundingRates
+    ) -> None:
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_funding_rates(pyo3_instrument_id)
 
     # -- REQUESTS ---------------------------------------------------------------------------------
@@ -361,7 +408,9 @@ class OKXDataClient(LiveMarketDataClient):
                 f"Requesting instrument {request.instrument_id} with specified `end` which has no effect",
             )
 
-        instrument: Instrument | None = self._instrument_provider.find(request.instrument_id)
+        instrument: Instrument | None = self._instrument_provider.find(
+            request.instrument_id
+        )
         if instrument is None:
             self._log.error(f"Cannot find instrument for {request.instrument_id}")
             return
@@ -410,7 +459,9 @@ class OKXDataClient(LiveMarketDataClient):
             )
             return
 
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(request.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            request.instrument_id.value
+        )
         trades = await self._http_client.request_trades(
             instrument_id=pyo3_instrument_id,
             start=ensure_pydatetime_utc(request.start),

@@ -14,7 +14,9 @@
 #  limitations under the License.
 # -------------------------------------------------------------------------------------------------
 
-from enum import IntEnum  # IntEnum is used to create enumerated types with integer values
+from enum import (
+    IntEnum,  # IntEnum is used to create enumerated types with integer values
+)
 
 from nautilus_trader.core.fsm import FiniteStateMachine
 from nautilus_trader.core.fsm import InvalidStateTrigger
@@ -120,6 +122,8 @@ if __name__ == "__main__":
     # Once STOPPED, we cannot RESUME (this transition isn't in our STATE_TRANSITIONS table)
     try:
         print(f"Invoking trigger: {AppTrigger.RESUME}")
-        fsm.trigger(AppTrigger.RESUME)  # This will fail - cannot RESUME from STOPPED state
+        fsm.trigger(
+            AppTrigger.RESUME
+        )  # This will fail - cannot RESUME from STOPPED state
     except InvalidStateTrigger:
         print("We got expected exception: InvalidStateTrigger")

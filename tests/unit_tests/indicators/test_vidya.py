@@ -28,7 +28,9 @@ AUDUSD_SIM = TestInstrumentProvider.default_fx_ccy("AUD/USD")
 class TestVariableIndexDynamicAverage:
     def setup(self):
         # Fixture Setup
-        self.vida = VariableIndexDynamicAverage(period=10, cmo_ma_type=MovingAverageType.SIMPLE)
+        self.vida = VariableIndexDynamicAverage(
+            period=10, cmo_ma_type=MovingAverageType.SIMPLE
+        )
 
     def test_name_returns_expected_string(self):
         # Arrange, Act, Assert

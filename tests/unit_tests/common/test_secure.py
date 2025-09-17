@@ -176,7 +176,9 @@ class TestSecureString:
 
     def test_from_env_with_missing_variable_raises(self):
         # Arrange, Act, Assert
-        with pytest.raises(ValueError, match="Environment variable MISSING_VAR is not set"):
+        with pytest.raises(
+            ValueError, match="Environment variable MISSING_VAR is not set"
+        ):
             SecureString.from_env("MISSING_VAR")
 
     def test_bool_returns_false_for_empty_string(self):

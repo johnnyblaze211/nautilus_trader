@@ -30,7 +30,10 @@ from nautilus_trader.model.events import OrderAccepted
         (OrderBookDelta, True),
         (TradeTick, True),
         (OrderAccepted, True),
-        (BetfairStartingPrice, False),  # BetfairStartingPrice is an adapter specific type
+        (
+            BetfairStartingPrice,
+            False,
+        ),  # BetfairStartingPrice is an adapter specific type
         (BetfairTicker, False),  # BetfairTicker is an adapter specific type
         (pd.DataFrame, False),
     ],

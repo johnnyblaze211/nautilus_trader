@@ -623,7 +623,10 @@ class TestMarketStatusAction:
             [MarketStatusAction.PRE_CLOSE, "PRE_CLOSE"],
             [MarketStatusAction.CLOSE, "CLOSE"],
             [MarketStatusAction.POST_CLOSE, "POST_CLOSE"],
-            [MarketStatusAction.SHORT_SELL_RESTRICTION_CHANGE, "SHORT_SELL_RESTRICTION_CHANGE"],
+            [
+                MarketStatusAction.SHORT_SELL_RESTRICTION_CHANGE,
+                "SHORT_SELL_RESTRICTION_CHANGE",
+            ],
             [MarketStatusAction.NOT_AVAILABLE_FOR_TRADING, "NOT_AVAILABLE_FOR_TRADING"],
         ],
     )
@@ -651,7 +654,10 @@ class TestMarketStatusAction:
             ["PRE_CLOSE", MarketStatusAction.PRE_CLOSE],
             ["CLOSE", MarketStatusAction.CLOSE],
             ["POST_CLOSE", MarketStatusAction.POST_CLOSE],
-            ["SHORT_SELL_RESTRICTION_CHANGE", MarketStatusAction.SHORT_SELL_RESTRICTION_CHANGE],
+            [
+                "SHORT_SELL_RESTRICTION_CHANGE",
+                MarketStatusAction.SHORT_SELL_RESTRICTION_CHANGE,
+            ],
             ["NOT_AVAILABLE_FOR_TRADING", MarketStatusAction.NOT_AVAILABLE_FOR_TRADING],
         ],
     )

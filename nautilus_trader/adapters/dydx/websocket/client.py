@@ -85,7 +85,9 @@ class DYDXWebsocketClient:
         self._log: Logger = Logger(name=type(self).__name__)
         self._base_url: str = base_url
         self._handler: Callable[[bytes], None] = handler
-        self._handler_reconnect: Callable[..., Awaitable[None]] | None = handler_reconnect
+        self._handler_reconnect: Callable[..., Awaitable[None]] | None = (
+            handler_reconnect
+        )
         self._loop = loop
         self._tasks: WeakSet[asyncio.Task] = WeakSet()
         self._client: WebSocketClient | None = None
@@ -133,7 +135,9 @@ class DYDXWebsocketClient:
         """
         return self._subscriptions
 
-    def has_subscription(self, channel: DYDXChannel, channel_id: str | None = None) -> bool:
+    def has_subscription(
+        self, channel: DYDXChannel, channel_id: str | None = None
+    ) -> bool:
         """
         Return true if the connection is already subscribed to this topic.
 
@@ -184,7 +188,9 @@ class DYDXWebsocketClient:
         client = await WebSocketClient.connect(
             config=config,
             post_reconnection=self.reconnect,
-            default_quota=Quota.rate_per_second(self._subscription_rate_limit_per_second),
+            default_quota=Quota.rate_per_second(
+                self._subscription_rate_limit_per_second
+            ),
         )
         self._client = client
         self._log.info(f"Connected to {self._base_url}", LogColor.BLUE)
@@ -331,7 +337,9 @@ class DYDXWebsocketClient:
         """
         await self.subscribe_channel(channel=DYDXChannel.ORDERBOOK, channel_id=symbol)
 
-    async def subscribe_klines(self, symbol: str, interval: DYDXCandlesResolution) -> None:
+    async def subscribe_klines(
+        self, symbol: str, interval: DYDXCandlesResolution
+    ) -> None:
         """
         Subscribe to klines.
 
@@ -354,7 +362,9 @@ class DYDXWebsocketClient:
         """
         await self.subscribe_channel(channel=DYDXChannel.MARKETS)
 
-    async def subscribe_account_update(self, wallet_address: str, subaccount_number: int) -> None:
+    async def subscribe_account_update(
+        self, wallet_address: str, subaccount_number: int
+    ) -> None:
         """
         Subscribe to realtime information about orders, fills, transfers, perpetual
         positions, and perpetual assets for a subaccount.
@@ -379,7 +389,9 @@ class DYDXWebsocketClient:
         """
         await self.subscribe_channel(channel=DYDXChannel.BLOCK_HEIGHT)
 
-    async def subscribe_channel(self, channel: DYDXChannel, channel_id: str | None = None) -> None:
+    async def subscribe_channel(
+        self, channel: DYDXChannel, channel_id: str | None = None
+    ) -> None:
         """
         Subscribe to a websocket channel.
 
@@ -455,7 +467,9 @@ class DYDXWebsocketClient:
         self._log.debug(f"Unsubscribe from {channel.value}")
         await self._send(msg)
 
-    async def unsubscribe_account_update(self, wallet_address: str, subaccount_number: int) -> None:
+    async def unsubscribe_account_update(
+        self, wallet_address: str, subaccount_number: int
+    ) -> None:
         """
         Unsubscribe from account updates.
 
@@ -497,7 +511,9 @@ class DYDXWebsocketClient:
         """
         await self.unsubscribe_channel(channel=DYDXChannel.ORDERBOOK, channel_id=symbol)
 
-    async def unsubscribe_klines(self, symbol: str, interval: DYDXCandlesResolution) -> None:
+    async def unsubscribe_klines(
+        self, symbol: str, interval: DYDXCandlesResolution
+    ) -> None:
         """
         Unsubscribe from bar messages.
 

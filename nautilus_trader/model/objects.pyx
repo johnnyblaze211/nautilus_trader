@@ -36,7 +36,9 @@ from nautilus_trader.core.correctness cimport Condition
 from nautilus_trader.core.rust.core cimport precision_from_cstr
 from nautilus_trader.core.rust.model cimport FIXED_PRECISION as RUST_FIXED_PRECISION
 from nautilus_trader.core.rust.model cimport FIXED_SCALAR as RUST_FIXED_SCALAR
-from nautilus_trader.core.rust.model cimport HIGH_PRECISION_MODE as RUST_HIGH_PRECISION_MODE
+from nautilus_trader.core.rust.model cimport (
+    HIGH_PRECISION_MODE as RUST_HIGH_PRECISION_MODE,
+)
 from nautilus_trader.core.rust.model cimport MONEY_MAX as RUST_MONEY_MAX
 from nautilus_trader.core.rust.model cimport MONEY_MIN as RUST_MONEY_MIN
 from nautilus_trader.core.rust.model cimport MONEY_RAW_MAX

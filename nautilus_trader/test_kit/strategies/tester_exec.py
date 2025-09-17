@@ -121,10 +121,14 @@ class ExecTester(Strategy):
 
         # Subscribe to live data
         if self.config.subscribe_quotes:
-            self.subscribe_quote_ticks(self.config.instrument_id, client_id=self.client_id)
+            self.subscribe_quote_ticks(
+                self.config.instrument_id, client_id=self.client_id
+            )
 
         if self.config.subscribe_trades:
-            self.subscribe_trade_ticks(self.config.instrument_id, client_id=self.client_id)
+            self.subscribe_trade_ticks(
+                self.config.instrument_id, client_id=self.client_id
+            )
 
         if self.config.subscribe_book:
             self.subscribe_order_book_at_interval(
@@ -380,7 +384,9 @@ class ExecTester(Strategy):
         Actions to be performed when the strategy is stopped.
         """
         if self.config.dry_run:
-            self.log.warning("Dry run mode, skipping cancel all orders and close all positions")
+            self.log.warning(
+                "Dry run mode, skipping cancel all orders and close all positions"
+            )
             return
 
         if self.config.cancel_orders_on_stop:
@@ -398,23 +404,30 @@ class ExecTester(Strategy):
                 if open_orders:
                     self.cancel_orders(open_orders, client_id=self.client_id)
             else:
-                self.cancel_all_orders(self.config.instrument_id, client_id=self.client_id)
+                self.cancel_all_orders(
+                    self.config.instrument_id, client_id=self.client_id
+                )
 
         if self.config.close_positions_on_stop:
             self.close_all_positions(
                 instrument_id=self.config.instrument_id,
                 client_id=self.client_id,
-                time_in_force=self.config.close_positions_time_in_force or TimeInForce.GTC,
+                time_in_force=self.config.close_positions_time_in_force
+                or TimeInForce.GTC,
                 reduce_only=self.config.reduce_only_on_stop,
             )
 
         # Unsubscribe from data (if supported)
         if self.config.can_unsubscribe:
             if self.config.subscribe_quotes:
-                self.unsubscribe_quote_ticks(self.config.instrument_id, client_id=self.client_id)
+                self.unsubscribe_quote_ticks(
+                    self.config.instrument_id, client_id=self.client_id
+                )
 
             if self.config.subscribe_trades:
-                self.unsubscribe_trade_ticks(self.config.instrument_id, client_id=self.client_id)
+                self.unsubscribe_trade_ticks(
+                    self.config.instrument_id, client_id=self.client_id
+                )
 
             if self.config.subscribe_book:
                 self.unsubscribe_order_book_at_interval(

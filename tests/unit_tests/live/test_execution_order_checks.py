@@ -235,7 +235,9 @@ def fixture_exec_engine_combined(msgbus, cache, clock, exec_client):
 
 
 @pytest.mark.asyncio()
-async def test_check_open_orders_with_no_open_orders(exec_engine_open_check, exec_client):
+async def test_check_open_orders_with_no_open_orders(
+    exec_engine_open_check, exec_client
+):
     """
     Test _check_open_orders when there are no open orders in cache.
     """
@@ -610,7 +612,9 @@ async def test_check_inflight_orders_respects_retry_limit(
 
     # Assert - should have resolved the order (rejected)
     assert order.status == OrderStatus.REJECTED
-    assert order.client_order_id not in exec_engine_inflight_check._inflight_check_retries
+    assert (
+        order.client_order_id not in exec_engine_inflight_check._inflight_check_retries
+    )
 
 
 @pytest.mark.asyncio()
@@ -639,10 +643,14 @@ async def test_check_inflight_orders_increments_retry_count(
 
     # Act - check twice
     await exec_engine_inflight_check._check_inflight_orders()
-    assert exec_engine_inflight_check._inflight_check_retries[order.client_order_id] == 1
+    assert (
+        exec_engine_inflight_check._inflight_check_retries[order.client_order_id] == 1
+    )
 
     await exec_engine_inflight_check._check_inflight_orders()
-    assert exec_engine_inflight_check._inflight_check_retries[order.client_order_id] == 2
+    assert (
+        exec_engine_inflight_check._inflight_check_retries[order.client_order_id] == 2
+    )
 
 
 @pytest.mark.asyncio()
@@ -706,7 +714,9 @@ async def test_inflight_check_periodic_execution(exec_engine_inflight_check):
     exec_engine_inflight_check._check_inflight_orders = counting_check
 
     # Act - start the loop
-    task = asyncio.create_task(exec_engine_inflight_check._continuous_reconciliation_loop())
+    task = asyncio.create_task(
+        exec_engine_inflight_check._continuous_reconciliation_loop()
+    )
 
     # Wait for task to complete or timeout
     try:
@@ -738,7 +748,9 @@ async def test_inflight_check_handles_exceptions(exec_engine_inflight_check):
     exec_engine_inflight_check._check_inflight_orders = failing_check
 
     # Act - start the loop
-    task = asyncio.create_task(exec_engine_inflight_check._continuous_reconciliation_loop())
+    task = asyncio.create_task(
+        exec_engine_inflight_check._continuous_reconciliation_loop()
+    )
 
     # Wait for task to complete or timeout
     try:
@@ -1287,7 +1299,10 @@ async def test_inflight_and_open_order_combined_scenario(
     # Inflight order should be reconciled and accepted
     assert inflight_order.status == OrderStatus.ACCEPTED
     # Retry count is cleared after successful reconciliation
-    assert inflight_order.client_order_id not in exec_engine_combined._inflight_check_retries
+    assert (
+        inflight_order.client_order_id
+        not in exec_engine_combined._inflight_check_retries
+    )
 
     # Open order check doesn't apply fills (only reconciles status)
     assert open_order.status == OrderStatus.ACCEPTED

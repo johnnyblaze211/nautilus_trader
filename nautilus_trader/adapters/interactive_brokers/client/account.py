@@ -206,7 +206,9 @@ class InteractiveBrokersClientAccountMixin(BaseMixin):
         self._log.debug(f"Managed accounts set: {self._account_ids}")
 
         if self._next_valid_order_id >= 0 and not self._is_ib_connected.is_set():
-            self._log.debug("`_is_ib_connected` set by `managedAccounts`", LogColor.BLUE)
+            self._log.debug(
+                "`_is_ib_connected` set by `managedAccounts`", LogColor.BLUE
+            )
             self._is_ib_connected.set()
 
     async def process_position(
@@ -223,14 +225,18 @@ class InteractiveBrokersClientAccountMixin(BaseMixin):
         if request := self._requests.get(name="OpenPositions"):
             # Handle position updates for requests (get_positions)
             ib_contract = IBContract(**contract.__dict__)
-            request.result.append(IBPosition(account_id, ib_contract, position, avg_cost))
+            request.result.append(
+                IBPosition(account_id, ib_contract, position, avg_cost)
+            )
         elif self._subscriptions.get(name="PositionUpdates"):
             # Handle real-time position updates from subscription
             ib_contract = IBContract(**contract.__dict__)
             ib_position = IBPosition(account_id, ib_contract, position, avg_cost)
 
             # Emit position update event for registered clients
-            if handler := self._event_subscriptions.get(f"positionUpdate-{account_id}", None):
+            if handler := self._event_subscriptions.get(
+                f"positionUpdate-{account_id}", None
+            ):
                 handler(ib_position)
 
     async def process_position_end(self) -> None:

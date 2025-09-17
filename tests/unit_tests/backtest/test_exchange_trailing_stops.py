@@ -185,7 +185,9 @@ class TestSimulatedExchange:
         with pytest.raises(RuntimeError):
             self.exchange.process(0)
 
-    def test_trailing_stop_market_order_last_when_no_quote_ticks_raises_runtime_error(self) -> None:
+    def test_trailing_stop_market_order_last_when_no_quote_ticks_raises_runtime_error(
+        self,
+    ) -> None:
         # Arrange: Prepare market
         trailing_stop = self.strategy.order_factory.trailing_stop_market(
             instrument_id=USDJPY_SIM.id,
@@ -1064,7 +1066,9 @@ class TestSimulatedExchange:
             price=trade_price,
             size=Quantity.from_int(1),
             aggressor_side=(
-                AggressorSide.SELLER if order_side == OrderSide.BUY else AggressorSide.BUYER
+                AggressorSide.SELLER
+                if order_side == OrderSide.BUY
+                else AggressorSide.BUYER
             ),
             trade_id=TradeId("123456"),
             ts_event=0,
@@ -1311,11 +1315,15 @@ class TestSimulatedExchange:
         assert trailing_stop.status == OrderStatus.FILLED
         assert trailing_stop.event_count == 5
         assert trailing_stop.events[-2].last_px == Price.from_str("15.000")
-        assert trailing_stop.events[-1].last_px == Price.from_str("15.001")  # <-- Slipped one tick
+        assert trailing_stop.events[-1].last_px == Price.from_str(
+            "15.001"
+        )  # <-- Slipped one tick
         assert trailing_stop.events[-2].last_qty == Quantity.from_int(100_000)
         assert trailing_stop.events[-1].last_qty == Quantity.from_int(100_000)
 
-    def test_trailing_stop_market_order_sell_fill_when_quanity_exceeds_top_level(self) -> None:
+    def test_trailing_stop_market_order_sell_fill_when_quanity_exceeds_top_level(
+        self,
+    ) -> None:
         # Arrange: Prepare market
         quote1 = TestDataStubs.quote_tick(
             instrument=USDJPY_SIM,
@@ -1352,7 +1360,9 @@ class TestSimulatedExchange:
         assert trailing_stop.status == OrderStatus.FILLED
         assert trailing_stop.event_count == 5
         assert trailing_stop.events[-2].last_px == Price.from_str("12.000")
-        assert trailing_stop.events[-1].last_px == Price.from_str("11.999")  # <-- Slipped one tick
+        assert trailing_stop.events[-1].last_px == Price.from_str(
+            "11.999"
+        )  # <-- Slipped one tick
         assert trailing_stop.events[-2].last_qty == Quantity.from_int(100_000)
         assert trailing_stop.events[-1].last_qty == Quantity.from_int(100_000)
 
@@ -1681,8 +1691,12 @@ class TestSimulatedExchange:
         ("bid_price", "ask_price", "expected_status", "expected_filled_qty"),
         [
             pytest.param(11.0, 12.0, OrderStatus.ACCEPTED, 0, id="at_activation_price"),
-            pytest.param(15.0, 16.0, OrderStatus.TRIGGERED, 0, id="through_trigger_price"),
-            pytest.param(14.0, 15.0, OrderStatus.FILLED, 100_000, id="at_trigger_price"),
+            pytest.param(
+                15.0, 16.0, OrderStatus.TRIGGERED, 0, id="through_trigger_price"
+            ),
+            pytest.param(
+                14.0, 15.0, OrderStatus.FILLED, 100_000, id="at_trigger_price"
+            ),
         ],
     )
     def test_trailing_stop_limit_buy_order_modify(
@@ -1781,8 +1795,12 @@ class TestSimulatedExchange:
         ("bid_price", "ask_price", "expected_status", "expected_filled_qty"),
         [
             pytest.param(14.0, 15.0, OrderStatus.ACCEPTED, 0, id="at_activation_price"),
-            pytest.param(11.0, 12.0, OrderStatus.TRIGGERED, 0, id="through_trigger_price"),
-            pytest.param(12.0, 13.0, OrderStatus.FILLED, 100_000, id="at_trigger_price"),
+            pytest.param(
+                11.0, 12.0, OrderStatus.TRIGGERED, 0, id="through_trigger_price"
+            ),
+            pytest.param(
+                12.0, 13.0, OrderStatus.FILLED, 100_000, id="at_trigger_price"
+            ),
         ],
     )
     def test_trailing_stop_limit_sell_order_modify(

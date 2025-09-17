@@ -37,7 +37,9 @@ from v4_proto.cosmos.auth.v1beta1.query_pb2 import QueryAccountRequest
 from v4_proto.cosmos.bank.v1beta1 import query_pb2 as bank_query
 from v4_proto.cosmos.bank.v1beta1 import query_pb2_grpc as bank_query_grpc
 from v4_proto.cosmos.base.tendermint.v1beta1 import query_pb2 as tendermint_query
-from v4_proto.cosmos.base.tendermint.v1beta1 import query_pb2_grpc as tendermint_query_grpc
+from v4_proto.cosmos.base.tendermint.v1beta1 import (
+    query_pb2_grpc as tendermint_query_grpc,
+)
 from v4_proto.cosmos.base.v1beta1.coin_pb2 import Coin
 from v4_proto.cosmos.crypto.secp256k1.keys_pb2 import PubKey
 from v4_proto.cosmos.tx.signing.v1beta1.signing_pb2 import SignMode
@@ -62,7 +64,9 @@ from v4_proto.dydxprotocol.feetiers import query_pb2 as fee_tier_query
 from v4_proto.dydxprotocol.feetiers import query_pb2_grpc as fee_tier_query_grpc
 from v4_proto.dydxprotocol.subaccounts.subaccount_pb2 import SubaccountId
 
-from nautilus_trader.adapters.dydx.common.constants import ACCOUNT_SEQUENCE_MISMATCH_ERROR_CODE
+from nautilus_trader.adapters.dydx.common.constants import (
+    ACCOUNT_SEQUENCE_MISMATCH_ERROR_CODE,
+)
 from nautilus_trader.adapters.dydx.grpc.errors import DYDXGRPCError
 
 
@@ -72,7 +76,9 @@ DEFAULT_FEE = Fee(
 )
 
 
-from_string = partial(ecdsa.SigningKey.from_string, curve=ecdsa.SECP256k1, hashfunc=hashlib.sha256)
+from_string = partial(
+    ecdsa.SigningKey.from_string, curve=ecdsa.SECP256k1, hashfunc=hashlib.sha256
+)
 
 
 def as_any(message: Message) -> google.protobuf.any_pb2.Any:
@@ -112,7 +118,9 @@ def get_signature(
         chain_id=chain_id,
     )
 
-    return private_key.sign(signdoc.SerializeToString(), sigencode=sigencode_string_canonize)
+    return private_key.sign(
+        signdoc.SerializeToString(), sigencode=sigencode_string_canonize
+    )
 
 
 def bytes_from_mnemonic(mnemonic: str) -> bytes:
@@ -120,7 +128,13 @@ def bytes_from_mnemonic(mnemonic: str) -> bytes:
     Create a Bib44 private signing key.
     """
     seed = Bip39SeedGenerator(mnemonic).Generate()
-    return Bip44.FromSeed(seed, Bip44Coins.COSMOS).DeriveDefaultPath().PrivateKey().Raw().ToBytes()
+    return (
+        Bip44.FromSeed(seed, Bip44Coins.COSMOS)
+        .DeriveDefaultPath()
+        .PrivateKey()
+        .Raw()
+        .ToBytes()
+    )
 
 
 def from_mnemonic(mnemonic: str) -> ecdsa.SigningKey:
@@ -166,7 +180,9 @@ class TransactionBuilder:
     Create signed transactions to place orders on the dYdX chain.
     """
 
-    def __init__(self, chain_id: str, denomination: str, memo: str | None = None) -> None:
+    def __init__(
+        self, chain_id: str, denomination: str, memo: str | None = None
+    ) -> None:
         """
         Create a new transaction builder.
         """
@@ -189,7 +205,9 @@ class TransactionBuilder:
             gas_limit=gas_limit,
         )
 
-    def build_transaction(self, wallet: Wallet, messages: list[Message], fee: Fee) -> Tx:
+    def build_transaction(
+        self, wallet: Wallet, messages: list[Message], fee: Fee
+    ) -> Tx:
         """
         Build the transaction.
         """
@@ -198,7 +216,9 @@ class TransactionBuilder:
             signer_infos=[get_signer_info(wallet.public_key, wallet.sequence)],
             fee=fee,
         )
-        signature = get_signature(wallet.key, body, auth_info, wallet.account_number, self.chain_id)
+        signature = get_signature(
+            wallet.key, body, auth_info, wallet.account_number, self.chain_id
+        )
 
         return Tx(body=body, auth_info=auth_info, signatures=[signature])
 
@@ -214,7 +234,9 @@ class DYDXAccountGRPCAPI:
     Define the account GRPC API endpoints.
     """
 
-    def __init__(self, channel_url: str, transaction_builder: TransactionBuilder) -> None:
+    def __init__(
+        self, channel_url: str, transaction_builder: TransactionBuilder
+    ) -> None:
         """
         Define the account GRPC API endpoints.
         """
@@ -294,7 +316,9 @@ class DYDXAccountGRPCAPI:
         """
         account = BaseAccount()
         channel = self._get_channel()
-        response = await auth.QueryStub(channel).Account(QueryAccountRequest(address=address))
+        response = await auth.QueryStub(channel).Account(
+            QueryAccountRequest(address=address)
+        )
 
         if not response.account.Unpack(account):
             message = "Failed to unpack account"
@@ -302,7 +326,9 @@ class DYDXAccountGRPCAPI:
 
         return account
 
-    async def get_account_balances(self, address: str) -> bank_query.QueryAllBalancesResponse:
+    async def get_account_balances(
+        self, address: str
+    ) -> bank_query.QueryAllBalancesResponse:
         """
         Retrieve all account balances for a given address.
 
@@ -318,7 +344,9 @@ class DYDXAccountGRPCAPI:
 
         """
         stub = bank_query_grpc.QueryStub(self._get_channel())
-        return await stub.AllBalances(bank_query.QueryAllBalancesRequest(address=address))
+        return await stub.AllBalances(
+            bank_query.QueryAllBalancesRequest(address=address)
+        )
 
     async def latest_block(self) -> tendermint_query.GetLatestBlockResponse:
         """
@@ -330,7 +358,9 @@ class DYDXAccountGRPCAPI:
             The response containing the latest block information.
 
         """
-        return await tendermint_query_grpc.ServiceStub(self._get_channel()).GetLatestBlock(
+        return await tendermint_query_grpc.ServiceStub(
+            self._get_channel()
+        ).GetLatestBlock(
             tendermint_query.GetLatestBlockRequest(),
         )
 
@@ -358,9 +388,13 @@ class DYDXAccountGRPCAPI:
 
         """
         stub = fee_tier_query_grpc.QueryStub(self._get_channel())
-        return await stub.PerpetualFeeParams(fee_tier_query.QueryPerpetualFeeParamsRequest())
+        return await stub.PerpetualFeeParams(
+            fee_tier_query.QueryPerpetualFeeParamsRequest()
+        )
 
-    async def get_user_fee_tier(self, address: str) -> fee_tier_query.QueryUserFeeTierResponse:
+    async def get_user_fee_tier(
+        self, address: str
+    ) -> fee_tier_query.QueryUserFeeTierResponse:
         """
         Retrieve the user fee tier for a given address.
 
@@ -376,7 +410,9 @@ class DYDXAccountGRPCAPI:
 
         """
         stub = fee_tier_query_grpc.QueryStub(self._get_channel())
-        return await stub.UserFeeTier(fee_tier_query.QueryUserFeeTierRequest(user=address))
+        return await stub.UserFeeTier(
+            fee_tier_query.QueryUserFeeTierRequest(user=address)
+        )
 
     async def place_order(self, wallet: Wallet, order: Order) -> BroadcastTxResponse:
         """
@@ -517,7 +553,9 @@ class DYDXAccountGRPCAPI:
 
         """
         async with self._lock:
-            response = await self.broadcast(self._transaction_builder.build(wallet, message), mode)
+            response = await self.broadcast(
+                self._transaction_builder.build(wallet, message), mode
+            )
 
             if response.tx_response.code == 0:
                 wallet.sequence += 1
@@ -551,6 +589,10 @@ class DYDXAccountGRPCAPI:
             The response from the broadcast.
 
         """
-        request = BroadcastTxRequest(tx_bytes=transaction.SerializeToString(), mode=mode)
+        request = BroadcastTxRequest(
+            tx_bytes=transaction.SerializeToString(), mode=mode
+        )
 
-        return await service_pb2_grpc.ServiceStub(self._get_channel()).BroadcastTx(request)
+        return await service_pb2_grpc.ServiceStub(self._get_channel()).BroadcastTx(
+            request
+        )

@@ -48,7 +48,9 @@ class DemoStrategy(Strategy):
             config.secondary_ema_period,  # Period for secondary cascaded EMA indicator
             MovingAverageType.EXPONENTIAL,  # Type of moving average
         )
-        self.secondary_ema_history: deque[float] = deque()  # Store historical values here
+        self.secondary_ema_history: deque[float] = (
+            deque()
+        )  # Store historical values here
 
     def on_start(self):
         # Subscribe to bars

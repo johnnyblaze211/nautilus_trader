@@ -173,7 +173,9 @@ def test_efficient_rust_implementation():
 
     # Should not have Python-based message bus or inefficient implementations
     assert not hasattr(actor, "_msgbus")  # Should not have Python message bus
-    assert not hasattr(actor, "_message_handlers")  # Should not have Python message handling
+    assert not hasattr(
+        actor, "_message_handlers"
+    )  # Should not have Python message handling
     assert not hasattr(actor, "msgbus")  # Should not expose Python msgbus directly
 
     # This validates we're using the efficient approach as required
@@ -247,7 +249,9 @@ def test_lifecycle_methods_exist_on_instance():
 # =============================================================================
 
 
-def test_subscription_method_signatures_exist(venue, instrument_id, data_type, client_id, bar_type):
+def test_subscription_method_signatures_exist(
+    venue, instrument_id, data_type, client_id, bar_type
+):
     """
     Test subscription method signatures and availability.
     """
@@ -337,7 +341,9 @@ def test_shutdown_system_method_exists():
 # =============================================================================
 
 
-def test_subscribe_book_at_interval_invalid_interval_raises_error(instrument_id, client_id):
+def test_subscribe_book_at_interval_invalid_interval_raises_error(
+    instrument_id, client_id
+):
     """
     Test that invalid interval raises appropriate error.
     """
@@ -355,7 +361,9 @@ def test_subscribe_book_at_interval_invalid_interval_raises_error(instrument_id,
         )
 
 
-def test_unsubscribe_book_at_interval_invalid_interval_raises_error(instrument_id, client_id):
+def test_unsubscribe_book_at_interval_invalid_interval_raises_error(
+    instrument_id, client_id
+):
     """
     Test that invalid interval raises appropriate error for unsubscribe.
     """
@@ -398,7 +406,9 @@ def test_all_subscription_methods_match_legacy_api():
     ]
 
     for method_name in expected_subscription_methods:
-        assert hasattr(actor, method_name), f"Missing subscription method: {method_name}"
+        assert hasattr(
+            actor, method_name
+        ), f"Missing subscription method: {method_name}"
 
 
 def test_all_request_methods_match_legacy_api():
@@ -437,7 +447,9 @@ def test_method_signatures_compatible(instrument_id, client_id, data_type):
 
     # Check subscribe_book_deltas signature
     sig = inspect.signature(actor.subscribe_book_deltas)
-    assert len(sig.parameters) >= 2  # Should accept InstrumentId and BookType at minimum
+    assert (
+        len(sig.parameters) >= 2
+    )  # Should accept InstrumentId and BookType at minimum
 
 
 def test_api_style_consistency_with_legacy():
@@ -453,12 +465,18 @@ def test_api_style_consistency_with_legacy():
     # - Lifecycle methods without prefixes
 
     # Check subscription method naming pattern
-    subscription_methods = [attr for attr in dir(actor) if attr.startswith("subscribe_")]
+    subscription_methods = [
+        attr for attr in dir(actor) if attr.startswith("subscribe_")
+    ]
     assert len(subscription_methods) >= 8, "Should have multiple subscribe_* methods"
 
     # Check unsubscription method naming pattern
-    unsubscription_methods = [attr for attr in dir(actor) if attr.startswith("unsubscribe_")]
-    assert len(unsubscription_methods) >= 8, "Should have multiple unsubscribe_* methods"
+    unsubscription_methods = [
+        attr for attr in dir(actor) if attr.startswith("unsubscribe_")
+    ]
+    assert (
+        len(unsubscription_methods) >= 8
+    ), "Should have multiple unsubscribe_* methods"
 
     # Check request method naming pattern
     request_methods = [attr for attr in dir(actor) if attr.startswith("request_")]

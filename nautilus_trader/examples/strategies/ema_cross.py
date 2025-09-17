@@ -293,7 +293,9 @@ class EMACross(Strategy):
 
     def create_order_qty(self) -> Quantity:
         if self.config.order_quantity_precision is not None:
-            return Quantity(self.config.trade_size, self.config.order_quantity_precision)
+            return Quantity(
+                self.config.trade_size, self.config.order_quantity_precision
+            )
         else:
             return self.instrument.make_qty(self.config.trade_size)
 

@@ -111,7 +111,9 @@ class BinanceSpotWalletHttpAPI:
                 f"`BinanceAccountType` not SPOT, MARGIN or ISOLATED_MARGIN, was {account_type}",  # pragma: no cover
             )
 
-        self._endpoint_spot_trade_fee = BinanceSpotTradeFeeHttp(client, self.base_endpoint)
+        self._endpoint_spot_trade_fee = BinanceSpotTradeFeeHttp(
+            client, self.base_endpoint
+        )
 
     def _timestamp(self) -> str:
         """

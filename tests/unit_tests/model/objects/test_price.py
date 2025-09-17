@@ -106,7 +106,9 @@ class TestPrice:
             [Price(2.255, precision=3), 2, Decimal("2.26")],
         ],
     )
-    def test_round_with_various_digits_returns_expected_decimal(self, value, precision, expected):
+    def test_round_with_various_digits_returns_expected_decimal(
+        self, value, precision, expected
+    ):
         # Arrange, Act
         result = round(value, precision)
 
@@ -175,7 +177,9 @@ class TestPrice:
             [Price(-1.1, precision=1), Price(-1.1, precision=1)],
         ],
     )
-    def test_instantiate_with_various_valid_inputs_returns_expected_decimal(self, value, expected):
+    def test_instantiate_with_various_valid_inputs_returns_expected_decimal(
+        self, value, expected
+    ):
         # Arrange, Act
         decimal_object = Price(value, 2)
 
@@ -223,7 +227,9 @@ class TestPrice:
             [-1.12, -1.1, False],
         ],
     )
-    def test_equality_with_various_values_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_values_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result = Price(value1, 2) == Price(value2, 2)
 
@@ -243,7 +249,9 @@ class TestPrice:
             [1, 2, False],
         ],
     )
-    def test_equality_with_various_int_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_int_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result1 = Price(value1, 0) == value2
         result2 = value2 == Price(value1, 0)
@@ -260,7 +268,9 @@ class TestPrice:
             [Price(1, precision=0), Decimal(0), False],
         ],
     )
-    def test_equality_with_various_decimals_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_decimals_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result = value1 == value2
 
@@ -610,7 +620,9 @@ class TestPrice:
         ("value", "expected"),
         [[0, 0], [-0, 0], [-1, -1], [1, 1], [1.1, 1.1], [-1.1, -1.1]],
     )
-    def test_as_double_with_various_values_returns_expected_value(self, value, expected):
+    def test_as_double_with_various_values_returns_expected_value(
+        self, value, expected
+    ):
         # Arrange, Act
         result = Price(value, 1).as_double()
 
@@ -748,17 +760,23 @@ class TestPrice:
     )
     def test_from_str_invalid_input_raises_value_error(self, invalid_input):
         # Arrange, Act, Assert
-        with pytest.raises(Exception):  # Various exceptions can be raised for invalid input
+        with pytest.raises(
+            Exception
+        ):  # Various exceptions can be raised for invalid input
             Price.from_str(invalid_input)
 
     def test_from_str_with_precision_exceeding_max_raises_value_error(self):
         if FIXED_PRECISION <= 9:
             # On Windows with 9 decimal max
-            with pytest.raises(ValueError, match="invalid `precision` greater than max"):
+            with pytest.raises(
+                ValueError, match="invalid `precision` greater than max"
+            ):
                 Price.from_str("1." + "0" * 10)  # 10 decimals > 9
         else:
             # On Linux/Mac with 16 decimal max
-            with pytest.raises(ValueError, match="invalid `precision` greater than max"):
+            with pytest.raises(
+                ValueError, match="invalid `precision` greater than max"
+            ):
                 Price.from_str("1." + "0" * 17)  # 17 decimals > 16
 
     def test_from_str_precision_preservation(self):

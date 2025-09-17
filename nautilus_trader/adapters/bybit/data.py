@@ -19,7 +19,8 @@ import asyncio
 from collections import defaultdict
 from decimal import Decimal
 from functools import partial
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
+from typing import Any
 
 import msgspec
 
@@ -157,7 +158,9 @@ class BybitDataClient(LiveMarketDataClient):
 
         # Configuration
         self._bars_timestamp_on_close = config.bars_timestamp_on_close
-        self._log.info(f"Product types: {[p.value for p in product_types]}", LogColor.BLUE)
+        self._log.info(
+            f"Product types: {[p.value for p in product_types]}", LogColor.BLUE
+        )
         self._log.info(f"{config.update_instruments_interval_mins=}", LogColor.BLUE)
         self._log.info(f"{config.recv_window_ms=:_}", LogColor.BLUE)
         self._log.info(f"{config.bars_timestamp_on_close=}", LogColor.BLUE)
@@ -170,8 +173,10 @@ class BybitDataClient(LiveMarketDataClient):
 
         # WebSocket API
         self._ws_clients: dict[BybitProductType, BybitWebSocketClient] = {}
-        self._decoders: dict[str, dict[BybitProductType, msgspec.json.Decoder]] = defaultdict(
-            dict,
+        self._decoders: dict[str, dict[BybitProductType, msgspec.json.Decoder]] = (
+            defaultdict(
+                dict,
+            )
         )
         for product_type in set(product_types):
             self._ws_clients[product_type] = BybitWebSocketClient(
@@ -180,7 +185,8 @@ class BybitDataClient(LiveMarketDataClient):
                 handler_reconnect=None,
                 base_url=ws_base_urls[product_type],
                 api_key=config.api_key or get_api_key(config.demo, config.testnet),
-                api_secret=config.api_secret or get_api_secret(config.demo, config.testnet),
+                api_secret=config.api_secret
+                or get_api_secret(config.demo, config.testnet),
                 loop=loop,
             )
 
@@ -197,7 +203,9 @@ class BybitDataClient(LiveMarketDataClient):
         self._subscribed_tickers: set[InstrumentId] = set()
         self._funding_rate_cache: dict[InstrumentId, FundingRateUpdate] = {}
 
-        self._update_instruments_interval_mins: int | None = config.update_instruments_interval_mins
+        self._update_instruments_interval_mins: int | None = (
+            config.update_instruments_interval_mins
+        )
         self._update_instruments_task: asyncio.Task | None = None
 
         # Register custom endpoint for fetching tickers
@@ -395,7 +403,9 @@ class BybitDataClient(LiveMarketDataClient):
                 return  # Already subscribed
 
         if command.instrument_id in self._depths:
-            self._log.warning(f"Already subscribed to {command.instrument_id} order book deltas")
+            self._log.warning(
+                f"Already subscribed to {command.instrument_id} order book deltas"
+            )
             return
 
         self._depths[command.instrument_id] = depth
@@ -431,7 +441,10 @@ class BybitDataClient(LiveMarketDataClient):
         bybit_symbol = BybitSymbol(command.instrument_id.symbol.value)
 
         # Only perpetual swaps have funding rates
-        if bybit_symbol.product_type not in [BybitProductType.LINEAR, BybitProductType.INVERSE]:
+        if bybit_symbol.product_type not in [
+            BybitProductType.LINEAR,
+            BybitProductType.INVERSE,
+        ]:
             self._log.warning(
                 f"Cannot subscribe to funding rates for {command.instrument_id} - "
                 f"only LINEAR and INVERSE perpetual swaps support funding rates",
@@ -452,12 +465,15 @@ class BybitDataClient(LiveMarketDataClient):
         self._topic_bar_type[topic] = command.bar_type
         await ws_client.subscribe_klines(bybit_symbol.raw_symbol, interval_str)
 
-    async def _unsubscribe_funding_rates(self, command: UnsubscribeFundingRates) -> None:
+    async def _unsubscribe_funding_rates(
+        self, command: UnsubscribeFundingRates
+    ) -> None:
         # Check if we can unsubscribe from tickers
         # (only if no other subscription needs them)
         # Need to check if quotes are subscribed via ticker (not TOB)
         quotes_via_ticker = (
-            command.instrument_id in self._depths and command.instrument_id not in self._tob_quotes
+            command.instrument_id in self._depths
+            and command.instrument_id not in self._tob_quotes
         )
         if command.instrument_id in self._subscribed_tickers and not quotes_via_ticker:
             bybit_symbol = BybitSymbol(command.instrument_id.symbol.value)
@@ -469,14 +485,18 @@ class BybitDataClient(LiveMarketDataClient):
                 LogColor.MAGENTA,
             )
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         bybit_symbol = BybitSymbol(command.instrument_id.symbol.value)
         ws_client = self._ws_clients[bybit_symbol.product_type]
         depth = self._depths.get(command.instrument_id, 1)
         await ws_client.unsubscribe_order_book(bybit_symbol.raw_symbol, depth=depth)
         self._depths.pop(command.instrument_id, None)
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         bybit_symbol = BybitSymbol(command.instrument_id.symbol.value)
         ws_client = self._ws_clients[bybit_symbol.product_type]
         depth = self._depths.get(command.instrument_id, 1)
@@ -536,12 +556,16 @@ class BybitDataClient(LiveMarketDataClient):
                 f"Requesting instrument {request.instrument_id} with specified `end` which has no effect",
             )
 
-        instrument: Instrument | None = self._instrument_provider.find(request.instrument_id)
+        instrument: Instrument | None = self._instrument_provider.find(
+            request.instrument_id
+        )
         if instrument is None:
             self._log.error(f"Cannot find instrument for {request.instrument_id}")
             return
 
-        self._handle_instrument(instrument, request.id, request.start, request.end, request.params)
+        self._handle_instrument(
+            instrument, request.id, request.start, request.end, request.params
+        )
 
     async def _request_instruments(self, request: RequestInstruments) -> None:
         if request.start is not None:
@@ -599,7 +623,9 @@ class BybitDataClient(LiveMarketDataClient):
         )
 
         # Filter trades to only include those within the requested time range
-        filtered_trades = [trade for trade in trades if start_ns <= trade.ts_init <= end_ns]
+        filtered_trades = [
+            trade for trade in trades if start_ns <= trade.ts_init <= end_ns
+        ]
 
         self._handle_trade_ticks(
             request.instrument_id,
@@ -635,7 +661,9 @@ class BybitDataClient(LiveMarketDataClient):
         start_time_ms = secs_to_millis(request.start.timestamp())
         end_time_ms = secs_to_millis(request.end.timestamp())
 
-        self._log.debug(f"Requesting klines {start_time_ms=}, {end_time_ms=}, {request.limit=}")
+        self._log.debug(
+            f"Requesting klines {start_time_ms=}, {end_time_ms=}, {request.limit=}"
+        )
 
         bars = await self._http_market.request_bybit_bars(
             bar_type=request.bar_type,
@@ -657,7 +685,9 @@ class BybitDataClient(LiveMarketDataClient):
             request.params,
         )
 
-    async def _handle_ticker_data_request(self, symbol: Symbol, correlation_id: UUID4) -> None:
+    async def _handle_ticker_data_request(
+        self, symbol: Symbol, correlation_id: UUID4
+    ) -> None:
         bybit_symbol = BybitSymbol(symbol.value)
         bybit_tickers = await self._http_market.fetch_tickers(
             product_type=bybit_symbol.product_type,
@@ -715,12 +745,16 @@ class BybitDataClient(LiveMarketDataClient):
         except Exception as e:
             self._log.exception(f"Failed to parse websocket message: {raw.decode()}", e)
 
-    def _handle_orderbook(self, product_type: BybitProductType, raw: bytes, topic: str) -> None:
+    def _handle_orderbook(
+        self, product_type: BybitProductType, raw: bytes, topic: str
+    ) -> None:
         msg = self._decoder_ws_orderbook.decode(raw)
         instrument_id = self._get_cached_instrument_id(msg.data.s, product_type)
         instrument = self._cache.instrument(instrument_id)
         if instrument is None:
-            self._log.error(f"Cannot parse order book data: no instrument for {instrument_id}")
+            self._log.error(
+                f"Cannot parse order book data: no instrument for {instrument_id}"
+            )
             return
 
         if instrument_id in self._tob_quotes and topic.startswith("orderbook.1."):
@@ -779,10 +813,14 @@ class BybitDataClient(LiveMarketDataClient):
         # Create funding rate update for perpetual swaps (LINEAR and INVERSE only)
         # The framework will handle routing to subscribers
         if product_type in [BybitProductType.LINEAR, BybitProductType.INVERSE]:
-            funding_rate_update = self._create_funding_rate_update_from_ticker(ticker, product_type)
+            funding_rate_update = self._create_funding_rate_update_from_ticker(
+                ticker, product_type
+            )
             if funding_rate_update:
                 # Check if we have a cached rate for this instrument
-                cached_rate = self._funding_rate_cache.get(funding_rate_update.instrument_id)
+                cached_rate = self._funding_rate_cache.get(
+                    funding_rate_update.instrument_id
+                )
 
                 # Only emit if this is new or changed (uses custom __eq__ comparing rate and next_funding_ns)
                 if cached_rate is None or cached_rate != funding_rate_update:
@@ -832,7 +870,9 @@ class BybitDataClient(LiveMarketDataClient):
             instrument_id = self._get_cached_instrument_id(symbol, product_type)
             instrument = self._cache.instrument(instrument_id)
             if instrument is None:
-                self._log.error(f"Cannot create quote tick: no instrument for {instrument_id}")
+                self._log.error(
+                    f"Cannot create quote tick: no instrument for {instrument_id}"
+                )
                 return None
 
             # Extract price and size data
@@ -850,8 +890,16 @@ class BybitDataClient(LiveMarketDataClient):
 
             bid_price = Price.from_str(bid_price_str)
             ask_price = Price.from_str(ask_price_str)
-            bid_size = Quantity.from_str(bid_size_str) if bid_size_str else Quantity.from_int(0)
-            ask_size = Quantity.from_str(ask_size_str) if ask_size_str else Quantity.from_int(0)
+            bid_size = (
+                Quantity.from_str(bid_size_str)
+                if bid_size_str
+                else Quantity.from_int(0)
+            )
+            ask_size = (
+                Quantity.from_str(ask_size_str)
+                if ask_size_str
+                else Quantity.from_int(0)
+            )
 
             # Get timestamp
             ts_event = millis_to_nanos(int(getattr(ticker, "ts", 0)))
@@ -939,9 +987,13 @@ class BybitDataClient(LiveMarketDataClient):
             if next_funding_time_str:
                 try:
                     # Bybit provides next funding time as a millisecond timestamp string
-                    next_funding_ns = int(next_funding_time_str) * 1_000_000  # Convert ms to ns
+                    next_funding_ns = (
+                        int(next_funding_time_str) * 1_000_000
+                    )  # Convert ms to ns
                 except (ValueError, TypeError):
-                    self._log.warning(f"Failed to parse next funding time: {next_funding_time_str}")
+                    self._log.warning(
+                        f"Failed to parse next funding time: {next_funding_time_str}"
+                    )
 
             # Get instrument ID
             symbol = getattr(ticker, "symbol", None)
@@ -973,7 +1025,9 @@ class BybitDataClient(LiveMarketDataClient):
                 instrument_id = self._get_cached_instrument_id(data.s, product_type)
                 instrument = self._cache.instrument(instrument_id)
                 if instrument is None:
-                    self._log.error(f"Cannot parse trade data: no instrument for {instrument_id}")
+                    self._log.error(
+                        f"Cannot parse trade data: no instrument for {instrument_id}"
+                    )
                     return
 
                 trade: TradeTick = data.parse_to_trade_tick(
@@ -999,7 +1053,9 @@ class BybitDataClient(LiveMarketDataClient):
             instrument = self._cache.instrument(instrument_id)
 
             if instrument is None:
-                self._log.error(f"Cannot parse bar data: no instrument for {instrument_id}")
+                self._log.error(
+                    f"Cannot parse bar data: no instrument for {instrument_id}"
+                )
                 return
 
             for data in msg.data:

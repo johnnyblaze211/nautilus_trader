@@ -70,7 +70,9 @@ class StreamingConfig(NautilusConfig, frozen=True):
 
     @property
     def fs(self):
-        return fsspec.filesystem(protocol=self.fs_protocol, **(self.fs_storage_options or {}))
+        return fsspec.filesystem(
+            protocol=self.fs_protocol, **(self.fs_storage_options or {})
+        )
 
     def as_catalog(self):
         from nautilus_trader.persistence.catalog.parquet import ParquetDataCatalog

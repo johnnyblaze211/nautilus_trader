@@ -66,10 +66,18 @@ class BybitBatchPlaceOrder(
     smpType: str | None = None
     mmp: bool | None = None
     tpslMode: BybitTpSlMode | None = None  # Must be PARTIAL for Limit orders
-    tpLimitPrice: str | None = None  # tpslMode must be PARTIAL, tpOrderType must be LIMIT
-    slLimitPrice: str | None = None  # tpslMode must be PARTIAL, slOrderType must be LIMIT
-    tpOrderType: BybitOrderType | None = None  # MARKET for takeProfit, LIMIT with tpLimitPrice
-    slOrderType: BybitOrderType | None = None  # MARKET for stopLoss, LIMIT with slLimitPrice
+    tpLimitPrice: str | None = (
+        None  # tpslMode must be PARTIAL, tpOrderType must be LIMIT
+    )
+    slLimitPrice: str | None = (
+        None  # tpslMode must be PARTIAL, slOrderType must be LIMIT
+    )
+    tpOrderType: BybitOrderType | None = (
+        None  # MARKET for takeProfit, LIMIT with tpLimitPrice
+    )
+    slOrderType: BybitOrderType | None = (
+        None  # MARKET for stopLoss, LIMIT with slLimitPrice
+    )
 
 
 class BybitBatchPlaceOrderPostParams(msgspec.Struct, omit_defaults=True, frozen=True):
@@ -91,7 +99,9 @@ class BybitBatchPlaceOrderEndpoint(BybitHttpEndpoint):
         )
         self._resp_decoder = msgspec.json.Decoder(BybitBatchPlaceOrderResponse)
 
-    async def post(self, params: BybitBatchPlaceOrderPostParams) -> BybitBatchPlaceOrderResponse:
+    async def post(
+        self, params: BybitBatchPlaceOrderPostParams
+    ) -> BybitBatchPlaceOrderResponse:
         method_type = HttpMethod.POST
         raw = await self._method(method_type, params)
         try:

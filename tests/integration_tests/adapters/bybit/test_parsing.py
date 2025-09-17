@@ -50,7 +50,9 @@ class TestBybitParsing:
             ["ETHUSDT.BYBIT-1-MONTH-LAST-EXTERNAL", "M"],
         ],
     )
-    def test_parse_bybit_kline_correct(self, bar_type: str, bybit_kline_interval: str) -> None:
+    def test_parse_bybit_kline_correct(
+        self, bar_type: str, bybit_kline_interval: str
+    ) -> None:
         bar_type = BarType.from_str(bar_type)
         result = self._enum_parser.parse_bybit_kline(bar_type)
         assert result.value == bybit_kline_interval
@@ -160,7 +162,9 @@ class TestBybitParsing:
             (OrderType.LIMIT, None),
         ],
     )
-    def test_parse_trigger_direction_buy_orders(self, order_type, expected_direction_buy):
+    def test_parse_trigger_direction_buy_orders(
+        self, order_type, expected_direction_buy
+    ):
         # Arrange & Act
         result = self._enum_parser.parse_trigger_direction(
             order_type=order_type,
@@ -182,7 +186,9 @@ class TestBybitParsing:
             (OrderType.LIMIT, None),
         ],
     )
-    def test_parse_trigger_direction_sell_orders(self, order_type, expected_direction_sell):
+    def test_parse_trigger_direction_sell_orders(
+        self, order_type, expected_direction_sell
+    ):
         # Arrange & Act
         result = self._enum_parser.parse_trigger_direction(
             order_type=order_type,

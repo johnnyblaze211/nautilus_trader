@@ -15,7 +15,8 @@
 
 from collections.abc import Callable
 from io import BytesIO
-from typing import Any, Union
+from typing import Any
+from typing import Union
 
 import pyarrow as pa
 
@@ -168,7 +169,9 @@ class ArrowSerializer:
                     )
                 elif data_cls == Bar:
                     pyo3_bars = Bar.to_pyo3_list(data)
-                    batch_bytes = nautilus_pyo3.bars_to_arrow_record_batch_bytes(pyo3_bars)
+                    batch_bytes = nautilus_pyo3.bars_to_arrow_record_batch_bytes(
+                        pyo3_bars
+                    )
                 elif data_cls == MarkPriceUpdate:
                     pyo3_mark_prices = MarkPriceUpdate.to_pyo3_list(data)
                     batch_bytes = nautilus_pyo3.mark_prices_to_arrow_record_batch_bytes(
@@ -176,21 +179,29 @@ class ArrowSerializer:
                     )
                 elif data_cls == IndexPriceUpdate:
                     pyo3_index_prices = IndexPriceUpdate.to_pyo3_list(data)
-                    batch_bytes = nautilus_pyo3.index_prices_to_arrow_record_batch_bytes(
-                        pyo3_index_prices,
+                    batch_bytes = (
+                        nautilus_pyo3.index_prices_to_arrow_record_batch_bytes(
+                            pyo3_index_prices,
+                        )
                     )
                 elif data_cls == InstrumentClose:
                     pyo3_instrument_closes = InstrumentClose.to_pyo3_list(data)
-                    batch_bytes = nautilus_pyo3.instrument_closes_to_arrow_record_batch_bytes(
-                        pyo3_instrument_closes,
+                    batch_bytes = (
+                        nautilus_pyo3.instrument_closes_to_arrow_record_batch_bytes(
+                            pyo3_instrument_closes,
+                        )
                     )
                 elif data_cls == OrderBookDepth10:
                     data = [
-                        nautilus_pyo3.OrderBookDepth10.from_dict(OrderBookDepth10.to_dict(item))
+                        nautilus_pyo3.OrderBookDepth10.from_dict(
+                            OrderBookDepth10.to_dict(item)
+                        )
                         for item in data
                     ]
-                    batch_bytes = nautilus_pyo3.book_depth10_to_arrow_record_batch_bytes(
-                        data,
+                    batch_bytes = (
+                        nautilus_pyo3.book_depth10_to_arrow_record_batch_bytes(
+                            data,
+                        )
                     )
                 else:
                     raise RuntimeError(
@@ -215,7 +226,9 @@ class ArrowSerializer:
         delegate = _ARROW_ENCODERS.get(data_cls)
         if delegate is None:
             if data_cls in RUST_SERIALIZERS:
-                return ArrowSerializer.rust_defined_to_record_batch([data], data_cls=data_cls)
+                return ArrowSerializer.rust_defined_to_record_batch(
+                    [data], data_cls=data_cls
+                )
             raise TypeError(
                 f"Cannot serialize object `{data_cls}`. Register a "
                 f"serialization method via `nautilus_trader.serialization.arrow.serializer.register_arrow()`",
@@ -312,7 +325,9 @@ class ArrowSerializer:
         return ticks
 
 
-def make_dict_serializer(schema: pa.Schema) -> Callable[[list[Data | Event]], pa.RecordBatch]:
+def make_dict_serializer(
+    schema: pa.Schema,
+) -> Callable[[list[Data | Event]], pa.RecordBatch]:
     def inner(data: list[Data | Event]) -> pa.RecordBatch:
         if not isinstance(data, list):
             data = [data]

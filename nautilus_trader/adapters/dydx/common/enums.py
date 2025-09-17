@@ -356,4 +356,6 @@ class DYDXEnumParser:
         Convert a Nautilus bar type to a dYdX candles resolution.
         """
         aggregation: BarAggregation = bar_type.spec.aggregation
-        return self.bar_type_to_dydx_candle_resolution_map[(aggregation, bar_type.spec.step)]
+        return self.bar_type_to_dydx_candle_resolution_map[
+            (aggregation, bar_type.spec.step)
+        ]

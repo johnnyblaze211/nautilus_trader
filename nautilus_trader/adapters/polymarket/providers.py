@@ -21,7 +21,9 @@ from py_clob_client.client import ClobClient
 
 from nautilus_trader.adapters.polymarket.common.constants import POLYMARKET_VENUE
 from nautilus_trader.adapters.polymarket.common.parsing import parse_instrument
-from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_condition_id
+from nautilus_trader.adapters.polymarket.common.symbol import (
+    get_polymarket_condition_id,
+)
 from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_token_id
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.common.providers import InstrumentProvider
@@ -89,7 +91,9 @@ class PolymarketInstrumentProvider(InstrumentProvider):
         else:
             await self._load_markets_seq(instrument_ids, filters)
 
-    async def load_async(self, instrument_id: InstrumentId, filters: dict | None = None) -> None:
+    async def load_async(
+        self, instrument_id: InstrumentId, filters: dict | None = None
+    ) -> None:
         PyCondition.not_none(instrument_id, "instrument_id")
         condition_id = get_polymarket_condition_id(instrument_id)
         token_id = get_polymarket_token_id(instrument_id)
@@ -131,7 +135,9 @@ class PolymarketInstrumentProvider(InstrumentProvider):
 
                 condition_id = response["condition_id"]
                 if not condition_id:
-                    self._log.warning(f"{instrument_id} was archived (no `condition_id`)")
+                    self._log.warning(
+                        f"{instrument_id} was archived (no `condition_id`)"
+                    )
                     continue  # Archived
 
                 for token_info in response["tokens"]:
@@ -154,7 +160,9 @@ class PolymarketInstrumentProvider(InstrumentProvider):
             filters = {}
 
         if instrument_ids:
-            instruments_str = "instruments: " + ", ".join([str(x) for x in instrument_ids])
+            instruments_str = "instruments: " + ", ".join(
+                [str(x) for x in instrument_ids]
+            )
         else:
             instruments_str = "all instruments"
         filters_str = "..." if not filters else f" with filters {filters}..."
@@ -167,7 +175,9 @@ class PolymarketInstrumentProvider(InstrumentProvider):
         markets_visited = 0
         next_cursor = filters.get("next_cursor", "MA==")
         while next_cursor != "LTE=":
-            self._log.info(f"Cursor = '{next_cursor}', markets visited = {markets_visited}")
+            self._log.info(
+                f"Cursor = '{next_cursor}', markets visited = {markets_visited}"
+            )
             response: dict[str, Any] | str = await asyncio.to_thread(
                 self._client.get_markets,
                 next_cursor=next_cursor,
@@ -191,7 +201,9 @@ class PolymarketInstrumentProvider(InstrumentProvider):
                     for token_info in market_info["tokens"]:
                         token_id = token_info["token_id"]
                         if not token_id:
-                            self._log.warning(f"Market {condition_id} had an empty token")
+                            self._log.warning(
+                                f"Market {condition_id} had an empty token"
+                            )
                             continue
                         outcome = token_info["outcome"]
                         self._load_instrument(market_info, token_id, outcome)
@@ -214,6 +226,8 @@ class PolymarketInstrumentProvider(InstrumentProvider):
             ts_init=self._clock.timestamp_ns(),
         )
         if market_info["end_date_iso"] is None:
-            self._log.warning(f"{instrument.id} expiration is missing, assuming it is still active")
+            self._log.warning(
+                f"{instrument.id} expiration is missing, assuming it is still active"
+            )
         self.add(instrument)
         return instrument

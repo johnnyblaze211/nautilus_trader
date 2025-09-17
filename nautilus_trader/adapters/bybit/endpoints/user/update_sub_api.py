@@ -21,7 +21,9 @@ import msgspec
 
 from nautilus_trader.adapters.bybit.common.enums import BybitEndpointType
 from nautilus_trader.adapters.bybit.endpoints.endpoint import BybitHttpEndpoint
-from nautilus_trader.adapters.bybit.schemas.user.update_sub_api import BybitUpdateSubApiResponse
+from nautilus_trader.adapters.bybit.schemas.user.update_sub_api import (
+    BybitUpdateSubApiResponse,
+)
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 
@@ -29,7 +31,9 @@ if TYPE_CHECKING:
     from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
 
 
-class BybitUpdateSubApiPostParams(msgspec.Struct, omit_defaults=True, frozen=True, kw_only=True):
+class BybitUpdateSubApiPostParams(
+    msgspec.Struct, omit_defaults=True, frozen=True, kw_only=True
+):
     api_key: str | None = None
     read_only: int = 0
     ips: str | None = None
@@ -50,7 +54,9 @@ class BybitUpdateSubApiEndpoint(BybitHttpEndpoint):
         )
         self._resp_decoder = msgspec.json.Decoder(BybitUpdateSubApiResponse)
 
-    async def post(self, params: BybitUpdateSubApiPostParams) -> BybitUpdateSubApiResponse:
+    async def post(
+        self, params: BybitUpdateSubApiPostParams
+    ) -> BybitUpdateSubApiResponse:
         raw = await self._method(self.http_method, params)
         try:
             return self._resp_decoder.decode(raw)

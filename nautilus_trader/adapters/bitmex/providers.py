@@ -101,7 +101,9 @@ class BitmexInstrumentProvider(InstrumentProvider):
 
         # Check all instrument IDs
         for instrument_id in instrument_ids:
-            PyCondition.equal(instrument_id.venue, BITMEX_VENUE, "instrument_id.venue", "BITMEX")
+            PyCondition.equal(
+                instrument_id.venue, BITMEX_VENUE, "instrument_id.venue", "BITMEX"
+            )
 
         pyo3_instruments = await self._client.request_instruments(
             self._active_only,
@@ -115,6 +117,8 @@ class BitmexInstrumentProvider(InstrumentProvider):
                 continue  # Filter instrument ID
             self.add(instrument=instrument)
 
-    async def load_async(self, instrument_id: InstrumentId, filters: dict | None = None) -> None:
+    async def load_async(
+        self, instrument_id: InstrumentId, filters: dict | None = None
+    ) -> None:
         PyCondition.not_none(instrument_id, "instrument_id")
         await self.load_ids_async([instrument_id], filters)

@@ -61,15 +61,21 @@ class DemoStrategy(Strategy):
 
         # Show portfolio state if we reached target bar
         if self.show_portfolio_at_bar == self.count_of_bars:
-            self.show_portfolio_info("Portfolio state (2 minutes after position opened)")
+            self.show_portfolio_info(
+                "Portfolio state (2 minutes after position opened)"
+            )
 
         # Only place one order for demonstration
         if not self.order_placed:
             # Prepare values for order
             last_price = bar.close
             tick_size = self.config.instrument.price_increment
-            profit_price = self.config.instrument.make_price(last_price + (10 * tick_size))
-            stoploss_price = self.config.instrument.make_price(last_price - (10 * tick_size))
+            profit_price = self.config.instrument.make_price(
+                last_price + (10 * tick_size)
+            )
+            stoploss_price = self.config.instrument.make_price(
+                last_price - (10 * tick_size)
+            )
 
             # Create BUY MARKET order with PT and SL (both 10 ticks)
             bracket_order_list = self.order_factory.bracket(
@@ -84,7 +90,9 @@ class DemoStrategy(Strategy):
             # Submit order and remember it
             self.submit_order_list(bracket_order_list)
             self.order_placed = True
-            self.log.info(f"Submitted bracket order: {bracket_order_list}", color=LogColor.GREEN)
+            self.log.info(
+                f"Submitted bracket order: {bracket_order_list}", color=LogColor.GREEN
+            )
 
     def on_position_opened(self, event: PositionOpened):
         """

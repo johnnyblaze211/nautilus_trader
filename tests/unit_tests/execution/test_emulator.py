@@ -142,7 +142,9 @@ class TestOrderEmulatorWithSingleOrders:
             clock=self.clock,
         )
 
-        update = TestEventStubs.margin_account_state(account_id=AccountId("BINANCE-001"))
+        update = TestEventStubs.margin_account_state(
+            account_id=AccountId("BINANCE-001")
+        )
         self.portfolio.update_account(update)
         self.data_engine.register_client(self.data_client)
         self.exec_engine.register_client(self.exec_client)
@@ -204,7 +206,9 @@ class TestOrderEmulatorWithSingleOrders:
         # Assert
         assert subscriptions == []
 
-    def test_get_submit_order_commands_when_no_emulations_returns_empty_dict(self) -> None:
+    def test_get_submit_order_commands_when_no_emulations_returns_empty_dict(
+        self,
+    ) -> None:
         # Arrange, Act
         commands = self.emulator.get_submit_order_commands()
 
@@ -218,7 +222,9 @@ class TestOrderEmulatorWithSingleOrders:
         # Assert
         assert matching_core is None
 
-    def test_process_quote_tick_when_no_matching_core_setup_logs_and_does_nothing(self) -> None:
+    def test_process_quote_tick_when_no_matching_core_setup_logs_and_does_nothing(
+        self,
+    ) -> None:
         # Arrange
         tick: QuoteTick = TestDataStubs.quote_tick(
             instrument=ETHUSDT_PERP_BINANCE,
@@ -234,7 +240,9 @@ class TestOrderEmulatorWithSingleOrders:
         # Assert
         assert True  # No exception raised
 
-    def test_process_trade_tick_when_no_matching_core_setup_logs_and_does_nothing(self) -> None:
+    def test_process_trade_tick_when_no_matching_core_setup_logs_and_does_nothing(
+        self,
+    ) -> None:
         # Arrange
         tick: TradeTick = TestDataStubs.trade_tick(ETHUSDT_PERP_BINANCE)
 
@@ -259,7 +267,9 @@ class TestOrderEmulatorWithSingleOrders:
         # Act, Assert (no exceptions raised)
         self.emulator.execute(command)
 
-    def test_submit_limit_order_with_emulation_trigger_not_supported_then_cancels(self) -> None:
+    def test_submit_limit_order_with_emulation_trigger_not_supported_then_cancels(
+        self,
+    ) -> None:
         # Arrange
         order = self.strategy.order_factory.limit(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -342,7 +352,9 @@ class TestOrderEmulatorWithSingleOrders:
         assert matching_core is not None
         assert order in matching_core.get_orders()
         assert len(self.emulator.get_submit_order_commands()) == 1
-        assert self.emulator.subscribed_quotes == [InstrumentId.from_str("ETHUSDT-PERP.BINANCE")]
+        assert self.emulator.subscribed_quotes == [
+            InstrumentId.from_str("ETHUSDT-PERP.BINANCE")
+        ]
 
     def test_submit_order_with_emulation_trigger_last_subscribes_to_data(self) -> None:
         # Arrange
@@ -363,7 +375,9 @@ class TestOrderEmulatorWithSingleOrders:
         assert matching_core is not None
         assert order in matching_core.get_orders()
         assert len(self.emulator.get_submit_order_commands()) == 1
-        assert self.emulator.subscribed_trades == [InstrumentId.from_str("ETHUSDT-PERP.BINANCE")]
+        assert self.emulator.subscribed_trades == [
+            InstrumentId.from_str("ETHUSDT-PERP.BINANCE")
+        ]
 
     def test_emulator_restart_reactivates_emulated_orders(self) -> None:
         # Arrange
@@ -387,7 +401,9 @@ class TestOrderEmulatorWithSingleOrders:
         assert matching_core is not None
         assert order in matching_core.get_orders()
         assert len(self.emulator.get_submit_order_commands()) == 1
-        assert self.emulator.subscribed_trades == [InstrumentId.from_str("ETHUSDT-PERP.BINANCE")]
+        assert self.emulator.subscribed_trades == [
+            InstrumentId.from_str("ETHUSDT-PERP.BINANCE")
+        ]
 
     def test_cancel_all_with_emulated_order_cancels_order(self) -> None:
         # Arrange
@@ -429,7 +445,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.strategy.submit_order(order2)
 
         # Act
-        self.strategy.cancel_all_orders(ETHUSDT_PERP_BINANCE.id, order_side=OrderSide.BUY)
+        self.strategy.cancel_all_orders(
+            ETHUSDT_PERP_BINANCE.id, order_side=OrderSide.BUY
+        )
 
         # Assert
         assert order1.is_canceled
@@ -437,7 +455,9 @@ class TestOrderEmulatorWithSingleOrders:
         assert not order2.is_canceled
         assert order2.is_active_local
 
-    def test_cancel_all_sell_orders_with_emulated_orders_cancels_sell_order(self) -> None:
+    def test_cancel_all_sell_orders_with_emulated_orders_cancels_sell_order(
+        self,
+    ) -> None:
         # Arrange
         order1 = self.strategy.order_factory.limit(
             instrument_id=ETHUSDT_PERP_BINANCE.id,
@@ -459,7 +479,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.strategy.submit_order(order2)
 
         # Act
-        self.strategy.cancel_all_orders(ETHUSDT_PERP_BINANCE.id, order_side=OrderSide.SELL)
+        self.strategy.cancel_all_orders(
+            ETHUSDT_PERP_BINANCE.id, order_side=OrderSide.SELL
+        )
 
         # Assert
         assert not order1.is_canceled
@@ -499,7 +521,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.MARKET
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert len(order.events) == 4
@@ -542,7 +566,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.MARKET
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert order.is_active_local
@@ -587,7 +613,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.LIMIT
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert order.is_active_local
@@ -632,7 +660,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.LIMIT
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert order.is_active_local
@@ -682,7 +712,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(deltas)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.LIMIT
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert order.is_active_local
@@ -727,7 +759,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.MARKET
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert len(order.events) == 4
@@ -771,7 +805,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.MARKET
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert len(order.events) == 4
@@ -817,7 +853,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.strategy.submit_order(order)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.TRAILING_STOP_MARKET
         assert order.emulation_trigger == TriggerType.BID_ASK
         assert order.is_active_local
@@ -886,7 +924,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.TRAILING_STOP_MARKET
         assert order.emulation_trigger == TriggerType.BID_ASK
         assert len(order.events) == 3
@@ -937,7 +977,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.MARKET
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert len(order.events) == 4
@@ -992,7 +1034,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.strategy.submit_order(order)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.TRAILING_STOP_LIMIT
         assert order.emulation_trigger == TriggerType.BID_ASK
         assert len(order.events) == 3
@@ -1058,7 +1102,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.TRAILING_STOP_LIMIT
         assert order.emulation_trigger == TriggerType.BID_ASK
         assert len(order.events) == 3
@@ -1113,7 +1159,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.LIMIT
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert len(order.events) == 4
@@ -1171,7 +1219,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.strategy.submit_order(order)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.LIMIT
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert len(order.events) == 3
@@ -1223,7 +1273,9 @@ class TestOrderEmulatorWithSingleOrders:
         self.data_engine.process(tick2)
 
         # Assert
-        order = self.cache.order(order.client_order_id)  # Recover transformed order from cache
+        order = self.cache.order(
+            order.client_order_id
+        )  # Recover transformed order from cache
         assert order.order_type == OrderType.MARKET
         assert order.emulation_trigger == TriggerType.NO_TRIGGER
         assert len(order.events) == 4

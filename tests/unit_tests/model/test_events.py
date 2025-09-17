@@ -485,7 +485,9 @@ class TestModelEvents:
             == f"OrderPendingUpdate(trader_id=TRADER-001, strategy_id=SCALPER-001, instrument_id=BTCUSDT.BINANCE, client_order_id=O-2020872378423, venue_order_id=123456, account_id=SIM-000, event_id={uuid}, ts_event=0, ts_init=0)"  # noqa
         )
 
-    def test_order_pending_update_event_with_none_venue_order_id_to_from_dict_and_str_repr(self):
+    def test_order_pending_update_event_with_none_venue_order_id_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
         event = OrderPendingUpdate(
@@ -537,7 +539,9 @@ class TestModelEvents:
             == f"OrderPendingCancel(trader_id=TRADER-001, strategy_id=SCALPER-001, instrument_id=BTCUSDT.BINANCE, client_order_id=O-2020872378423, venue_order_id=123456, account_id=SIM-000, event_id={uuid}, ts_event=0, ts_init=0)"  # noqa
         )
 
-    def test_order_pending_cancel_event_with_none_venue_order_id_to_from_dict_and_str_repr(self):
+    def test_order_pending_cancel_event_with_none_venue_order_id_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
         event = OrderPendingCancel(
@@ -580,7 +584,9 @@ class TestModelEvents:
         )
 
         # Act, Assert
-        assert OrderModifyRejected.from_dict(OrderModifyRejected.to_dict(event)) == event
+        assert (
+            OrderModifyRejected.from_dict(OrderModifyRejected.to_dict(event)) == event
+        )
         assert (
             str(event)
             == "OrderModifyRejected(instrument_id=BTCUSDT.BINANCE, client_order_id=O-2020872378423, venue_order_id=123456, account_id=SIM-000, reason='ORDER_DOES_NOT_EXIST', ts_event=0)"  # noqa
@@ -590,7 +596,9 @@ class TestModelEvents:
             == f"OrderModifyRejected(trader_id=TRADER-001, strategy_id=SCALPER-001, instrument_id=BTCUSDT.BINANCE, client_order_id=O-2020872378423, venue_order_id=123456, account_id=SIM-000, reason='ORDER_DOES_NOT_EXIST', event_id={uuid}, ts_event=0, ts_init=0)"  # noqa
         )
 
-    def test_order_modify_rejected_event_with_none_venue_order_id_to_from_dict_and_str_repr(self):
+    def test_order_modify_rejected_event_with_none_venue_order_id_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
         event = OrderModifyRejected(
@@ -607,7 +615,9 @@ class TestModelEvents:
         )
 
         # Act, Assert
-        assert OrderModifyRejected.from_dict(OrderModifyRejected.to_dict(event)) == event
+        assert (
+            OrderModifyRejected.from_dict(OrderModifyRejected.to_dict(event)) == event
+        )
         assert (
             str(event)
             == "OrderModifyRejected(instrument_id=BTCUSDT.BINANCE, client_order_id=O-2020872378423, venue_order_id=None, account_id=SIM-000, reason='ORDER_DOES_NOT_EXIST', ts_event=0)"  # noqa
@@ -634,7 +644,9 @@ class TestModelEvents:
         )
 
         # Act, Assert
-        assert OrderCancelRejected.from_dict(OrderCancelRejected.to_dict(event)) == event
+        assert (
+            OrderCancelRejected.from_dict(OrderCancelRejected.to_dict(event)) == event
+        )
         assert (
             str(event)
             == "OrderCancelRejected(instrument_id=BTCUSDT.BINANCE, client_order_id=O-2020872378423, venue_order_id=123456, account_id=SIM-000, reason='ORDER_DOES_NOT_EXIST', ts_event=0)"  # noqa
@@ -644,7 +656,9 @@ class TestModelEvents:
             == f"OrderCancelRejected(trader_id=TRADER-001, strategy_id=SCALPER-001, instrument_id=BTCUSDT.BINANCE, client_order_id=O-2020872378423, venue_order_id=123456, account_id=SIM-000, reason='ORDER_DOES_NOT_EXIST', event_id={uuid}, ts_event=0, ts_init=0)"  # noqa
         )
 
-    def test_order_cancel_rejected_with_none_venue_order_id_event_to_from_dict_and_str_repr(self):
+    def test_order_cancel_rejected_with_none_venue_order_id_event_to_from_dict_and_str_repr(
+        self,
+    ):
         # Arrange
         uuid = UUID4()
         event = OrderCancelRejected(
@@ -661,7 +675,9 @@ class TestModelEvents:
         )
 
         # Act, Assert
-        assert OrderCancelRejected.from_dict(OrderCancelRejected.to_dict(event)) == event
+        assert (
+            OrderCancelRejected.from_dict(OrderCancelRejected.to_dict(event)) == event
+        )
         assert (
             str(event)
             == "OrderCancelRejected(instrument_id=BTCUSDT.BINANCE, client_order_id=O-2020872378423, venue_order_id=None, account_id=SIM-000, reason='ORDER_DOES_NOT_EXIST', ts_event=0)"  # noqa

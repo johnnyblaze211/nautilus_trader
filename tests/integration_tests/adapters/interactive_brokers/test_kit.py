@@ -34,7 +34,9 @@ from ibapi.tag_value import TagValue
 
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
 from nautilus_trader.adapters.interactive_brokers.common import IBContractDetails
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import parse_instrument
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    parse_instrument,
+)
 from nautilus_trader.model.instruments import CurrencyPair
 from nautilus_trader.model.instruments import Equity
 from nautilus_trader.model.instruments import Instrument
@@ -42,7 +44,9 @@ from nautilus_trader.model.instruments import OptionContract
 from tests import TESTS_PACKAGE_ROOT
 
 
-TEST_PATH = TESTS_PACKAGE_ROOT / "integration_tests" / "adapters" / "interactive_brokers/"
+TEST_PATH = (
+    TESTS_PACKAGE_ROOT / "integration_tests" / "adapters" / "interactive_brokers/"
+)
 RESPONSES_PATH = TEST_PATH / "resources" / "responses"
 STREAMING_PATH = TEST_PATH / "resources" / "streaming"
 CONTRACT_PATH = RESPONSES_PATH / "contracts"
@@ -150,10 +154,14 @@ class IBTestContractStubs:
 
     @staticmethod
     def create_instrument(contract_details: ContractDetails) -> Instrument:
-        contract_details = IBTestContractStubs.convert_contract_details_to_ib_contract_details(
-            contract_details,
+        contract_details = (
+            IBTestContractStubs.convert_contract_details_to_ib_contract_details(
+                contract_details,
+            )
         )
-        return parse_instrument(contract_details, contract_details.contract.primaryExchange)
+        return parse_instrument(
+            contract_details, contract_details.contract.primaryExchange
+        )
 
     @staticmethod
     def aapl_equity_contract() -> Contract:
@@ -227,7 +235,9 @@ class IBTestContractStubs:
     @staticmethod
     def aapl_equity_ib_contract_details() -> IBContractDetails:
         contract_details = IBTestContractStubs.aapl_equity_contract_details()
-        return IBTestContractStubs.convert_contract_details_to_ib_contract_details(contract_details)
+        return IBTestContractStubs.convert_contract_details_to_ib_contract_details(
+            contract_details
+        )
 
     @staticmethod
     def cl_future_contract() -> Contract:

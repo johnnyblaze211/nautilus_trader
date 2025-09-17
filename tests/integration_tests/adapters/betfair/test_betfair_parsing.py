@@ -57,21 +57,45 @@ from nautilus_trader.adapters.betfair.orderbook import betfair_float_to_quantity
 from nautilus_trader.adapters.betfair.orderbook import create_betfair_order_book
 from nautilus_trader.adapters.betfair.parsing.common import instrument_id_betfair_ids
 from nautilus_trader.adapters.betfair.parsing.core import BetfairParser
-from nautilus_trader.adapters.betfair.parsing.requests import betfair_account_to_account_state
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    betfair_account_to_account_state,
+)
 from nautilus_trader.adapters.betfair.parsing.requests import determine_order_status
 from nautilus_trader.adapters.betfair.parsing.requests import make_customer_order_ref
-from nautilus_trader.adapters.betfair.parsing.requests import nautilus_limit_on_close_to_place_instructions
-from nautilus_trader.adapters.betfair.parsing.requests import nautilus_limit_to_place_instructions
-from nautilus_trader.adapters.betfair.parsing.requests import nautilus_market_on_close_to_place_instructions
-from nautilus_trader.adapters.betfair.parsing.requests import nautilus_market_to_place_instructions
-from nautilus_trader.adapters.betfair.parsing.requests import nautilus_order_to_place_instructions
-from nautilus_trader.adapters.betfair.parsing.requests import order_cancel_to_cancel_order_params
-from nautilus_trader.adapters.betfair.parsing.requests import order_submit_to_place_order_params
-from nautilus_trader.adapters.betfair.parsing.requests import order_update_to_replace_order_params
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    nautilus_limit_on_close_to_place_instructions,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    nautilus_limit_to_place_instructions,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    nautilus_market_on_close_to_place_instructions,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    nautilus_market_to_place_instructions,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    nautilus_order_to_place_instructions,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    order_cancel_to_cancel_order_params,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    order_submit_to_place_order_params,
+)
+from nautilus_trader.adapters.betfair.parsing.requests import (
+    order_update_to_replace_order_params,
+)
 from nautilus_trader.adapters.betfair.parsing.streaming import market_change_to_updates
-from nautilus_trader.adapters.betfair.parsing.streaming import market_definition_to_betfair_starting_prices
-from nautilus_trader.adapters.betfair.parsing.streaming import market_definition_to_instrument_closes
-from nautilus_trader.adapters.betfair.parsing.streaming import market_definition_to_instrument_status
+from nautilus_trader.adapters.betfair.parsing.streaming import (
+    market_definition_to_betfair_starting_prices,
+)
+from nautilus_trader.adapters.betfair.parsing.streaming import (
+    market_definition_to_instrument_closes,
+)
+from nautilus_trader.adapters.betfair.parsing.streaming import (
+    market_definition_to_instrument_status,
+)
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.core.data import Data
 from nautilus_trader.core.uuid import UUID4
@@ -134,7 +158,8 @@ class TestBetfairParsingStreaming:
         result = [
             upd
             for upd in updates
-            if isinstance(upd, InstrumentStatus) and upd.action == MarketStatusAction.PRE_OPEN
+            if isinstance(upd, InstrumentStatus)
+            and upd.action == MarketStatusAction.PRE_OPEN
         ]
         assert len(result) == 17
 
@@ -175,7 +200,8 @@ class TestBetfairParsingStreaming:
         result = [
             upd
             for upd in updates
-            if isinstance(upd, CustomData) and upd.data_type.type == BetfairStartingPrice
+            if isinstance(upd, CustomData)
+            and upd.data_type.type == BetfairStartingPrice
         ]
         assert len(result) == 14
 
@@ -202,7 +228,9 @@ class TestBetfairParsingStreaming:
     def test_market_change_bsp_updates(self):
         raw = b'{"id":"1.205822330","rc":[{"spb":[[1000,32.21]],"id":45368013},{"spb":[[1000,20.5]],"id":49808343},{"atb":[[1.93,10.09]],"id":49808342},{"spb":[[1000,20.5]],"id":39000334},{"spb":[[1000,84.22]],"id":16206031},{"spb":[[1000,18]],"id":10591436},{"spb":[[1000,88.96]],"id":48672282},{"spb":[[1000,18]],"id":19143530},{"spb":[[1000,20.5]],"id":6159479},{"spb":[[1000,10]],"id":25694777},{"spb":[[1000,10]],"id":49808335},{"spb":[[1000,10]],"id":49808334},{"spb":[[1000,20.5]],"id":35672106}],"con":true,"img":false}'  # noqa
         mc = msgspec.json.decode(raw, type=MarketChange)
-        result = Counter([upd.__class__.__name__ for upd in market_change_to_updates(mc, {}, 0, 0)])
+        result = Counter(
+            [upd.__class__.__name__ for upd in market_change_to_updates(mc, {}, 0, 0)]
+        )
         expected = Counter({"CustomData": 12, "OrderBookDeltas": 1})
         assert result == expected
 
@@ -258,7 +286,11 @@ class TestBetfairParsingStreaming:
         updates = [x for mcm in mcms for x in self.parser.parse(mcm)]
         counts = Counter(
             [
-                x.__class__.__name__ if not isinstance(x, CustomData) else x.data.__class__.__name__
+                (
+                    x.__class__.__name__
+                    if not isinstance(x, CustomData)
+                    else x.data.__class__.__name__
+                )
                 for x in updates
             ],
         )
@@ -285,7 +317,21 @@ class TestBetfairParsingStreaming:
             ("1-180305278.bz2", [1714, 7695]),
             (
                 "1-206064380.bz2",
-                [6736, 3362, 6785, 5701, 363, 4191, 4442, 3636, 5861, 4318, 10854, 5599, 3520],
+                [
+                    6736,
+                    3362,
+                    6785,
+                    5701,
+                    363,
+                    4191,
+                    4442,
+                    3636,
+                    5861,
+                    4318,
+                    10854,
+                    5599,
+                    3520,
+                ],
             ),
         ],
     )
@@ -300,7 +346,9 @@ class TestBetfairParsingStreaming:
             ):
                 instrument_id = update.instrument_id
                 if instrument_id not in books:
-                    instrument = betting_instrument(*instrument_id_betfair_ids(instrument_id))
+                    instrument = betting_instrument(
+                        *instrument_id_betfair_ids(instrument_id)
+                    )
                     books[instrument_id] = create_betfair_order_book(instrument.id)
                 books[instrument_id].apply(update)
                 books[instrument_id].check_integrity()
@@ -326,7 +374,9 @@ class TestBetfairParsingStreaming:
 
         for selection_id in betfair_tv:
             for price in betfair_tv[selection_id]:
-                instrument_id = next(ins for ins in trade_ticks if f"-{selection_id}-" in ins.value)
+                instrument_id = next(
+                    ins for ins in trade_ticks if f"-{selection_id}-" in ins.value
+                )
                 betfair_volume = betfair_tv[selection_id][price]
                 trade_volume = sum(
                     [
@@ -355,7 +405,8 @@ class TestBetfairParsing:
 
     def test_order_side_parser_round_trip(self):
         assert (
-            OrderSideParser.to_nautilus(OrderSideParser.to_betfair(OrderSide.BUY)) == OrderSide.BUY
+            OrderSideParser.to_nautilus(OrderSideParser.to_betfair(OrderSide.BUY))
+            == OrderSide.BUY
         )
         assert (
             OrderSideParser.to_nautilus(OrderSideParser.to_betfair(OrderSide.SELL))
@@ -370,7 +421,9 @@ class TestBetfairParsing:
                 order_side=OrderSide.SELL,
             ),
         )
-        result = order_submit_to_place_order_params(command=command, instrument=self.instrument)
+        result = order_submit_to_place_order_params(
+            command=command, instrument=self.instrument
+        )
         expected = PlaceOrders.with_params(
             request_id=result.id,
             market_id="1-179082386",
@@ -396,7 +449,10 @@ class TestBetfairParsing:
             async_=False,
         )
         assert result == expected
-        assert msgspec.json.decode(msgspec.json.encode(result), type=PlaceOrders) == expected
+        assert (
+            msgspec.json.decode(msgspec.json.encode(result), type=PlaceOrders)
+            == expected
+        )
 
     def test_order_update_to_betfair(self):
         modify = TestCommandStubs.modify_order_command(
@@ -421,7 +477,10 @@ class TestBetfairParsing:
         )
 
         assert result == expected
-        assert msgspec.json.decode(msgspec.json.encode(result), type=ReplaceOrders) == expected
+        assert (
+            msgspec.json.decode(msgspec.json.encode(result), type=ReplaceOrders)
+            == expected
+        )
 
     def test_order_cancel_to_betfair(self):
         result = order_cancel_to_cancel_order_params(
@@ -437,13 +496,18 @@ class TestBetfairParsing:
             customer_ref="2d89666b1a1e4a75b1934eb3b454c757",
         )
         assert result == expected
-        assert msgspec.json.decode(msgspec.json.encode(result), type=CancelOrders) == expected
+        assert (
+            msgspec.json.decode(msgspec.json.encode(result), type=CancelOrders)
+            == expected
+        )
 
     @pytest.mark.asyncio()
     async def test_account_statement(self, betfair_client):
         mock_betfair_request(betfair_client, BetfairResponses.account_details())
         detail = await self.client.get_account_details()
-        mock_betfair_request(betfair_client, BetfairResponses.account_funds_no_exposure())
+        mock_betfair_request(
+            betfair_client, BetfairResponses.account_funds_no_exposure()
+        )
         funds = await self.client.get_account_funds()
         result = betfair_account_to_account_state(
             account_detail=detail,
@@ -485,7 +549,12 @@ class TestBetfairParsing:
                         "id": "1.180759290",
                         "rc": [
                             {"atl": [[3.15, 3.68]], "id": 7659748},
-                            {"trd": [[3.15, 364.45]], "ltp": 3.15, "tv": 364.45, "id": 7659748},
+                            {
+                                "trd": [[3.15, 364.45]],
+                                "ltp": 3.15,
+                                "tv": 364.45,
+                                "id": 7659748,
+                            },
                             {"atb": [[3.15, 0]], "id": 7659748},
                         ],
                         "con": True,
@@ -515,7 +584,9 @@ class TestBetfairParsing:
         command = TestCommandStubs.submit_order_command(order)
 
         # Act
-        result = nautilus_limit_to_place_instructions(command, instrument=self.instrument)
+        result = nautilus_limit_to_place_instructions(
+            command, instrument=self.instrument
+        )
 
         # Assert
         expected = PlaceInstruction(
@@ -537,7 +608,10 @@ class TestBetfairParsing:
             customer_order_ref="O-20210410-022422-001-001-1",
         )
         assert result == expected
-        assert msgspec.json.decode(msgspec.json.encode(result), type=PlaceInstruction) == expected
+        assert (
+            msgspec.json.decode(msgspec.json.encode(result), type=PlaceInstruction)
+            == expected
+        )
 
     def test_make_order_limit_on_close(self):
         order = TestExecStubs.limit_order(
@@ -548,7 +622,9 @@ class TestBetfairParsing:
             order_side=OrderSide.SELL,
         )
         command = TestCommandStubs.submit_order_command(order)
-        result = nautilus_limit_on_close_to_place_instructions(command, instrument=self.instrument)
+        result = nautilus_limit_on_close_to_place_instructions(
+            command, instrument=self.instrument
+        )
         expected = PlaceInstruction(
             order_type=OrderType.LIMIT_ON_CLOSE,
             selection_id=50214,
@@ -560,12 +636,17 @@ class TestBetfairParsing:
             customer_order_ref="O-20210410-022422-001-001-1",
         )
         assert result == expected
-        assert msgspec.json.decode(msgspec.json.encode(result), type=PlaceInstruction) == expected
+        assert (
+            msgspec.json.decode(msgspec.json.encode(result), type=PlaceInstruction)
+            == expected
+        )
 
     def test_make_order_market_buy(self):
         order = TestExecStubs.market_order(order_side=OrderSide.BUY)
         command = TestCommandStubs.submit_order_command(order)
-        result = nautilus_market_to_place_instructions(command, instrument=self.instrument)
+        result = nautilus_market_to_place_instructions(
+            command, instrument=self.instrument
+        )
         expected = PlaceInstruction(
             order_type=OrderType.LIMIT,
             selection_id=50214,
@@ -585,12 +666,17 @@ class TestBetfairParsing:
             customer_order_ref="O-20210410-022422-001-001-1",
         )
         assert result == expected
-        assert msgspec.json.decode(msgspec.json.encode(result), type=PlaceInstruction) == expected
+        assert (
+            msgspec.json.decode(msgspec.json.encode(result), type=PlaceInstruction)
+            == expected
+        )
 
     def test_make_order_market_sell(self):
         order = TestExecStubs.market_order(order_side=OrderSide.SELL)
         command = TestCommandStubs.submit_order_command(order)
-        result = nautilus_market_to_place_instructions(command, instrument=self.instrument)
+        result = nautilus_market_to_place_instructions(
+            command, instrument=self.instrument
+        )
         expected = PlaceInstruction(
             order_type=OrderType.LIMIT,
             selection_id=50214,
@@ -610,7 +696,10 @@ class TestBetfairParsing:
             customer_order_ref="O-20210410-022422-001-001-1",
         )
         assert result == expected
-        assert msgspec.json.decode(msgspec.json.encode(result), type=PlaceInstruction) == expected
+        assert (
+            msgspec.json.decode(msgspec.json.encode(result), type=PlaceInstruction)
+            == expected
+        )
 
     @pytest.mark.parametrize(
         ("side", "liability"),
@@ -629,15 +718,36 @@ class TestBetfairParsing:
         result = place_instructions.market_on_close_order
         expected = MarketOnCloseOrder(liability=liability)
         assert result == expected
-        assert msgspec.json.decode(msgspec.json.encode(result), type=MarketOnCloseOrder) == expected
+        assert (
+            msgspec.json.decode(msgspec.json.encode(result), type=MarketOnCloseOrder)
+            == expected
+        )
 
     @pytest.mark.parametrize(
         ("status", "size", "matched", "cancelled", "expected"),
         [
-            (OrderStatus.EXECUTION_COMPLETE, 10.0, 10.0, 0.0, NautilusOrderStatus.FILLED),
-            (OrderStatus.EXECUTION_COMPLETE, 10.0, 5.0, 5.0, NautilusOrderStatus.CANCELED),
+            (
+                OrderStatus.EXECUTION_COMPLETE,
+                10.0,
+                10.0,
+                0.0,
+                NautilusOrderStatus.FILLED,
+            ),
+            (
+                OrderStatus.EXECUTION_COMPLETE,
+                10.0,
+                5.0,
+                5.0,
+                NautilusOrderStatus.CANCELED,
+            ),
             (OrderStatus.EXECUTABLE, 10.0, 0.0, 0.0, NautilusOrderStatus.ACCEPTED),
-            (OrderStatus.EXECUTABLE, 10.0, 5.0, 0.0, NautilusOrderStatus.PARTIALLY_FILLED),
+            (
+                OrderStatus.EXECUTABLE,
+                10.0,
+                5.0,
+                0.0,
+                NautilusOrderStatus.PARTIALLY_FILLED,
+            ),
         ],
     )
     def test_determine_order_status(self, status, size, matched, cancelled, expected):
@@ -696,7 +806,8 @@ class TestBetfairParsing:
         starting_prices = [
             upd.data
             for upd in updates
-            if isinstance(upd, CustomData) and isinstance(upd.data, BetfairStartingPrice)
+            if isinstance(upd, CustomData)
+            and isinstance(upd.data, BetfairStartingPrice)
         ]
         assert len(starting_prices) == 8
         assert starting_prices[0].instrument_id == InstrumentId.from_str(
@@ -713,7 +824,8 @@ class TestBetfairParsing:
             for upd in updates
             if isinstance(upd, CustomData)
             and isinstance(upd.data, BSPOrderBookDelta)
-            and upd.data.instrument_id == InstrumentId.from_str("1-205880280-49892033-None.BETFAIR")
+            and upd.data.instrument_id
+            == InstrumentId.from_str("1-205880280-49892033-None.BETFAIR")
         ]
         assert len(single_instrument_bsp_updates) == 1
 
@@ -736,7 +848,9 @@ class TestBetfairParsing:
         command = TestCommandStubs.submit_order_command(order)
 
         # Act
-        place_instruction = nautilus_order_to_place_instructions(command, self.instrument)
+        place_instruction = nautilus_order_to_place_instructions(
+            command, self.instrument
+        )
         place_time_in_force = place_instruction.limit_order.time_in_force
         place_persistence_type = place_instruction.limit_order.persistence_type
 
@@ -750,8 +864,12 @@ class TestBetfairParsing:
         command = TestCommandStubs.submit_order_command(order)
 
         # Act
-        place_instruction = nautilus_order_to_place_instructions(command, self.instrument)
-        result = msgspec.json.decode(msgspec.json.encode(place_instruction))["limitOrder"]
+        place_instruction = nautilus_order_to_place_instructions(
+            command, self.instrument
+        )
+        result = msgspec.json.decode(msgspec.json.encode(place_instruction))[
+            "limitOrder"
+        ]
 
         expected = {
             "size": 100.0,

@@ -107,14 +107,18 @@ async def _setup_order_state(
                         )
                         cache.add_instrument(instrument)
                     if not cache.order(client_order_id):
-                        assert strategy is not None, "strategy can't be none if accepting order"
+                        assert (
+                            strategy is not None
+                        ), "strategy can't be none if accepting order"
                         instrument = cache.instrument(instrument_id)
                         order = TestExecStubs.limit_order(
                             instrument=instrument,
                             price=betfair_float_to_price(order_update.p),
                             client_order_id=client_order_id,
                         )
-                        await _accept_order(order, venue_order_id, exec_client, strategy, cache)
+                        await _accept_order(
+                            order, venue_order_id, exec_client, strategy, cache
+                        )
 
                         if include_fills and order_update.sm:
                             await _fill_order(
@@ -156,7 +160,9 @@ async def _submit_order(order, exec_client, strategy, cache):
 
 @pytest.fixture()
 def submit_order(exec_client, strategy, cache):
-    return partial(_submit_order, exec_client=exec_client, strategy=strategy, cache=cache)
+    return partial(
+        _submit_order, exec_client=exec_client, strategy=strategy, cache=cache
+    )
 
 
 async def _fill_order(
@@ -188,7 +194,9 @@ async def _fill_order(
     return order
 
 
-async def _accept_order(order, venue_order_id: VenueOrderId, exec_client, strategy, cache):
+async def _accept_order(
+    order, venue_order_id: VenueOrderId, exec_client, strategy, cache
+):
     await _submit_order(order, exec_client=exec_client, strategy=strategy, cache=cache)
     exec_client.generate_order_accepted(
         strategy_id=order.strategy_id,
@@ -203,7 +211,9 @@ async def _accept_order(order, venue_order_id: VenueOrderId, exec_client, strate
 
 @pytest.fixture()
 def accept_order(exec_client, strategy, cache):
-    return partial(_accept_order, exec_client=exec_client, strategy=strategy, cache=cache)
+    return partial(
+        _accept_order, exec_client=exec_client, strategy=strategy, cache=cache
+    )
 
 
 @pytest.fixture()
@@ -233,7 +243,9 @@ def test_order(instrument, strategy_id):
 
 
 @pytest.mark.asyncio()
-async def test_submit_order_success(exec_client: BetfairDataClient, strategy, test_order):
+async def test_submit_order_success(
+    exec_client: BetfairDataClient, strategy, test_order
+):
     # Arrange
 
     # Act
@@ -255,7 +267,9 @@ async def test_submit_order_error(
     messages,
 ):
     # Arrange
-    mock_betfair_request(exec_client._client, BetfairResponses.betting_place_order_error())
+    mock_betfair_request(
+        exec_client._client, BetfairResponses.betting_place_order_error()
+    )
 
     # Act
     strategy.submit_order(test_order)
@@ -304,7 +318,9 @@ async def test_modify_order_error_order_doesnt_exist(
         price=betfair_float_to_price(10),
     )
     # Act
-    with patch.object(BetfairExecutionClient, "generate_order_modify_rejected") as mock_reject:
+    with patch.object(
+        BetfairExecutionClient, "generate_order_modify_rejected"
+    ) as mock_reject:
         exec_client.modify_order(command)
         await asyncio.sleep(0)
 
@@ -335,8 +351,12 @@ async def test_modify_order_error_no_venue_id(
     order = await submit_order(test_order)
 
     # Act
-    command = TestCommandStubs.modify_order_command(price=betfair_float_to_price(2.0), order=order)
-    with patch.object(BetfairExecutionClient, "generate_order_modify_rejected") as mock_reject:
+    command = TestCommandStubs.modify_order_command(
+        price=betfair_float_to_price(2.0), order=order
+    )
+    with patch.object(
+        BetfairExecutionClient, "generate_order_modify_rejected"
+    ) as mock_reject:
         exec_client.modify_order(command)
         await asyncio.sleep(0)
 
@@ -503,7 +523,9 @@ async def test_order_stream_empty_image(exec_client, events):
 
 
 @pytest.mark.asyncio()
-async def test_order_stream_new_full_image(exec_client, setup_order_state, cache, events):
+async def test_order_stream_new_full_image(
+    exec_client, setup_order_state, cache, events
+):
     # Arrange
     raw = BetfairStreaming.ocm_NEW_FULL_IMAGE()
     ocm = msgspec.json.decode(raw, type=OCM)
@@ -565,7 +587,9 @@ async def test_order_stream_update(exec_client, setup_order_state, events):
 
 
 @pytest.mark.asyncio()
-async def test_order_stream_filled(exec_client, setup_order_state, events, fill_events) -> None:
+async def test_order_stream_filled(
+    exec_client, setup_order_state, events, fill_events
+) -> None:
     # Arrange
     order_change_message = BetfairStreaming.ocm_FILLED()
     await setup_order_state(order_change_message=order_change_message)
@@ -630,7 +654,9 @@ async def test_order_stream_filled_multiple_prices(
 
 
 @pytest.mark.asyncio()
-async def test_order_stream_mixed(exec_client, setup_order_state, fill_events, cancel_events):
+async def test_order_stream_mixed(
+    exec_client, setup_order_state, fill_events, cancel_events
+):
     # Arrange
     order_change_message = BetfairStreaming.ocm_MIXED()
     await setup_order_state(order_change_message=order_change_message)
@@ -653,7 +679,9 @@ async def test_order_stream_mixed(exec_client, setup_order_state, fill_events, c
 
 
 @pytest.mark.asyncio()
-async def test_duplicate_trade_id(exec_client, setup_order_state, fill_events, cancel_events):
+async def test_duplicate_trade_id(
+    exec_client, setup_order_state, fill_events, cancel_events
+):
     # Arrange
     for update in BetfairStreaming.ocm_DUPLICATE_EXECUTION():
         await setup_order_state(update)
@@ -793,7 +821,9 @@ async def test_various_betfair_order_fill_scenarios(
             status=status,
             **raw,
         )
-        exec_client.handle_order_stream_update(msgspec.json.encode(order_change_message))
+        exec_client.handle_order_stream_update(
+            msgspec.json.encode(order_change_message)
+        )
         await asyncio.sleep(0)
 
     # Assert
@@ -857,7 +887,9 @@ async def test_generate_order_status_report_client_id(
         command_id=UUID4(),
         ts_init=0,
     )
-    report: OrderStatusReport | None = await exec_client.generate_order_status_report(command)
+    report: OrderStatusReport | None = await exec_client.generate_order_status_report(
+        command
+    )
 
     # Assert
     assert report
@@ -890,7 +922,9 @@ async def test_generate_order_status_report_venue_order_id(
         command_id=UUID4(),
         ts_init=0,
     )
-    report: OrderStatusReport | None = await exec_client.generate_order_status_report(command)
+    report: OrderStatusReport | None = await exec_client.generate_order_status_report(
+        command
+    )
 
     # Assert
     assert report
@@ -925,7 +959,9 @@ async def test_check_cache_against_order_image_passes(
 
 
 @pytest.mark.asyncio
-async def test_fok_order_found_in_cache(exec_client, setup_order_state, strategy, cache):
+async def test_fok_order_found_in_cache(
+    exec_client, setup_order_state, strategy, cache
+):
     # Arrange
     instrument = betting_instrument(
         market_id="1-219194342",
@@ -971,7 +1007,9 @@ async def test_fok_order_found_in_cache(exec_client, setup_order_state, strategy
         sv=0.0,
         lsrc=None,
     )
-    exec_client._handle_stream_execution_complete_order_update(unmatched_order=unmatched_order)
+    exec_client._handle_stream_execution_complete_order_update(
+        unmatched_order=unmatched_order
+    )
 
     # Assert
     assert cache.order(client_order_id).status == OrderStatus.CANCELED
@@ -980,7 +1018,9 @@ async def test_fok_order_found_in_cache(exec_client, setup_order_state, strategy
 @pytest.mark.asyncio
 async def test_generate_order_status_reports_executable(exec_client):
     # Arrange
-    mock_betfair_request(exec_client._client, BetfairResponses.list_current_orders_executable())
+    mock_betfair_request(
+        exec_client._client, BetfairResponses.list_current_orders_executable()
+    )
 
     # Act
     command = GenerateOrderStatusReports(
@@ -1168,7 +1208,9 @@ def test_invalid_price_is_skipped(
 
     # Monkey-patch helpers ONLY for this test to keep side-effects local
     monkeypatch.setattr(OrderSideParser, "to_nautilus", lambda _side: OrderSide.BUY)
-    monkeypatch.setattr(parsing_requests, "order_to_trade_id", lambda _uo: TradeId("TRADE-TEST"))
+    monkeypatch.setattr(
+        parsing_requests, "order_to_trade_id", lambda _uo: TradeId("TRADE-TEST")
+    )
 
     unmatched_order = _make_unmatched_order(order)
 

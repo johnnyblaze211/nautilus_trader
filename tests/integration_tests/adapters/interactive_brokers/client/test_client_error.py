@@ -56,7 +56,9 @@ async def test_ib_is_not_ready_by_error_10182(ib_client):
     # Arrange
     req_id = 6
     ib_client._is_ib_connected.set()
-    ib_client._subscriptions.add(req_id, "EUR.USD", ib_client._eclient.reqHistoricalData, {})
+    ib_client._subscriptions.add(
+        req_id, "EUR.USD", ib_client._eclient.reqHistoricalData, {}
+    )
 
     # Act
     await ib_client.process_error(

@@ -74,7 +74,9 @@ def merge_instrument_fields(
             continue
         if value != old_dict[key] and value:
             old_value = old_dict[key]
-            logger.debug(f"Got updated field for {old.id}: {key=} {value=} {old_value=}")
+            logger.debug(
+                f"Got updated field for {old.id}: {key=} {value=} {old_value=}"
+            )
             old_dict[key] = value
 
     return BettingInstrument.from_dict(old_dict)

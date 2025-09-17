@@ -351,7 +351,9 @@ class VolatilityMarketMaker(Strategy):
                 if self.buy_order.is_closed:
                     self.create_buy_order(last)
             elif (
-                self.sell_order and event.order_side == OrderSide.SELL and self.sell_order.is_closed
+                self.sell_order
+                and event.order_side == OrderSide.SELL
+                and self.sell_order.is_closed
             ):
                 self.create_sell_order(last)
 
@@ -369,8 +371,12 @@ class VolatilityMarketMaker(Strategy):
 
         # Unsubscribe from data
         self.unsubscribe_bars(self.config.bar_type, client_id=self.client_id)
-        self.unsubscribe_quote_ticks(self.config.instrument_id, client_id=self.client_id)
-        self.unsubscribe_trade_ticks(self.config.instrument_id, client_id=self.client_id)
+        self.unsubscribe_quote_ticks(
+            self.config.instrument_id, client_id=self.client_id
+        )
+        self.unsubscribe_trade_ticks(
+            self.config.instrument_id, client_id=self.client_id
+        )
 
     def on_reset(self) -> None:
         """

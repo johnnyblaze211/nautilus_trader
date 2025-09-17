@@ -1,7 +1,9 @@
 import asyncio
 
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
-from nautilus_trader.adapters.interactive_brokers.historical import HistoricInteractiveBrokersClient
+from nautilus_trader.adapters.interactive_brokers.historical import (
+    HistoricInteractiveBrokersClient,
+)
 
 
 async def main() -> None:

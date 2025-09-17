@@ -80,7 +80,10 @@ NAUTILUS_ARROW_SCHEMA = {
         ],
     ),
     Bar: pa.schema(
-        [pa.field(k, infer_dtype(v), False) for k, v in nautilus_pyo3.Bar.get_fields().items()],
+        [
+            pa.field(k, infer_dtype(v), False)
+            for k, v in nautilus_pyo3.Bar.get_fields().items()
+        ],
     ),
     MarkPriceUpdate: pa.schema(
         [

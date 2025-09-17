@@ -22,7 +22,9 @@ import msgspec
 from nautilus_trader.adapters.bybit.common.enums import BybitEndpointType
 from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 from nautilus_trader.adapters.bybit.endpoints.endpoint import BybitHttpEndpoint
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import BybitBatchPlaceOrder
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import (
+    BybitBatchPlaceOrder,
+)
 from nautilus_trader.adapters.bybit.schemas.order import BybitPlaceOrderResponse
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 

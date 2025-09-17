@@ -51,7 +51,9 @@ from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.identifiers import Venue
 from nautilus_trader.model.objects import Money
 from nautilus_trader.test_kit.mocks.data import NewsEventData
-from nautilus_trader.test_kit.mocks.data import load_catalog_with_stub_quote_ticks_audusd
+from nautilus_trader.test_kit.mocks.data import (
+    load_catalog_with_stub_quote_ticks_audusd,
+)
 from nautilus_trader.test_kit.mocks.data import setup_catalog
 from nautilus_trader.test_kit.providers import TestDataProvider
 from nautilus_trader.test_kit.providers import TestInstrumentProvider
@@ -67,11 +69,15 @@ class TestBacktestConfig:
         load_catalog_with_stub_quote_ticks_audusd(self.catalog)
 
         self.venue = Venue("SIM")
-        self.instrument = TestInstrumentProvider.default_fx_ccy("AUD/USD", venue=self.venue)
+        self.instrument = TestInstrumentProvider.default_fx_ccy(
+            "AUD/USD", venue=self.venue
+        )
         self.backtest_config = TestConfigStubs.backtest_run_config(catalog=self.catalog)
 
     def test_backtest_config_pickle(self):
-        pickle.loads(pickle.dumps(self.backtest_config))  # noqa: S301 (pickle safe here)
+        pickle.loads(
+            pickle.dumps(self.backtest_config)
+        )  # noqa: S301 (pickle safe here)
 
     def test_backtest_data_config_load(self):
         # Arrange
@@ -202,10 +208,14 @@ class TestBacktestConfigParsing:
     def setup(self, tmp_path):
         self.catalog = setup_catalog(protocol="memory", path=str(tmp_path / "nautilus"))
         self.venue = Venue("SIM")
-        self.instrument = TestInstrumentProvider.default_fx_ccy("AUD/USD", venue=self.venue)
+        self.instrument = TestInstrumentProvider.default_fx_ccy(
+            "AUD/USD", venue=self.venue
+        )
         self.backtest_config = TestConfigStubs.backtest_run_config(catalog=self.catalog)
 
-    @pytest.mark.skipif(sys.platform == "win32", reason="redundant to also test Windows")
+    @pytest.mark.skipif(
+        sys.platform == "win32", reason="redundant to also test Windows"
+    )
     def test_run_config_to_json(self) -> None:
         run_config = TestConfigStubs.backtest_run_config(
             catalog=self.catalog,
@@ -221,7 +231,9 @@ class TestBacktestConfigParsing:
         )
         msgspec.json.encode(run_config)
 
-    @pytest.mark.skipif(sys.platform == "win32", reason="redundant to also test Windows")
+    @pytest.mark.skipif(
+        sys.platform == "win32", reason="redundant to also test Windows"
+    )
     def test_run_config_parse_obj(self) -> None:
         run_config = TestConfigStubs.backtest_run_config(
             catalog=self.catalog,
@@ -241,7 +253,9 @@ class TestBacktestConfigParsing:
         node = BacktestNode(configs=[config])
         assert isinstance(node, BacktestNode)
 
-    @pytest.mark.skipif(sys.platform == "win32", reason="redundant to also test Windows")
+    @pytest.mark.skipif(
+        sys.platform == "win32", reason="redundant to also test Windows"
+    )
     def test_backtest_data_config_to_dict(self) -> None:
         run_config = TestConfigStubs.backtest_run_config(
             catalog=self.catalog,
@@ -262,7 +276,9 @@ class TestBacktestConfigParsing:
         result = len(msgspec.json.encode(json))
         assert result > 0
 
-    @pytest.mark.skipif(sys.platform == "win32", reason="redundant to also test Windows")
+    @pytest.mark.skipif(
+        sys.platform == "win32", reason="redundant to also test Windows"
+    )
     def test_backtest_obj_data_config_to_dict(self) -> None:
         run_config = TestConfigStubs.backtest_run_config(
             catalog=self.catalog,
@@ -280,10 +296,14 @@ class TestBacktestConfigParsing:
             ],
         )
         json = msgspec.json.encode(run_config, enc_hook=msgspec_encoding_hook)
-        obj = msgspec.json.decode(json, type=BacktestRunConfig, dec_hook=msgspec_decoding_hook)
+        obj = msgspec.json.decode(
+            json, type=BacktestRunConfig, dec_hook=msgspec_decoding_hook
+        )
         assert len(msgspec.json.encode(json)) > 0 and obj
 
-    @pytest.mark.skipif(sys.platform == "win32", reason="redundant to also test Windows")
+    @pytest.mark.skipif(
+        sys.platform == "win32", reason="redundant to also test Windows"
+    )
     def test_backtest_run_config_id(self) -> None:
         token = self.backtest_config.id
         print("token:", token)
@@ -294,7 +314,9 @@ class TestBacktestConfigParsing:
         assert len(token) == 64
         assert all(c in "0123456789abcdef" for c in token)
 
-    @pytest.mark.skipif(sys.platform == "win32", reason="redundant to also test Windows")
+    @pytest.mark.skipif(
+        sys.platform == "win32", reason="redundant to also test Windows"
+    )
     @pytest.mark.parametrize(
         ("config_func", "keys", "kw", "expected"),
         [
@@ -383,7 +405,9 @@ class TestBacktestConfigParsing:
 
     def test_simulation_modules(self) -> None:
         # Arrange
-        interest_rate_data: pd.DataFrame = TestDataProvider().read_csv("short-term-interest.csv")
+        interest_rate_data: pd.DataFrame = TestDataProvider().read_csv(
+            "short-term-interest.csv"
+        )
         run_config = TestConfigStubs.backtest_run_config(
             catalog=self.catalog,
             instrument_ids=[self.instrument.id],
@@ -556,7 +580,9 @@ class TestParseFiltersExpr:
         """
         Logical OR between multiple comparisons should be accepted.
         """
-        expr = parse_filters_expr('(field("Currency") == "CHF") | (field("Symbol") == "USD")')
+        expr = parse_filters_expr(
+            '(field("Currency") == "CHF") | (field("Symbol") == "USD")'
+        )
         assert isinstance(expr, ds.Expression)
 
     @pytest.mark.parametrize(

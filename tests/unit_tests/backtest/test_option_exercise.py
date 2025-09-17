@@ -93,7 +93,9 @@ class TestOptionExerciseModule:
             strike_price=Price(150.0, 2),
             currency=USD,
             activation_ns=dt_to_unix_nanos(pd.Timestamp("2024-03-01", tz="UTC")),
-            expiration_ns=dt_to_unix_nanos(pd.Timestamp("2024-03-15 16:00:00", tz="UTC")),
+            expiration_ns=dt_to_unix_nanos(
+                pd.Timestamp("2024-03-15 16:00:00", tz="UTC")
+            ),
             price_precision=2,
             price_increment=Price(0.01, 2),
             multiplier=Quantity.from_int(100),
@@ -111,7 +113,9 @@ class TestOptionExerciseModule:
             strike_price=Price(150.0, 2),
             currency=USD,
             activation_ns=dt_to_unix_nanos(pd.Timestamp("2024-03-01", tz="UTC")),
-            expiration_ns=dt_to_unix_nanos(pd.Timestamp("2024-03-15 16:00:00", tz="UTC")),
+            expiration_ns=dt_to_unix_nanos(
+                pd.Timestamp("2024-03-15 16:00:00", tz="UTC")
+            ),
             price_precision=2,
             price_increment=Price(0.01, 2),
             multiplier=Quantity.from_int(100),
@@ -143,7 +147,9 @@ class TestOptionExerciseModule:
             strike_price=Price(4500.0, 2),
             currency=USD,
             activation_ns=dt_to_unix_nanos(pd.Timestamp("2024-03-01", tz="UTC")),
-            expiration_ns=dt_to_unix_nanos(pd.Timestamp("2024-03-15 16:00:00", tz="UTC")),
+            expiration_ns=dt_to_unix_nanos(
+                pd.Timestamp("2024-03-15 16:00:00", tz="UTC")
+            ),
             price_precision=2,
             price_increment=Price(0.01, 2),
             multiplier=Quantity.from_int(100),
@@ -186,7 +192,9 @@ class TestOptionExerciseModule:
         """
         underlying_price = Price(160.0, 2)  # Above strike of 150
 
-        is_itm, intrinsic = self.module._is_option_itm(self.call_option, underlying_price)
+        is_itm, intrinsic = self.module._is_option_itm(
+            self.call_option, underlying_price
+        )
 
         assert is_itm is True
         assert intrinsic == 10.0  # 160 - 150
@@ -197,7 +205,9 @@ class TestOptionExerciseModule:
         """
         underlying_price = Price(140.0, 2)  # Below strike of 150
 
-        is_itm, intrinsic = self.module._is_option_itm(self.call_option, underlying_price)
+        is_itm, intrinsic = self.module._is_option_itm(
+            self.call_option, underlying_price
+        )
 
         assert is_itm is False
         assert intrinsic == 0.0
@@ -208,7 +218,9 @@ class TestOptionExerciseModule:
         """
         underlying_price = Price(140.0, 2)  # Below strike of 150
 
-        is_itm, intrinsic = self.module._is_option_itm(self.put_option, underlying_price)
+        is_itm, intrinsic = self.module._is_option_itm(
+            self.put_option, underlying_price
+        )
 
         assert is_itm is True
         assert intrinsic == 10.0  # 150 - 140
@@ -219,7 +231,9 @@ class TestOptionExerciseModule:
         """
         underlying_price = Price(160.0, 2)  # Above strike of 150
 
-        is_itm, intrinsic = self.module._is_option_itm(self.put_option, underlying_price)
+        is_itm, intrinsic = self.module._is_option_itm(
+            self.put_option, underlying_price
+        )
 
         assert is_itm is False
         assert intrinsic == 0.0
@@ -248,7 +262,9 @@ class TestOptionExerciseModule:
         )
         position = Position(self.call_option, fill)
 
-        quantity, side = self.module._calculate_underlying_position(self.call_option, position)
+        quantity, side = self.module._calculate_underlying_position(
+            self.call_option, position
+        )
 
         assert quantity == Quantity.from_str("200")  # 2 * 100 multiplier
         assert side == PositionSide.LONG  # Long call -> long underlying
@@ -277,7 +293,9 @@ class TestOptionExerciseModule:
         )
         position = Position(self.put_option, fill)
 
-        quantity, side = self.module._calculate_underlying_position(self.put_option, position)
+        quantity, side = self.module._calculate_underlying_position(
+            self.put_option, position
+        )
 
         assert quantity == Quantity.from_str("100")  # 1 * 100 multiplier
         assert side == PositionSide.SHORT  # Long put -> short underlying
@@ -500,7 +518,9 @@ class TestOptionExerciseModule:
             strike_price=Price(150.0, 2),
             currency=USD,
             activation_ns=dt_to_unix_nanos(pd.Timestamp("2024-03-01", tz="UTC")),
-            expiration_ns=dt_to_unix_nanos(pd.Timestamp("2024-03-15 16:00:00", tz="UTC")),
+            expiration_ns=dt_to_unix_nanos(
+                pd.Timestamp("2024-03-15 16:00:00", tz="UTC")
+            ),
             price_precision=2,
             price_increment=Price(0.01, 2),
             multiplier=Quantity.from_int(100),
@@ -575,5 +595,7 @@ class TestOptionExerciseModule:
         assert otm_fill.order_side == OrderSide.SELL  # Selling to close long position
 
         # Calculate PnL: bought at $5.00, expires at $0.00 = -$500
-        long_otm_pnl = long_otm_stock_position.calculate_pnl(5.0, 0.0, Quantity.from_int(1))
+        long_otm_pnl = long_otm_stock_position.calculate_pnl(
+            5.0, 0.0, Quantity.from_int(1)
+        )
         assert long_otm_pnl.as_double() == -500.0

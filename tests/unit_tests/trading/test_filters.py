@@ -52,13 +52,27 @@ class TestForexSessionFilter:
     @pytest.mark.parametrize(
         ("session", "expected"),
         [
-            [nautilus_pyo3.ForexSession.SYDNEY, dt.datetime(1970, 1, 1, 21, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.TOKYO, dt.datetime(1970, 1, 1, 0, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.LONDON, dt.datetime(1970, 1, 1, 7, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.NEW_YORK, dt.datetime(1970, 1, 1, 13, 0, tzinfo=dt.UTC)],
+            [
+                nautilus_pyo3.ForexSession.SYDNEY,
+                dt.datetime(1970, 1, 1, 21, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.TOKYO,
+                dt.datetime(1970, 1, 1, 0, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.LONDON,
+                dt.datetime(1970, 1, 1, 7, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.NEW_YORK,
+                dt.datetime(1970, 1, 1, 13, 0, tzinfo=dt.UTC),
+            ],
         ],
     )
-    def test_next_start_given_various_sessions_returns_expected_datetime(self, session, expected):
+    def test_next_start_given_various_sessions_returns_expected_datetime(
+        self, session, expected
+    ):
         # Arrange, Act
         result = nautilus_pyo3.fx_next_start(session, _UNIX_EPOCH)
 
@@ -84,13 +98,27 @@ class TestForexSessionFilter:
     @pytest.mark.parametrize(
         ("session", "expected"),
         [
-            [nautilus_pyo3.ForexSession.SYDNEY, dt.datetime(1969, 12, 31, 21, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.TOKYO, dt.datetime(1970, 1, 1, 0, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.LONDON, dt.datetime(1969, 12, 31, 7, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.NEW_YORK, dt.datetime(1969, 12, 31, 13, 0, tzinfo=dt.UTC)],
+            [
+                nautilus_pyo3.ForexSession.SYDNEY,
+                dt.datetime(1969, 12, 31, 21, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.TOKYO,
+                dt.datetime(1970, 1, 1, 0, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.LONDON,
+                dt.datetime(1969, 12, 31, 7, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.NEW_YORK,
+                dt.datetime(1969, 12, 31, 13, 0, tzinfo=dt.UTC),
+            ],
         ],
     )
-    def test_prev_start_given_various_sessions_returns_expected_datetime(self, session, expected):
+    def test_prev_start_given_various_sessions_returns_expected_datetime(
+        self, session, expected
+    ):
         # Arrange, Act
         result = nautilus_pyo3.fx_prev_start(session, _UNIX_EPOCH)
 
@@ -100,13 +128,27 @@ class TestForexSessionFilter:
     @pytest.mark.parametrize(
         ("session", "expected"),
         [
-            [nautilus_pyo3.ForexSession.SYDNEY, dt.datetime(1970, 1, 1, 6, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.TOKYO, dt.datetime(1970, 1, 1, 9, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.LONDON, dt.datetime(1970, 1, 1, 15, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.NEW_YORK, dt.datetime(1970, 1, 1, 22, 0, tzinfo=dt.UTC)],
+            [
+                nautilus_pyo3.ForexSession.SYDNEY,
+                dt.datetime(1970, 1, 1, 6, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.TOKYO,
+                dt.datetime(1970, 1, 1, 9, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.LONDON,
+                dt.datetime(1970, 1, 1, 15, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.NEW_YORK,
+                dt.datetime(1970, 1, 1, 22, 0, tzinfo=dt.UTC),
+            ],
         ],
     )
-    def test_next_end_given_various_sessions_returns_expected_datetime(self, session, expected):
+    def test_next_end_given_various_sessions_returns_expected_datetime(
+        self, session, expected
+    ):
         # Arrange, Act
         result = nautilus_pyo3.fx_next_end(session, _UNIX_EPOCH)
 
@@ -116,16 +158,27 @@ class TestForexSessionFilter:
     @pytest.mark.parametrize(
         ("session", "expected"),
         [
-            [nautilus_pyo3.ForexSession.SYDNEY, dt.datetime(1969, 12, 31, 6, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.TOKYO, dt.datetime(1969, 12, 31, 9, 0, tzinfo=dt.UTC)],
-            [nautilus_pyo3.ForexSession.LONDON, dt.datetime(1969, 12, 31, 15, 0, tzinfo=dt.UTC)],
+            [
+                nautilus_pyo3.ForexSession.SYDNEY,
+                dt.datetime(1969, 12, 31, 6, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.TOKYO,
+                dt.datetime(1969, 12, 31, 9, 0, tzinfo=dt.UTC),
+            ],
+            [
+                nautilus_pyo3.ForexSession.LONDON,
+                dt.datetime(1969, 12, 31, 15, 0, tzinfo=dt.UTC),
+            ],
             [
                 nautilus_pyo3.ForexSession.NEW_YORK,
                 dt.datetime(1969, 12, 31, 22, 0, tzinfo=dt.UTC),
             ],
         ],
     )
-    def test_prev_end_given_various_sessions_returns_expected_datetime(self, session, expected):
+    def test_prev_end_given_various_sessions_returns_expected_datetime(
+        self, session, expected
+    ):
         # Arrange, Act
         result = nautilus_pyo3.fx_prev_end(session, _UNIX_EPOCH)
 
@@ -137,7 +190,9 @@ class TestEconomicNewsEventFilter:
     def setup(self):
         # Fixture Setup
         news_csv_path = TEST_DATA_DIR / "news_events.csv"
-        self.news_data = as_utc_index(pd.read_csv(news_csv_path, parse_dates=True, index_col=0))
+        self.news_data = as_utc_index(
+            pd.read_csv(news_csv_path, parse_dates=True, index_col=0)
+        )
 
     def test_initialize_filter(self):
         # Arrange
@@ -151,9 +206,13 @@ class TestEconomicNewsEventFilter:
 
         # Act, Assert
         assert (
-            pd.Timestamp("2008-01-01 10:00:00+0000", tz="UTC") == news_filter.unfiltered_data_start
+            pd.Timestamp("2008-01-01 10:00:00+0000", tz="UTC")
+            == news_filter.unfiltered_data_start
         )
-        assert pd.Timestamp("2020-12-31 23:00:00+0000", tz="UTC") == news_filter.unfiltered_data_end
+        assert (
+            pd.Timestamp("2020-12-31 23:00:00+0000", tz="UTC")
+            == news_filter.unfiltered_data_end
+        )
         assert news_filter.currencies == currencies
         assert news_filter.impacts == impacts
 
@@ -168,8 +227,12 @@ class TestEconomicNewsEventFilter:
         )
 
         # Act
-        event_next = news_filter.next_event(dt.datetime(2012, 3, 15, 12, 0, tzinfo=pytz.UTC))
-        event_prev = news_filter.next_event(dt.datetime(2012, 3, 15, 12, 0, tzinfo=pytz.UTC))
+        event_next = news_filter.next_event(
+            dt.datetime(2012, 3, 15, 12, 0, tzinfo=pytz.UTC)
+        )
+        event_prev = news_filter.next_event(
+            dt.datetime(2012, 3, 15, 12, 0, tzinfo=pytz.UTC)
+        )
 
         # Assert
         assert event_next is None

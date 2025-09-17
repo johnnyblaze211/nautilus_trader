@@ -616,7 +616,9 @@ class TestTestClock:
         # Assert
         # With fire_immediately=False (default), expect events at: 100ms, 200ms, 300ms = 3 events
         assert len(event_handlers) == 3
-        assert event_handlers[0].event.ts_event == 100_000_000  # Fires after first interval
+        assert (
+            event_handlers[0].event.ts_event == 100_000_000
+        )  # Fires after first interval
         assert event_handlers[1].event.ts_event == 200_000_000
         assert event_handlers[2].event.ts_event == 300_000_000
         assert clock.timer_names == [name]
@@ -685,7 +687,9 @@ class TestTestClock:
         assert "past_next_event_timer" in str(exc_info.value)
         assert clock.timer_count == 0  # No timer should be created
 
-    def test_cython_validation_allows_valid_timer_with_past_start_but_future_next_event(self):
+    def test_cython_validation_allows_valid_timer_with_past_start_but_future_next_event(
+        self,
+    ):
         # Arrange
         clock = TestClock()
         clock.register_default_handler(lambda event: None)  # Add default handler
@@ -1063,7 +1067,9 @@ class TestLiveClock:
                 allow_past=False,
             )
 
-        assert "would be in the past" in str(exc_info.value) or "was in the past" in str(
+        assert "would be in the past" in str(
+            exc_info.value
+        ) or "was in the past" in str(
             exc_info.value,
         )
         assert "past_alert_live" in str(exc_info.value)

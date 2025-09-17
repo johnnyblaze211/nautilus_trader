@@ -100,7 +100,9 @@ class BybitOrderBookDeltaDataLoader:
                                     {
                                         "timestamp": timestamp,
                                         "instrument_id": instrument_id,
-                                        "action": cls.map_actions(update_type, float(qty)),
+                                        "action": cls.map_actions(
+                                            update_type, float(qty)
+                                        ),
                                         "side": cls.map_sides(key),
                                         "order_id": 0,
                                         "flags": cls.map_flags(update_type),

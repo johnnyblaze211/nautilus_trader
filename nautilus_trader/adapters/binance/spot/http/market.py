@@ -156,8 +156,12 @@ class BinanceSpotMarketHttpAPI(BinanceMarketHttpAPI):
                 f"`BinanceAccountType` not SPOT, MARGIN or ISOLATED_MARGIN, was {account_type}",  # pragma: no cover
             )
 
-        self._endpoint_spot_exchange_info = BinanceSpotExchangeInfoHttp(client, self.base_endpoint)
-        self._endpoint_spot_average_price = BinanceSpotAvgPriceHttp(client, self.base_endpoint)
+        self._endpoint_spot_exchange_info = BinanceSpotExchangeInfoHttp(
+            client, self.base_endpoint
+        )
+        self._endpoint_spot_average_price = BinanceSpotAvgPriceHttp(
+            client, self.base_endpoint
+        )
 
     async def query_spot_exchange_info(
         self,

@@ -16,7 +16,9 @@
 import asyncio
 import pprint
 
-from nautilus_trader.adapters.coinbase_intx.factories import get_coinbase_intx_http_client
+from nautilus_trader.adapters.coinbase_intx.factories import (
+    get_coinbase_intx_http_client,
+)
 
 
 async def run():

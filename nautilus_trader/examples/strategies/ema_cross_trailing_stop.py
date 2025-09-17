@@ -374,7 +374,10 @@ class EMACrossTrailingStop(Strategy):
 
         """
         if isinstance(event, OrderFilled):
-            if self.trailing_stop and event.client_order_id == self.trailing_stop.client_order_id:
+            if (
+                self.trailing_stop
+                and event.client_order_id == self.trailing_stop.client_order_id
+            ):
                 self.trailing_stop = None
         elif isinstance(event, PositionOpened | PositionChanged):
             if self.trailing_stop:

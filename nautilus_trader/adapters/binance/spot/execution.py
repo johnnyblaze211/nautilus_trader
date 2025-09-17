@@ -26,10 +26,16 @@ from nautilus_trader.adapters.binance.spot.enums import BinanceSpotEventType
 from nautilus_trader.adapters.binance.spot.http.account import BinanceSpotAccountHttpAPI
 from nautilus_trader.adapters.binance.spot.http.market import BinanceSpotMarketHttpAPI
 from nautilus_trader.adapters.binance.spot.http.user import BinanceSpotUserDataHttpAPI
-from nautilus_trader.adapters.binance.spot.providers import BinanceSpotInstrumentProvider
+from nautilus_trader.adapters.binance.spot.providers import (
+    BinanceSpotInstrumentProvider,
+)
 from nautilus_trader.adapters.binance.spot.schemas.account import BinanceSpotAccountInfo
-from nautilus_trader.adapters.binance.spot.schemas.user import BinanceSpotAccountUpdateWrapper
-from nautilus_trader.adapters.binance.spot.schemas.user import BinanceSpotOrderUpdateWrapper
+from nautilus_trader.adapters.binance.spot.schemas.user import (
+    BinanceSpotAccountUpdateWrapper,
+)
+from nautilus_trader.adapters.binance.spot.schemas.user import (
+    BinanceSpotOrderUpdateWrapper,
+)
 from nautilus_trader.adapters.binance.spot.schemas.user import BinanceSpotUserMsgWrapper
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
@@ -127,7 +133,9 @@ class BinanceSpotExecutionClient(BinanceCommonExecutionClient):
         }
 
         # Websocket spot schema decoders
-        self._decoder_spot_user_msg_wrapper = msgspec.json.Decoder(BinanceSpotUserMsgWrapper)
+        self._decoder_spot_user_msg_wrapper = msgspec.json.Decoder(
+            BinanceSpotUserMsgWrapper
+        )
         self._decoder_spot_order_update_wrapper = msgspec.json.Decoder(
             BinanceSpotOrderUpdateWrapper,
         )
@@ -143,7 +151,9 @@ class BinanceSpotExecutionClient(BinanceCommonExecutionClient):
         )
         if account_info.canTrade:
             self._log.info("Binance API key authenticated.", LogColor.GREEN)
-            self._log.info(f"API key {self._http_client.api_key} has trading permissions")
+            self._log.info(
+                f"API key {self._http_client.api_key} has trading permissions"
+            )
         else:
             self._log.error("Binance API key does not have trading permissions")
         self.generate_account_state(
@@ -157,7 +167,9 @@ class BinanceSpotExecutionClient(BinanceCommonExecutionClient):
 
     async def _init_dual_side_position(self) -> None:
         self._is_dual_side_position = False
-        self._log.info(f"Dual side position: {self._is_dual_side_position}", LogColor.BLUE)
+        self._log.info(
+            f"Dual side position: {self._is_dual_side_position}", LogColor.BLUE
+        )
 
     # -- EXECUTION REPORTS ------------------------------------------------------------------------
 

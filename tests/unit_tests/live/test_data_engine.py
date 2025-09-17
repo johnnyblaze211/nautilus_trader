@@ -98,10 +98,18 @@ class TestLiveDataEngine:
     @pytest.mark.asyncio
     async def test_message_qsize_at_max_blocks_on_put_data_command(self):
         # Arrange
-        self.msgbus.deregister(endpoint="DataEngine.execute", handler=self.engine.execute)
-        self.msgbus.deregister(endpoint="DataEngine.process", handler=self.engine.process)
-        self.msgbus.deregister(endpoint="DataEngine.request", handler=self.engine.request)
-        self.msgbus.deregister(endpoint="DataEngine.response", handler=self.engine.response)
+        self.msgbus.deregister(
+            endpoint="DataEngine.execute", handler=self.engine.execute
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.process", handler=self.engine.process
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.request", handler=self.engine.request
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.response", handler=self.engine.response
+        )
 
         self.engine = LiveDataEngine(
             loop=self.loop,
@@ -131,10 +139,18 @@ class TestLiveDataEngine:
     @pytest.mark.asyncio
     async def test_message_qsize_at_max_blocks_on_send_request(self):
         # Arrange
-        self.msgbus.deregister(endpoint="DataEngine.execute", handler=self.engine.execute)
-        self.msgbus.deregister(endpoint="DataEngine.process", handler=self.engine.process)
-        self.msgbus.deregister(endpoint="DataEngine.request", handler=self.engine.request)
-        self.msgbus.deregister(endpoint="DataEngine.response", handler=self.engine.response)
+        self.msgbus.deregister(
+            endpoint="DataEngine.execute", handler=self.engine.execute
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.process", handler=self.engine.process
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.request", handler=self.engine.request
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.response", handler=self.engine.response
+        )
 
         self.engine = LiveDataEngine(
             loop=self.loop,
@@ -169,10 +185,18 @@ class TestLiveDataEngine:
     @pytest.mark.asyncio
     async def test_message_qsize_at_max_blocks_on_receive_response(self):
         # Arrange
-        self.msgbus.deregister(endpoint="DataEngine.execute", handler=self.engine.execute)
-        self.msgbus.deregister(endpoint="DataEngine.process", handler=self.engine.process)
-        self.msgbus.deregister(endpoint="DataEngine.request", handler=self.engine.request)
-        self.msgbus.deregister(endpoint="DataEngine.response", handler=self.engine.response)
+        self.msgbus.deregister(
+            endpoint="DataEngine.execute", handler=self.engine.execute
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.process", handler=self.engine.process
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.request", handler=self.engine.request
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.response", handler=self.engine.response
+        )
 
         self.engine = LiveDataEngine(
             loop=self.loop,
@@ -205,10 +229,18 @@ class TestLiveDataEngine:
     @pytest.mark.asyncio
     async def test_data_qsize_at_max_blocks_on_put_data(self):
         # Arrange
-        self.msgbus.deregister(endpoint="DataEngine.execute", handler=self.engine.execute)
-        self.msgbus.deregister(endpoint="DataEngine.process", handler=self.engine.process)
-        self.msgbus.deregister(endpoint="DataEngine.request", handler=self.engine.request)
-        self.msgbus.deregister(endpoint="DataEngine.response", handler=self.engine.response)
+        self.msgbus.deregister(
+            endpoint="DataEngine.execute", handler=self.engine.execute
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.process", handler=self.engine.process
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.request", handler=self.engine.request
+        )
+        self.msgbus.deregister(
+            endpoint="DataEngine.response", handler=self.engine.response
+        )
 
         self.engine = LiveDataEngine(
             loop=self.loop,
@@ -484,7 +516,9 @@ class TestLiveDataEngine:
             test_data = TestDataStubs.trade_tick()
 
             engine.process(test_data)
-            await eventually(lambda: shutdown_mock.called)  # Wait for first shutdown call
+            await eventually(
+                lambda: shutdown_mock.called
+            )  # Wait for first shutdown call
 
             engine.process(test_data)  # Second exception
             engine.process(test_data)  # Third exception
@@ -501,7 +535,9 @@ class TestLiveDataEngine:
             await eventually(lambda: engine.data_qsize() == 0)
 
     @pytest.mark.asyncio
-    async def test_graceful_shutdown_cmd_queue_exception_enabled_calls_shutdown_system(self):
+    async def test_graceful_shutdown_cmd_queue_exception_enabled_calls_shutdown_system(
+        self,
+    ):
         """
         Test that when graceful_shutdown_on_exception=True, shutdown_system is called on
         DataCommand queue exception.
@@ -556,7 +592,9 @@ class TestLiveDataEngine:
             await eventually(lambda: engine.cmd_qsize() == 0)
 
     @pytest.mark.asyncio
-    async def test_graceful_shutdown_req_queue_exception_enabled_calls_shutdown_system(self):
+    async def test_graceful_shutdown_req_queue_exception_enabled_calls_shutdown_system(
+        self,
+    ):
         """
         Test that when graceful_shutdown_on_exception=True, shutdown_system is called on
         RequestData queue exception.
@@ -616,7 +654,9 @@ class TestLiveDataEngine:
             await eventually(lambda: engine.req_qsize() == 0)
 
     @pytest.mark.asyncio
-    async def test_graceful_shutdown_res_queue_exception_enabled_calls_shutdown_system(self):
+    async def test_graceful_shutdown_res_queue_exception_enabled_calls_shutdown_system(
+        self,
+    ):
         """
         Test that when graceful_shutdown_on_exception=True, shutdown_system is called on
         DataResponse queue exception.

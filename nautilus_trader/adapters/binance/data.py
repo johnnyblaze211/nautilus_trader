@@ -24,7 +24,9 @@ from nautilus_trader.adapters.binance.common.enums import BinanceAccountType
 from nautilus_trader.adapters.binance.common.enums import BinanceEnumParser
 from nautilus_trader.adapters.binance.common.enums import BinanceErrorCode
 from nautilus_trader.adapters.binance.common.enums import BinanceKlineInterval
-from nautilus_trader.adapters.binance.common.schemas.market import BinanceAggregatedTradeMsg
+from nautilus_trader.adapters.binance.common.schemas.market import (
+    BinanceAggregatedTradeMsg,
+)
 from nautilus_trader.adapters.binance.common.schemas.market import BinanceCandlestickMsg
 from nautilus_trader.adapters.binance.common.schemas.market import BinanceDataMsgWrapper
 from nautilus_trader.adapters.binance.common.schemas.market import BinanceOrderBookMsg
@@ -159,14 +161,20 @@ class BinanceCommonDataClient(LiveMarketDataClient):
         self._binance_account_type = account_type
         self._use_agg_trade_ticks = config.use_agg_trade_ticks
         self._log.info(f"Key type: {config.key_type.value}", LogColor.BLUE)
-        self._log.info(f"Account type: {self._binance_account_type.value}", LogColor.BLUE)
+        self._log.info(
+            f"Account type: {self._binance_account_type.value}", LogColor.BLUE
+        )
         self._log.info(f"{config.update_instruments_interval_mins=}", LogColor.BLUE)
         self._log.info(f"{config.use_agg_trade_ticks=}", LogColor.BLUE)
 
-        self._update_instruments_interval_mins: int | None = config.update_instruments_interval_mins
+        self._update_instruments_interval_mins: int | None = (
+            config.update_instruments_interval_mins
+        )
         self._update_instruments_task: asyncio.Task | None = None
 
-        self._connect_websockets_delay: float = 0.0  # Delay for bulk subscriptions to come in
+        self._connect_websockets_delay: float = (
+            0.0  # Delay for bulk subscriptions to come in
+        )
         self._connect_websockets_task: asyncio.Task | None = None
 
         self._subscribe_allow_no_instrument_id = [
@@ -298,7 +306,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
     # -- SUBSCRIPTIONS ----------------------------------------------------------------------------
 
     async def _subscribe(self, command: SubscribeData) -> None:
-        instrument_id: InstrumentId | None = command.data_type.metadata.get("instrument_id")
+        instrument_id: InstrumentId | None = command.data_type.metadata.get(
+            "instrument_id"
+        )
         if (
             instrument_id is None
             and command.data_type.type not in self._subscribe_allow_no_instrument_id
@@ -325,7 +335,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
             )
 
     async def _unsubscribe(self, command: UnsubscribeData) -> None:
-        instrument_id: InstrumentId | None = command.data_type.metadata.get("instrument_id")
+        instrument_id: InstrumentId | None = command.data_type.metadata.get(
+            "instrument_id"
+        )
         if (
             instrument_id is None
             and command.data_type.type not in self._subscribe_allow_no_instrument_id
@@ -358,7 +370,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
     async def _subscribe_order_book_deltas(self, command: SubscribeOrderBook) -> None:
         await self._subscribe_order_book(command)
 
-    async def _subscribe_order_book_snapshots(self, command: SubscribeOrderBook) -> None:
+    async def _subscribe_order_book_snapshots(
+        self, command: SubscribeOrderBook
+    ) -> None:
         await self._subscribe_order_book(command)
 
     async def _subscribe_order_book(self, command: SubscribeOrderBook) -> None:
@@ -376,7 +390,12 @@ class BinanceCommonDataClient(LiveMarketDataClient):
         if self._binance_account_type.is_futures:
             if update_speed is None:
                 update_speed = 0  # Default 0 ms for futures
-            valid_speeds = [0, 100, 250, 500]  # 0ms option for futures exists but not documented?
+            valid_speeds = [
+                0,
+                100,
+                250,
+                500,
+            ]  # 0ms option for futures exists but not documented?
         elif update_speed is None:
             update_speed = 100  # Default 100ms for spot
         if update_speed not in valid_speeds:
@@ -416,7 +435,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
 
         await self._order_book_snapshot_then_deltas(command.instrument_id)
 
-    async def _order_book_snapshot_then_deltas(self, instrument_id: InstrumentId) -> None:
+    async def _order_book_snapshot_then_deltas(
+        self, instrument_id: InstrumentId
+    ) -> None:
         # Add delta feed buffer
         self._book_buffer[instrument_id] = []
 
@@ -446,14 +467,18 @@ class BinanceCommonDataClient(LiveMarketDataClient):
         )
 
     async def _subscribe_mark_prices(self, command: SubscribeMarkPrices) -> None:
-        await self._ws_client.subscribe_mark_price(command.instrument_id.symbol.value, speed=1000)
+        await self._ws_client.subscribe_mark_price(
+            command.instrument_id.symbol.value, speed=1000
+        )
 
     async def _subscribe_quote_ticks(self, command: SubscribeQuoteTicks) -> None:
         await self._ws_client.subscribe_book_ticker(command.instrument_id.symbol.value)
 
     async def _subscribe_trade_ticks(self, command: SubscribeTradeTicks) -> None:
         if self._use_agg_trade_ticks:
-            await self._ws_client.subscribe_agg_trades(command.instrument_id.symbol.value)
+            await self._ws_client.subscribe_agg_trades(
+                command.instrument_id.symbol.value
+            )
         else:
             await self._ws_client.subscribe_trades(command.instrument_id.symbol.value)
 
@@ -496,18 +521,26 @@ class BinanceCommonDataClient(LiveMarketDataClient):
     async def _unsubscribe_instrument(self, command: UnsubscribeInstrument) -> None:
         pass  # Do nothing further
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         pass  # TODO: Unsubscribe from Binance if no other subscriptions
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         pass  # TODO: Unsubscribe from Binance if no other subscriptions
 
     async def _unsubscribe_quote_ticks(self, command: UnsubscribeQuoteTicks) -> None:
-        await self._ws_client.unsubscribe_book_ticker(command.instrument_id.symbol.value)
+        await self._ws_client.unsubscribe_book_ticker(
+            command.instrument_id.symbol.value
+        )
 
     async def _unsubscribe_trade_ticks(self, command: UnsubscribeTradeTicks) -> None:
         if self._use_agg_trade_ticks:
-            await self._ws_client.unsubscribe_agg_trades(command.instrument_id.symbol.value)
+            await self._ws_client.unsubscribe_agg_trades(
+                command.instrument_id.symbol.value
+            )
         else:
             await self._ws_client.unsubscribe_trades(command.instrument_id.symbol.value)
 
@@ -552,12 +585,16 @@ class BinanceCommonDataClient(LiveMarketDataClient):
                 f"Requesting instrument {request.instrument_id} with specified `end` which has no effect",
             )
 
-        instrument: Instrument | None = self._instrument_provider.find(request.instrument_id)
+        instrument: Instrument | None = self._instrument_provider.find(
+            request.instrument_id
+        )
         if instrument is None:
             self._log.error(f"Cannot find instrument for {request.instrument_id}")
             return
 
-        self._handle_instrument(instrument, request.id, request.start, request.end, request.params)
+        self._handle_instrument(
+            instrument, request.id, request.start, request.end, request.params
+        )
 
     async def _request_quote_ticks(self, request: RequestQuoteTicks) -> None:
         self._log.error(
@@ -631,7 +668,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
                     "second interval bars are not aggregated by Binance Futures",
                 )
             try:
-                interval = BinanceKlineInterval(f"{request.bar_type.spec.step}{resolution}")
+                interval = BinanceKlineInterval(
+                    f"{request.bar_type.spec.step}{resolution}"
+                )
             except ValueError:
                 self._log.error(
                     f"Cannot create Binance Kline interval. {request.bar_type.spec.step}{resolution} "
@@ -653,7 +692,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
                     "Inferred INTERNAL time bars from EXTERNAL time bars",
                     LogColor.BLUE,
                 )
-        elif request.start and request.start < self._clock.utc_now() - pd.Timedelta(days=1):
+        elif request.start and request.start < self._clock.utc_now() - pd.Timedelta(
+            days=1
+        ):
             bars = await self._aggregate_internal_from_minute_bars(
                 bar_type=request.bar_type,
                 start_time_ms=start_time_ms,
@@ -690,7 +731,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
             request.params,
         )
 
-    async def _request_order_book_snapshot(self, request: RequestOrderBookSnapshot) -> None:
+    async def _request_order_book_snapshot(
+        self, request: RequestOrderBookSnapshot
+    ) -> None:
         if request.limit not in [5, 10, 20, 50, 100, 500, 1000]:
             self._log.error(
                 "Cannot get order book snapshots: "
@@ -699,10 +742,12 @@ class BinanceCommonDataClient(LiveMarketDataClient):
             )
             return
         else:
-            snapshot: OrderBookDeltas = await self._http_market.request_order_book_snapshot(
-                instrument_id=request.instrument_id,
-                limit=request.limit,
-                ts_init=self._clock.timestamp_ns(),
+            snapshot: OrderBookDeltas = (
+                await self._http_market.request_order_book_snapshot(
+                    instrument_id=request.instrument_id,
+                    limit=request.limit,
+                    ts_init=self._clock.timestamp_ns(),
+                )
             )
 
             data_type = DataType(
@@ -732,7 +777,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
             )
             return []
 
-        self._log.info("Requesting 1-MINUTE Binance bars to infer INTERNAL bars...", LogColor.BLUE)
+        self._log.info(
+            "Requesting 1-MINUTE Binance bars to infer INTERNAL bars...", LogColor.BLUE
+        )
 
         binance_bars = await self._http_market.request_binance_bars(
             bar_type=BarType(
@@ -874,7 +921,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
             )
             return []
 
-        self._log.info("Requesting aggregated trades to infer INTERNAL bars...", LogColor.BLUE)
+        self._log.info(
+            "Requesting aggregated trades to infer INTERNAL bars...", LogColor.BLUE
+        )
 
         ticks = await self._http_market.request_agg_trade_ticks(
             instrument_id=instrument.id,
@@ -968,8 +1017,10 @@ class BinanceCommonDataClient(LiveMarketDataClient):
             instrument_id=instrument_id,
             ts_init=self._clock.timestamp_ns(),
         )
-        book_buffer: list[OrderBookDelta | OrderBookDeltas] | None = self._book_buffer.get(
-            instrument_id,
+        book_buffer: list[OrderBookDelta | OrderBookDeltas] | None = (
+            self._book_buffer.get(
+                instrument_id,
+            )
         )
         if book_buffer is not None:
             book_buffer.append(book_deltas)
@@ -1013,7 +1064,9 @@ class BinanceCommonDataClient(LiveMarketDataClient):
         self._handle_data(bar)
 
     def _handle_book_partial_update(self, raw: bytes) -> None:
-        raise NotImplementedError("Please implement book partial update handling in child class.")
+        raise NotImplementedError(
+            "Please implement book partial update handling in child class."
+        )
 
     def _handle_trade(self, raw: bytes) -> None:
         raise NotImplementedError("Please implement trade handling in child class.")

@@ -51,7 +51,9 @@ class BSPOrderBookDelta(OrderBookDelta):
         PyCondition.not_none(batch, "batch")
         data = []
         for idx in range(batch.num_rows):
-            instrument_id = InstrumentId.from_str(batch.schema.metadata[b"instrument_id"].decode())
+            instrument_id = InstrumentId.from_str(
+                batch.schema.metadata[b"instrument_id"].decode()
+            )
             action: BookAction = BookAction(batch["action"].to_pylist()[idx])
             if action == BookAction.CLEAR:
                 book_order = None
@@ -198,7 +200,9 @@ class BetfairTicker(Data):
             instrument_id=InstrumentId.from_str(values["instrument_id"]),
             ts_event=values["ts_event"],
             ts_init=values["ts_init"],
-            last_traded_price=values["last_traded_price"] if values["last_traded_price"] else None,
+            last_traded_price=(
+                values["last_traded_price"] if values["last_traded_price"] else None
+            ),
             traded_volume=values["traded_volume"] if values["traded_volume"] else None,
             starting_price_near=(
                 values["starting_price_near"] if values["starting_price_near"] else None

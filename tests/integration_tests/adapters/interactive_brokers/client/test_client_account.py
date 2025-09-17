@@ -25,7 +25,9 @@ from ibapi import decoder
 
 from nautilus_trader.adapters.interactive_brokers.client.common import IBPosition
 from nautilus_trader.test_kit.functions import eventually
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestContractStubs
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestContractStubs,
+)
 
 
 def test_accounts(ib_client):
@@ -62,7 +64,9 @@ async def test_process_account_id(ib_client):
         b"4\x002\x00-1\x002106\x00HMDS data farm connection is OK:ushmds\x00\x00",
         b"4\x002\x00-1\x002104\x00Market data farm connection is OK:usfarm\x00\x00",
     ]
-    with patch("ibapi.comm.read_msg", side_effect=[(None, msg, b"") for msg in test_messages]):
+    with patch(
+        "ibapi.comm.read_msg", side_effect=[(None, msg, b"") for msg in test_messages]
+    ):
         # Act
         ib_client._start_tws_incoming_msg_reader()
         ib_client._start_internal_msg_queue_processor()
@@ -132,9 +136,13 @@ async def test_get_positions_simulates_two_positions(ib_client):
     # Arrange
     ib_client._eclient.reqPositions = MagicMock()
     aapl = IBTestContractStubs.aapl_equity_ib_contract()
-    spy = IBTestContractStubs.create_contract(secType="STK", symbol="SPY", exchange="ARCA")
+    spy = IBTestContractStubs.create_contract(
+        secType="STK", symbol="SPY", exchange="ARCA"
+    )
     spy = IBTestContractStubs.convert_contract_to_ib_contract(spy)
-    tsla = IBTestContractStubs.create_contract(secType="STK", symbol="TSLA", exchange="ARCA")
+    tsla = IBTestContractStubs.create_contract(
+        secType="STK", symbol="TSLA", exchange="ARCA"
+    )
     tsla = IBTestContractStubs.convert_contract_to_ib_contract(tsla)
 
     position_1 = IBPosition(
@@ -155,7 +163,9 @@ async def test_get_positions_simulates_two_positions(ib_client):
         Decimal(10),
         20.0,
     )
-    ib_client._await_request = AsyncMock(return_value=[position_1, position_2, position_3])
+    ib_client._await_request = AsyncMock(
+        return_value=[position_1, position_2, position_3]
+    )
 
     # Act
     results_1 = await ib_client.get_positions("DU1234567")

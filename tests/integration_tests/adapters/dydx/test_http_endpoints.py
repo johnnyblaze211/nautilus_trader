@@ -28,13 +28,19 @@ from nautilus_trader.adapters.dydx.common.enums import DYDXPerpetualPositionStat
 from nautilus_trader.adapters.dydx.common.symbol import DYDXSymbol
 
 # fmt: off
-from nautilus_trader.adapters.dydx.endpoints.market.instruments_info import DYDXListPerpetualMarketsResponse
+from nautilus_trader.adapters.dydx.endpoints.market.instruments_info import (
+    DYDXListPerpetualMarketsResponse,
+)
 from nautilus_trader.adapters.dydx.schemas.account.address import DYDXAddressResponse
 from nautilus_trader.adapters.dydx.schemas.account.address import DYDXSubaccountResponse
-from nautilus_trader.adapters.dydx.schemas.account.asset_positions import DYDXAssetPositionsResponse
+from nautilus_trader.adapters.dydx.schemas.account.asset_positions import (
+    DYDXAssetPositionsResponse,
+)
 from nautilus_trader.adapters.dydx.schemas.account.fills import DYDXFillsResponse
 from nautilus_trader.adapters.dydx.schemas.account.orders import DYDXOrderResponse
-from nautilus_trader.adapters.dydx.schemas.account.perpetual_positions import DYDXPerpetualPositionsResponse
+from nautilus_trader.adapters.dydx.schemas.account.perpetual_positions import (
+    DYDXPerpetualPositionsResponse,
+)
 
 # fmt: on
 from nautilus_trader.core.nautilus_pyo3 import PositionSide
@@ -70,7 +76,9 @@ def list_perpetual_markets_response() -> DYDXListPerpetualMarketsResponse:
     """
     decoder = msgspec.json.Decoder(DYDXListPerpetualMarketsResponse)
 
-    with Path("tests/test_data/dydx/http/list_perpetual_markets.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/http/list_perpetual_markets.json"
+    ).open() as file_reader:
         return decoder.decode(file_reader.read())
 
 
@@ -114,7 +122,9 @@ def perpetual_positions_response() -> DYDXPerpetualPositionsResponse:
     """
     decoder = msgspec.json.Decoder(DYDXPerpetualPositionsResponse)
 
-    with Path("tests/test_data/dydx/http/list_perpetual_positions.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/http/list_perpetual_positions.json"
+    ).open() as file_reader:
         return decoder.decode(file_reader.read())
 
 
@@ -124,7 +134,9 @@ def orders_response() -> list[DYDXOrderResponse]:
     Create an orders endpoint response.
     """
     with Path("tests/test_data/dydx/http/orders.json").open() as file_reader:
-        return msgspec.json.decode(file_reader.read(), type=list[DYDXOrderResponse], strict=True)
+        return msgspec.json.decode(
+            file_reader.read(), type=list[DYDXOrderResponse], strict=True
+        )
 
 
 @pytest.fixture
@@ -184,7 +196,9 @@ def test_asset_positions(asset_positions_response: DYDXAssetPositionsResponse) -
     assert len(asset_positions_response.positions) == 1
 
 
-def test_perpetual_positions(perpetual_positions_response: DYDXPerpetualPositionsResponse) -> None:
+def test_perpetual_positions(
+    perpetual_positions_response: DYDXPerpetualPositionsResponse,
+) -> None:
     """
     Test parsing the positions message.
     """
@@ -223,7 +237,9 @@ def test_closed_perpetual_positions_into_margin_balance(
     """
     Test parsing the positions message into a margin balance report.
     """
-    perpetual_positions_response.positions[0].status = DYDXPerpetualPositionStatus.CLOSED
+    perpetual_positions_response.positions[0].status = (
+        DYDXPerpetualPositionStatus.CLOSED
+    )
     expected_result = MarginBalance(
         initial=Money(Decimal("0"), Currency.from_str("USDC")),
         maintenance=Money(Decimal("0"), Currency.from_str("USDC")),
@@ -540,12 +556,16 @@ def test_list_perpetual_markets_v8() -> None:
     decoder = msgspec.json.Decoder(DYDXListPerpetualMarketsResponse)
 
     # Act
-    with Path("tests/test_data/dydx/http/list_perpetual_markets_v8.json").open() as file_reader:
+    with Path(
+        "tests/test_data/dydx/http/list_perpetual_markets_v8.json"
+    ).open() as file_reader:
         list_perpetual_markets_response = decoder.decode(file_reader.read())
 
     # Assert
     assert len(list_perpetual_markets_response.markets) == expected_num_markets
-    assert list_perpetual_markets_response.markets["BTC-USD"].defaultFundingRate1H == "0"
+    assert (
+        list_perpetual_markets_response.markets["BTC-USD"].defaultFundingRate1H == "0"
+    )
 
 
 def test_list_perpetual_markets_null_oracle_price() -> None:

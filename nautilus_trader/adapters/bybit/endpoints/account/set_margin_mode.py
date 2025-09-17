@@ -24,7 +24,9 @@ from nautilus_trader.adapters.bybit.common.enums import BybitMarginMode
 from nautilus_trader.adapters.bybit.endpoints.endpoint import BybitHttpEndpoint
 
 # fmt: off
-from nautilus_trader.adapters.bybit.schemas.account.set_margin_mode import BybitSetMarginModeResponse
+from nautilus_trader.adapters.bybit.schemas.account.set_margin_mode import (
+    BybitSetMarginModeResponse,
+)
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 
@@ -53,7 +55,9 @@ class BybitSetMarginModeEndpoint(BybitHttpEndpoint):
         )
         self._resp_decoder = msgspec.json.Decoder(BybitSetMarginModeResponse)
 
-    async def post(self, params: BybitSetMarginModePostParams) -> BybitSetMarginModeResponse:
+    async def post(
+        self, params: BybitSetMarginModePostParams
+    ) -> BybitSetMarginModeResponse:
         raw = await self._method(self.http_method, params)
         try:
             return self._resp_decoder.decode(raw)

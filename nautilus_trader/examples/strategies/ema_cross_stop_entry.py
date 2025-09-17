@@ -266,7 +266,9 @@ class EMACrossStopEntry(Strategy):
             order_side=OrderSide.BUY,
             quantity=self.instrument.make_qty(self.config.trade_size),
             time_in_force=TimeInForce.IOC,
-            trigger_price=self.instrument.make_price(last_bar.high + (self.tick_size * 2)),
+            trigger_price=self.instrument.make_price(
+                last_bar.high + (self.tick_size * 2)
+            ),
             emulation_trigger=TriggerType[self.config.emulation_trigger],
         )
         # TODO: Uncomment below order for development
@@ -305,7 +307,9 @@ class EMACrossStopEntry(Strategy):
             order_side=OrderSide.SELL,
             quantity=self.instrument.make_qty(self.config.trade_size),
             time_in_force=TimeInForce.IOC,
-            trigger_price=self.instrument.make_price(last_bar.low - (self.tick_size * 2)),
+            trigger_price=self.instrument.make_price(
+                last_bar.low - (self.tick_size * 2)
+            ),
             emulation_trigger=TriggerType[self.config.emulation_trigger],
         )
         # TODO: Uncomment below order for development
@@ -394,7 +398,10 @@ class EMACrossStopEntry(Strategy):
                     self.trailing_stop_sell()
                 elif event.order_side == OrderSide.SELL:
                     self.trailing_stop_buy()
-            if self.trailing_stop and event.client_order_id == self.trailing_stop.client_order_id:
+            if (
+                self.trailing_stop
+                and event.client_order_id == self.trailing_stop.client_order_id
+            ):
                 self.trailing_stop = None
 
     def on_stop(self) -> None:

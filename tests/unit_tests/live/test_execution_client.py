@@ -128,7 +128,9 @@ class TestLiveExecutionClient:
         task2 = self.client.create_task(long_task(), log_msg="task2")
         task3 = self.client.create_task(long_task(), log_msg="task3")
 
-        await eventually(lambda: all(t in self.client._tasks for t in [task1, task2, task3]))
+        await eventually(
+            lambda: all(t in self.client._tasks for t in [task1, task2, task3])
+        )
 
         # Assert - Tasks are tracked
         assert task1 in self.client._tasks
@@ -149,7 +151,9 @@ class TestLiveExecutionClient:
         task2 = self.client.create_task(long_task(), log_msg="task2")
         task3 = self.client.create_task(long_task(), log_msg="task3")
 
-        await eventually(lambda: all(t in self.client._tasks for t in [task1, task2, task3]))
+        await eventually(
+            lambda: all(t in self.client._tasks for t in [task1, task2, task3])
+        )
 
         # Act - Cancel tasks
         await self.client.cancel_pending_tasks(timeout_secs=1.0)
@@ -169,7 +173,9 @@ class TestLiveExecutionClient:
         for i in range(5):
             self.client.create_task(long_task(), log_msg=f"task_{i}")
 
-        await eventually(lambda: len([t for t in self.client._tasks if not t.done()]) == 5)
+        await eventually(
+            lambda: len([t for t in self.client._tasks if not t.done()]) == 5
+        )
 
         # Assert - Tasks are active
         active_before = [t for t in self.client._tasks if not t.done()]
@@ -222,7 +228,9 @@ class TestLiveExecutionClient:
 
         # Act - Connect creates a task
         self.client.connect()
-        await eventually(lambda: len([t for t in self.client._tasks if not t.done()]) >= 1)
+        await eventually(
+            lambda: len([t for t in self.client._tasks if not t.done()]) >= 1
+        )
 
         # Assert - Task is tracked and active
         active_tasks = [t for t in self.client._tasks if not t.done()]
@@ -243,7 +251,9 @@ class TestLiveExecutionClient:
         tasks.append(self.client.create_task(long_operation(), log_msg="op2"))
         tasks.append(self.client.create_task(long_operation(), log_msg="op3"))
 
-        await eventually(lambda: len([t for t in self.client._tasks if not t.done()]) == 3)
+        await eventually(
+            lambda: len([t for t in self.client._tasks if not t.done()]) == 3
+        )
 
         # Assert - All tasks are tracked
         active_tasks = [t for t in self.client._tasks if not t.done()]

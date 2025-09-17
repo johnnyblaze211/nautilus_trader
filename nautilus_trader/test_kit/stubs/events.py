@@ -309,7 +309,9 @@ class TestEventStubs:
         position_id: PositionId | None = None,
         last_qty: Quantity | None = None,
         last_px: Price | None = None,
-        side: OrderSide | None = None,  # For linearizing: flip side & use 1/price for prob space
+        side: (
+            OrderSide | None
+        ) = None,  # For linearizing: flip side & use 1/price for prob space
         liquidity_side: LiquiditySide = LiquiditySide.TAKER,
         account: Account | None = None,
         ts_event: int = 0,

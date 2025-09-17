@@ -113,7 +113,9 @@ class TestConfigStubs:
             logging=LoggingConfig(log_level=log_level, bypass_logging=bypass_logging),
             exec_engine=ExecEngineConfig(),
             risk_engine=RiskEngineConfig(bypass=bypass_risk),
-            streaming=TestConfigStubs.streaming_config(catalog=catalog) if persist else None,
+            streaming=(
+                TestConfigStubs.streaming_config(catalog=catalog) if persist else None
+            ),
             strategies=strategies or [],
         )
 

@@ -70,7 +70,9 @@ if __name__ == "__main__":
         oms_type=OmsType.HEDGING,  # Venue will generate position IDs
         account_type=AccountType.MARGIN,
         base_currency=USD,  # Standard single-currency account
-        starting_balances=[Money(1_000_000, USD)],  # single-currency or multi-currency accounts
+        starting_balances=[
+            Money(1_000_000, USD)
+        ],  # single-currency or multi-currency accounts
         fill_model=fill_model,
         modules=[fx_rollover_interest],
     )

@@ -98,7 +98,9 @@ class BacktestNode:
         )
         self._validate_configs(configs)
 
-        self._configs: dict[str, BacktestRunConfig] = {config.id: config for config in configs}
+        self._configs: dict[str, BacktestRunConfig] = {
+            config.id: config for config in configs
+        }
         self._engines: dict[str, BacktestEngine] = {}
         self._log_guard: nautilus_pyo3.LogGuard | LogGuard | None = None
         self._builders: dict[str, BacktestNodeBuilder] = {}
@@ -170,12 +172,17 @@ class BacktestNode:
 
         for config in configs:
             for data_config in config.data:
-                used_instrument_ids: list[InstrumentId] = get_instrument_ids(data_config)
+                used_instrument_ids: list[InstrumentId] = get_instrument_ids(
+                    data_config
+                )
 
                 if len(used_instrument_ids) == 0:
                     continue  # No instrument associated with data
 
-                if data_config.start_time is not None and data_config.end_time is not None:
+                if (
+                    data_config.start_time is not None
+                    and data_config.end_time is not None
+                ):
                     start = dt_to_unix_nanos(data_config.start_time)
                     end = dt_to_unix_nanos(data_config.end_time)
 
@@ -209,7 +216,9 @@ class BacktestNode:
                             f"No order book data available for {venue} with book type {venue_config.book_type}",
                         )
 
-    def add_data_client_factory(self, name: str, factory: type[LiveDataClientFactory]) -> None:
+    def add_data_client_factory(
+        self, name: str, factory: type[LiveDataClientFactory]
+    ) -> None:
         """
         Add the given data client factory to the node.
 
@@ -229,7 +238,9 @@ class BacktestNode:
 
         """
         if not issubclass(factory, LiveDataClientFactory):
-            raise ValueError(f"Factory was not of type `LiveDataClientFactory`, was {factory}")
+            raise ValueError(
+                f"Factory was not of type `LiveDataClientFactory`, was {factory}"
+            )
 
         self._data_client_factories[name] = factory
 
@@ -320,7 +331,9 @@ class BacktestNode:
 
         """
         if not self._download_actor:
-            print("Download actor not initialized, please call BacktestNode.setup_download first.")
+            print(
+                "Download actor not initialized, please call BacktestNode.setup_download first."
+            )
             return
 
         compatible_request_functions = [
@@ -389,7 +402,10 @@ class BacktestNode:
                 margin_model=get_margin_model(venue_config),
                 book_type=get_book_type(venue_config),
                 routing=venue_config.routing,
-                modules=[ActorFactory.create(module) for module in (venue_config.modules or [])],
+                modules=[
+                    ActorFactory.create(module)
+                    for module in (venue_config.modules or [])
+                ],
                 fill_model=get_fill_model(venue_config),
                 fee_model=get_fee_model(venue_config),
                 latency_model=get_latency_model(venue_config),
@@ -414,7 +430,9 @@ class BacktestNode:
 
                 # None to query all instruments
                 instruments = catalog.instruments(
-                    instrument_ids=(used_instrument_ids if len(used_instrument_ids) > 0 else None),
+                    instrument_ids=(
+                        used_instrument_ids if len(used_instrument_ids) > 0 else None
+                    ),
                 )
 
                 for instrument in instruments or []:
@@ -546,7 +564,9 @@ class BacktestNode:
 
             if config.data_type == Bar:
                 if config.bar_types is None and config.instrument_ids is None:
-                    assert config.instrument_id, "No `instrument_id` for Bar data config"
+                    assert (
+                        config.instrument_id
+                    ), "No `instrument_id` for Bar data config"
                     assert config.bar_spec, "No `bar_spec` for Bar data config"
 
                 if config.instrument_id is not None and config.bar_spec is not None:
@@ -556,7 +576,9 @@ class BacktestNode:
                     used_bar_types = config.bar_types
                 elif config.instrument_ids is not None and config.bar_spec is not None:
                     for instrument_id in config.instrument_ids:
-                        used_bar_types.append(f"{instrument_id}-{config.bar_spec}-EXTERNAL")
+                        used_bar_types.append(
+                            f"{instrument_id}-{config.bar_spec}-EXTERNAL"
+                        )
 
             session = catalog.backend_session(
                 data_cls=config.data_type,
@@ -667,7 +689,9 @@ class BacktestNode:
             fs_storage_options=config.catalog_fs_storage_options,
         )
 
-    def _load_engine_data(self, engine: BacktestEngine, result: CatalogDataResult) -> None:
+    def _load_engine_data(
+        self, engine: BacktestEngine, result: CatalogDataResult
+    ) -> None:
         if is_nautilus_class(result.data_cls):
             engine.add_data(
                 data=result.data,
@@ -721,7 +745,11 @@ def get_instrument_ids(config: BacktestDataConfig) -> list[InstrumentId]:
         instrument_ids = [instrument_id]
     elif config.instrument_ids:
         instrument_ids = [
-            (InstrumentId.from_str(instrument_id) if type(instrument_id) is str else instrument_id)
+            (
+                InstrumentId.from_str(instrument_id)
+                if type(instrument_id) is str
+                else instrument_id
+            )
             for instrument_id in config.instrument_ids
         ]
     elif config.bar_types:
@@ -743,7 +771,11 @@ def get_oms_type(config: BacktestVenueConfig) -> OmsType:
 def get_account_type(config: BacktestVenueConfig) -> AccountType:
     account_type = config.account_type
 
-    return account_type_from_str(account_type) if type(account_type) is str else account_type
+    return (
+        account_type_from_str(account_type)
+        if type(account_type) is str
+        else account_type
+    )
 
 
 def get_book_type(config: BacktestVenueConfig) -> BookType | None:
@@ -756,7 +788,9 @@ def get_starting_balances(config: BacktestVenueConfig) -> list[Money]:
     starting_balances = []
 
     for balance in config.starting_balances:
-        starting_balances.append(Money.from_str(balance) if type(balance) is str else balance)
+        starting_balances.append(
+            Money.from_str(balance) if type(balance) is str else balance
+        )
 
     return starting_balances
 
@@ -764,7 +798,11 @@ def get_starting_balances(config: BacktestVenueConfig) -> list[Money]:
 def get_base_currency(config: BacktestVenueConfig) -> Currency | None:
     base_currency = config.base_currency
 
-    return Currency.from_str(base_currency) if type(base_currency) is str else base_currency
+    return (
+        Currency.from_str(base_currency)
+        if type(base_currency) is str
+        else base_currency
+    )
 
 
 def get_leverages(config: BacktestVenueConfig) -> dict[InstrumentId, Decimal]:

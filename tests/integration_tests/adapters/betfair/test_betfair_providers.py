@@ -67,7 +67,9 @@ class TestBetfairInstrumentProvider:
     @pytest.mark.asyncio()
     async def test_load_markets_metadata(self):
         markets = await load_markets(self.client, event_type_names=["Basketball"])
-        market_metadata = await load_markets_metadata(client=self.client, markets=markets)
+        market_metadata = await load_markets_metadata(
+            client=self.client, markets=markets
+        )
         assert len(market_metadata) == 169
 
     @pytest.mark.asyncio()
@@ -85,7 +87,9 @@ class TestBetfairInstrumentProvider:
         instruments = [
             instrument
             for metadata in list_market_catalogue_data
-            for instrument in make_instruments(metadata, currency="GBP", ts_event=0, ts_init=0)
+            for instrument in make_instruments(
+                metadata, currency="GBP", ts_event=0, ts_init=0
+            )
         ]
 
         # Assert
@@ -131,7 +135,9 @@ class TestBetfairInstrumentProvider:
     def test_list_market_catalogue_parsing(self):
         # Arrange
         raw = BetfairResponses.list_market_catalogue()
-        market_catalogue = msgspec.json.decode(msgspec.json.encode(raw), type=MarketCatalogue)
+        market_catalogue = msgspec.json.decode(
+            msgspec.json.encode(raw), type=MarketCatalogue
+        )
 
         # Act
         instruments = make_instruments(

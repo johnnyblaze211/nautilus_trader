@@ -347,7 +347,9 @@ def test_calc_bets_pnl_zero_outcome():
 
 
 def test_probability_to_bet_back_simple():
-    bet = probability_to_bet(probability=dec(0.50), volume=dec(50.0), side=OrderSide.BUY)
+    bet = probability_to_bet(
+        probability=dec(0.50), volume=dec(50.0), side=OrderSide.BUY
+    )
     expected = Bet(dec(2.0), dec(25.0), BetSide.BACK)
     assert bet == expected
     assert bet.outcome_win_payoff() == dec(25)
@@ -355,7 +357,9 @@ def test_probability_to_bet_back_simple():
 
 
 def test_probability_to_bet_back_high_prob():
-    bet = probability_to_bet(probability=dec(0.64), volume=dec(50.0), side=OrderSide.BUY)
+    bet = probability_to_bet(
+        probability=dec(0.64), volume=dec(50.0), side=OrderSide.BUY
+    )
     expected = Bet(dec(1.5625), dec(32.0), BetSide.BACK)
     assert bet == expected
     assert bet.outcome_win_payoff() == dec(18)
@@ -363,7 +367,9 @@ def test_probability_to_bet_back_high_prob():
 
 
 def test_probability_to_bet_back_low_prob():
-    bet = probability_to_bet(probability=dec(0.40), volume=dec(50.0), side=OrderSide.BUY)
+    bet = probability_to_bet(
+        probability=dec(0.40), volume=dec(50.0), side=OrderSide.BUY
+    )
     expected = Bet(dec(2.5), dec(20.0), BetSide.BACK)
     assert bet == expected
     assert bet.outcome_win_payoff() == dec(30)
@@ -371,7 +377,9 @@ def test_probability_to_bet_back_low_prob():
 
 
 def test_probability_to_bet_sell():
-    bet = probability_to_bet(probability=dec(0.80), volume=dec(50.0), side=OrderSide.SELL)
+    bet = probability_to_bet(
+        probability=dec(0.80), volume=dec(50.0), side=OrderSide.SELL
+    )
     expected = Bet(Decimal("1.25"), Decimal("40"), BetSide.LAY)
     assert bet == expected
     assert bet.outcome_win_payoff() == Decimal("-10")
@@ -379,21 +387,35 @@ def test_probability_to_bet_sell():
 
 
 def test_inverse_probability_to_bet():
-    original_bet = probability_to_bet(probability=dec(0.80), volume=dec(100), side=OrderSide.SELL)
-    reverse_bet = probability_to_bet(probability=dec(0.20), volume=dec(100), side=OrderSide.BUY)
+    original_bet = probability_to_bet(
+        probability=dec(0.80), volume=dec(100), side=OrderSide.SELL
+    )
+    reverse_bet = probability_to_bet(
+        probability=dec(0.20), volume=dec(100), side=OrderSide.BUY
+    )
     inverse_bet = inverse_probability_to_bet(
         probability=dec(0.80),
         volume=dec(100),
         side=OrderSide.SELL,
     )
-    assert original_bet.outcome_win_payoff() == pytest.approx(reverse_bet.outcome_lose_payoff())
-    assert original_bet.outcome_win_payoff() == pytest.approx(inverse_bet.outcome_lose_payoff())
-    assert original_bet.outcome_lose_payoff() == pytest.approx(reverse_bet.outcome_win_payoff())
-    assert original_bet.outcome_lose_payoff() == pytest.approx(inverse_bet.outcome_win_payoff())
+    assert original_bet.outcome_win_payoff() == pytest.approx(
+        reverse_bet.outcome_lose_payoff()
+    )
+    assert original_bet.outcome_win_payoff() == pytest.approx(
+        inverse_bet.outcome_lose_payoff()
+    )
+    assert original_bet.outcome_lose_payoff() == pytest.approx(
+        reverse_bet.outcome_win_payoff()
+    )
+    assert original_bet.outcome_lose_payoff() == pytest.approx(
+        inverse_bet.outcome_win_payoff()
+    )
 
 
 def test_inverse_probability_to_bet_example2():
-    original_bet = probability_to_bet(probability=dec(0.64), volume=dec(50), side=OrderSide.SELL)
+    original_bet = probability_to_bet(
+        probability=dec(0.64), volume=dec(50), side=OrderSide.SELL
+    )
     inverse_bet = inverse_probability_to_bet(
         probability=dec(0.64),
         volume=dec(50),
@@ -418,10 +440,14 @@ def test_bet_position_back_and_lay():
 
     # Assuming exposure is stake * odds for back and -stake * odds for lay
     # 200,000 - 30,000 = 170,000
-    expected_exposure = Decimal("100000") * Decimal("2.00") - Decimal("10000") * Decimal("3.00")
+    expected_exposure = Decimal("100000") * Decimal("2.00") - Decimal(
+        "10000"
+    ) * Decimal("3.00")
     # Note: Portfolio test expects -170,000, suggesting a sign convention
     assert expected_exposure == Decimal("170000")
-    assert bet_position.exposure == expected_exposure  # Adjust based on actual implementation
+    assert (
+        bet_position.exposure == expected_exposure
+    )  # Adjust based on actual implementation
 
     # Check unrealized PnL at mark price 3.00
     mark_price = Decimal("3.00")

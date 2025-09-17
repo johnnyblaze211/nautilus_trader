@@ -76,12 +76,18 @@ def instrument_list(mock_load_markets_metadata):
     loop = asyncio.get_event_loop()
     client = BetfairTestStubs.betfair_client(loop=loop)
     market_ids = BetfairDataProvider.market_ids()
-    config = BetfairInstrumentProviderConfig(market_ids=market_ids, account_currency="GBP")
+    config = BetfairInstrumentProviderConfig(
+        market_ids=market_ids, account_currency="GBP"
+    )
     instrument_provider = BetfairInstrumentProvider(client=client, config=config)
 
     # Load instruments
-    catalog = parse_market_catalog(BetfairResponses.betting_list_market_catalogue()["result"])
-    mock_load_markets_metadata.return_value = [c for c in catalog if c.market_id in market_ids]
+    catalog = parse_market_catalog(
+        BetfairResponses.betting_list_market_catalogue()["result"]
+    )
+    mock_load_markets_metadata.return_value = [
+        c for c in catalog if c.market_id in market_ids
+    ]
     t = loop.create_task(
         instrument_provider.load_all_async(),
     )
@@ -95,14 +101,18 @@ def instrument_list(mock_load_markets_metadata):
 @pytest.mark.asyncio()
 async def test_connect(mocker, data_client, instrument):
     # Arrange
-    mocker.patch("nautilus_trader.adapters.betfair.data.BetfairMarketStreamClient.connect")
+    mocker.patch(
+        "nautilus_trader.adapters.betfair.data.BetfairMarketStreamClient.connect"
+    )
     mocker.patch("nautilus_trader.adapters.betfair.client.BetfairHttpClient.connect")
     mocker.patch("nautilus_trader.adapters.betfair.client.BetfairHttpClient.connect")
 
     # Act
     data_client.connect()
     for _ in range(5):
-        await asyncio.sleep(0)  # _connect uses multiple awaits, multiple sleeps required.
+        await asyncio.sleep(
+            0
+        )  # _connect uses multiple awaits, multiple sleeps required.
 
     # Assert
     assert data_client.is_connected
@@ -175,7 +185,9 @@ async def test_market_sub_image_market_def(data_client, mock_data_engine_process
 
     # Assert - expected messages
     mock_calls = mock_data_engine_process.call_args_list
-    result = [type(call.args[0]).__name__ for call in mock_data_engine_process.call_args_list]
+    result = [
+        type(call.args[0]).__name__ for call in mock_data_engine_process.call_args_list
+    ]
     expected = (
         ["BettingInstrument"] * 7
         + ["InstrumentStatus"] * 7
@@ -189,7 +201,9 @@ async def test_market_sub_image_market_def(data_client, mock_data_engine_process
         call.args[0] for call in mock_calls if isinstance(call.args[0], OrderBookDeltas)
     ]
     set_result = {
-        delta.order.price.as_double() for deltas in orderbook_calls for delta in deltas.deltas
+        delta.order.price.as_double()
+        for deltas in orderbook_calls
+        for delta in deltas.deltas
     }
     set_expected = {
         0.0,
@@ -217,20 +231,27 @@ def test_market_update(data_client, mock_data_engine_process):
     # Assert
     book_deltas = mock_data_engine_process.call_args_list[0].args[0]
     assert isinstance(book_deltas, OrderBookDeltas)
-    assert {d.action for d in book_deltas.deltas} == {BookAction.UPDATE, BookAction.DELETE}
+    assert {d.action for d in book_deltas.deltas} == {
+        BookAction.UPDATE,
+        BookAction.DELETE,
+    }
     assert book_deltas.deltas[0].order.price == betfair_float_to_price(4.7)
 
 
 def test_market_update_md(data_client, mock_data_engine_process):
     data_client.on_market_update(BetfairStreaming.mcm_UPDATE_md())
-    result = [type(call.args[0]).__name__ for call in mock_data_engine_process.call_args_list]
+    result = [
+        type(call.args[0]).__name__ for call in mock_data_engine_process.call_args_list
+    ]
     expected = ["BettingInstrument"] * 2 + ["InstrumentStatus"] * 2 + ["CustomData"]
     assert result == expected
 
 
 def test_market_update_live_image(data_client, mock_data_engine_process):
     data_client.on_market_update(BetfairStreaming.mcm_live_IMAGE())
-    result = [type(call.args[0]).__name__ for call in mock_data_engine_process.call_args_list]
+    result = [
+        type(call.args[0]).__name__ for call in mock_data_engine_process.call_args_list
+    ]
     expected = (
         ["OrderBookDeltas"]
         + ["TradeTick"] * 13
@@ -243,7 +264,9 @@ def test_market_update_live_image(data_client, mock_data_engine_process):
 
 def test_market_update_live_update(data_client, mock_data_engine_process):
     data_client.on_market_update(BetfairStreaming.mcm_live_UPDATE())
-    result = [type(call.args[0]).__name__ for call in mock_data_engine_process.call_args_list]
+    result = [
+        type(call.args[0]).__name__ for call in mock_data_engine_process.call_args_list
+    ]
     expected = ["TradeTick", "OrderBookDeltas", "CustomData"]
     assert result == expected
 
@@ -460,10 +483,15 @@ def test_betfair_ticker_sp(data_client, mock_data_engine_process):
     mock_call_args = [call.args[0] for call in mock_data_engine_process.call_args_list]
     custom_data = [data.data for data in mock_call_args if isinstance(data, CustomData)]
     starting_prices_near = [
-        data for data in custom_data if isinstance(data, BetfairTicker) if data.starting_price_near
+        data
+        for data in custom_data
+        if isinstance(data, BetfairTicker)
+        if data.starting_price_near
     ]
     starting_prices_far = [
-        data for data in custom_data if isinstance(data, BetfairTicker) and data.starting_price_far
+        data
+        for data in custom_data
+        if isinstance(data, BetfairTicker) and data.starting_price_far
     ]
     assert len(starting_prices_near) == 1739
     assert len(starting_prices_far) == 1182
@@ -481,7 +509,9 @@ def test_betfair_starting_price(data_client, mock_data_engine_process):
     # Assert
     mock_call_args = [call.args[0] for call in mock_data_engine_process.call_args_list]
     custom_data = [data.data for data in mock_call_args if isinstance(data, CustomData)]
-    starting_prices = [data for data in custom_data if isinstance(data, BetfairStartingPrice)]
+    starting_prices = [
+        data for data in custom_data if isinstance(data, BetfairStartingPrice)
+    ]
     assert len(starting_prices) == 36
 
 

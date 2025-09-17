@@ -137,7 +137,9 @@ class TestCondition:
         ("value", "list_type"),
         [[["a", "b", "c"], str], [[], None]],
     )
-    def test_list_type_when_contains_correct_types_or_none_does_nothing(self, value, list_type):
+    def test_list_type_when_contains_correct_types_or_none_does_nothing(
+        self, value, list_type
+    ):
         # Arrange, Act, Assert: ValueError not raised
         PyCondition.list_type(value, list_type, "param")
 
@@ -296,7 +298,9 @@ class TestCondition:
         ("value", "start", "end"),
         [[-1, 0, 1], [2, 0, 1]],
     )
-    def test_in_range_int_when_arg_out_of_range_raises_value_error(self, value, start, end):
+    def test_in_range_int_when_arg_out_of_range_raises_value_error(
+        self, value, start, end
+    ):
         # Arrange, Act, Assert
         with pytest.raises(ValueError):
             PyCondition.in_range_int(value, start, end, "param")
@@ -318,7 +322,9 @@ class TestCondition:
         "value",
         ["", " ", "  ", "   "],
     )
-    def test_valid_string_with_various_invalid_strings_raises_correct_exception(self, value):
+    def test_valid_string_with_various_invalid_strings_raises_correct_exception(
+        self, value
+    ):
         # Arrange, Act, Assert
         with pytest.raises(ValueError):
             PyCondition.valid_string(value, "param")

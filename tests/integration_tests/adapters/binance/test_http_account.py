@@ -19,7 +19,9 @@ from nautilus_trader.adapters.binance.common.enums import BinanceOrderSide
 from nautilus_trader.adapters.binance.common.enums import BinanceOrderType
 from nautilus_trader.adapters.binance.common.enums import BinanceTimeInForce
 from nautilus_trader.adapters.binance.common.symbol import BinanceSymbol
-from nautilus_trader.adapters.binance.futures.http.account import BinanceFuturesAccountHttpAPI
+from nautilus_trader.adapters.binance.futures.http.account import (
+    BinanceFuturesAccountHttpAPI,
+)
 from nautilus_trader.adapters.binance.http.account import BinanceOrderHttp
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
 from nautilus_trader.adapters.binance.spot.http.account import BinanceSpotAccountHttpAPI
@@ -124,7 +126,9 @@ class TestBinanceSpotAccountHttpAPI:
         request = mock_send_request.call_args.kwargs
         assert request["method"] == "DELETE"
         assert request["url"] == "https://api.binance.com/api/v3/order"
-        assert request["params"].startswith("symbol=ETHUSDT&orderId=1&recvWindow=5000&timestamp=")
+        assert request["params"].startswith(
+            "symbol=ETHUSDT&orderId=1&recvWindow=5000&timestamp="
+        )
 
     @pytest.mark.asyncio()
     async def test_cancel_all_open_orders_sends_expected_request(self, mocker):
@@ -159,7 +163,9 @@ class TestBinanceSpotAccountHttpAPI:
         request = mock_send_request.call_args.kwargs
         assert request["method"] == "GET"
         assert request["url"] == "https://api.binance.com/api/v3/order"
-        assert request["params"].startswith("symbol=ETHUSDT&orderId=1&recvWindow=5000&timestamp=")
+        assert request["params"].startswith(
+            "symbol=ETHUSDT&orderId=1&recvWindow=5000&timestamp="
+        )
 
     @pytest.mark.asyncio()
     async def test_query_open_orders_sends_expected_request(self, mocker):

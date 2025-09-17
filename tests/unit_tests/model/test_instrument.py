@@ -544,7 +544,9 @@ class TestInstrument:
             [True, Money(100000.00, USD)],
         ],
     )
-    def test_calculate_notional_value_for_inverse(self, use_quote_for_inverse, expected):
+    def test_calculate_notional_value_for_inverse(
+        self, use_quote_for_inverse, expected
+    ):
         # Arrange
         instrument = TestInstrumentProvider.xbtusd_bitmex()
 
@@ -706,7 +708,13 @@ class TestInstrument:
         ("instrument", "value", "num_ticks", "expected_first", "expected_last"),
         [
             (AUDUSD_SIM, 0.72000, 10, "0.72", "0.72009"),
-            (AUDUSD_SIM, 0.72001, 5, "0.72001", "0.72005"),  # Price-inclusive: start at boundary
+            (
+                AUDUSD_SIM,
+                0.72001,
+                5,
+                "0.72001",
+                "0.72005",
+            ),  # Price-inclusive: start at boundary
             (AUDUSD_SIM, 0.90001, 3, "0.90001", "0.90003"),
         ],
     )
@@ -732,8 +740,20 @@ class TestInstrument:
     @pytest.mark.parametrize(
         ("instrument", "value", "num_ticks", "expected_first", "expected_last"),
         [
-            (AUDUSD_SIM, 0.72000, 10, "0.72", "0.71991"),  # Price-inclusive: start at boundary
-            (AUDUSD_SIM, 0.72000, 5, "0.72", "0.71996"),  # Price-inclusive: start at boundary
+            (
+                AUDUSD_SIM,
+                0.72000,
+                10,
+                "0.72",
+                "0.71991",
+            ),  # Price-inclusive: start at boundary
+            (
+                AUDUSD_SIM,
+                0.72000,
+                5,
+                "0.72",
+                "0.71996",
+            ),  # Price-inclusive: start at boundary
             (AUDUSD_SIM, 0.90000, 3, "0.9", "0.89998"),
         ],
     )

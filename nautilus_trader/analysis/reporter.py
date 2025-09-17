@@ -74,8 +74,12 @@ class ReportProvider:
         if not filled_orders:
             return pd.DataFrame()
 
-        report = pd.DataFrame(data=filled_orders).set_index("client_order_id").sort_index()
-        report["ts_last"] = [unix_nanos_to_dt(ts_last or 0) for ts_last in report["ts_last"]]
+        report = (
+            pd.DataFrame(data=filled_orders).set_index("client_order_id").sort_index()
+        )
+        report["ts_last"] = [
+            unix_nanos_to_dt(ts_last or 0) for ts_last in report["ts_last"]
+        ]
         report["ts_init"] = [unix_nanos_to_dt(ts_init) for ts_init in report["ts_init"]]
 
         return report
@@ -101,13 +105,18 @@ class ReportProvider:
             return pd.DataFrame()
 
         fills = [
-            OrderFilled.to_dict(e) for o in orders for e in o.events if isinstance(e, OrderFilled)
+            OrderFilled.to_dict(e)
+            for o in orders
+            for e in o.events
+            if isinstance(e, OrderFilled)
         ]
         if not fills:
             return pd.DataFrame()
 
         report = pd.DataFrame(data=fills).set_index("client_order_id").sort_index()
-        report["ts_event"] = [unix_nanos_to_dt(ts_last or 0) for ts_last in report["ts_event"]]
+        report["ts_event"] = [
+            unix_nanos_to_dt(ts_last or 0) for ts_last in report["ts_event"]
+        ]
         report["ts_init"] = [unix_nanos_to_dt(ts_init) for ts_init in report["ts_init"]]
         del report["type"]
 
@@ -151,12 +160,16 @@ class ReportProvider:
             return pd.DataFrame()
 
         sort = ["ts_opened", "ts_closed", "position_id"]
-        report = pd.DataFrame(data=positions_data).set_index("position_id").sort_values(sort)
+        report = (
+            pd.DataFrame(data=positions_data).set_index("position_id").sort_values(sort)
+        )
         del report["signed_qty"]
         del report["quote_currency"]
         del report["base_currency"]
         del report["settlement_currency"]
-        report["ts_opened"] = [unix_nanos_to_dt(ts_opened) for ts_opened in report["ts_opened"]]
+        report["ts_opened"] = [
+            unix_nanos_to_dt(ts_opened) for ts_opened in report["ts_opened"]
+        ]
         report["ts_closed"] = [
             unix_nanos_to_dt(ts_closed) if not pd.isna(ts_closed) else pd.NA
             for ts_closed in report["ts_closed"]

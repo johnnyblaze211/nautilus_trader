@@ -33,7 +33,18 @@ class InteractiveBrokersClientErrorMixin(BaseMixin):
 
     """
 
-    WARNING_CODES: Final[set[int]] = {1101, 1102, 110, 165, 202, 399, 404, 434, 492, 10167}
+    WARNING_CODES: Final[set[int]] = {
+        1101,
+        1102,
+        110,
+        165,
+        202,
+        399,
+        404,
+        434,
+        492,
+        10167,
+    }
     CLIENT_ERRORS: Final[set[int]] = {502, 503, 504, 10038, 10182, 1100, 2110}
     CONNECTIVITY_LOST_CODES: Final[set[int]] = {1100, 1300, 2110}
     CONNECTIVITY_RESTORED_CODES: Final[set[int]] = {1101, 1102}
@@ -107,7 +118,10 @@ class InteractiveBrokersClientErrorMixin(BaseMixin):
                 await self._handle_order_error(req_id, error_code, error_string)
             else:
                 self._log.warning(f"Unhandled error: {error_code} for req_id {req_id}")
-        elif error_code in self.CLIENT_ERRORS or error_code in self.CONNECTIVITY_LOST_CODES:
+        elif (
+            error_code in self.CLIENT_ERRORS
+            or error_code in self.CONNECTIVITY_LOST_CODES
+        ):
             if self._is_ib_connected.is_set():
                 self._log.debug(
                     f"`_is_ib_connected` unset by code {error_code} in `_process_error`",
@@ -172,7 +186,9 @@ class InteractiveBrokersClientErrorMixin(BaseMixin):
                 f"Unknown subscription error: {error_code} for req_id {req_id}",
             )
 
-    async def _handle_request_error(self, req_id: int, error_code: int, error_string: str) -> None:
+    async def _handle_request_error(
+        self, req_id: int, error_code: int, error_string: str
+    ) -> None:
         """
         Handle errors related to general requests. Logs the error and ends the request
         associated with the given request ID.
@@ -196,7 +212,9 @@ class InteractiveBrokersClientErrorMixin(BaseMixin):
 
         self._end_request(req_id, success=False)
 
-    async def _handle_order_error(self, req_id: int, error_code: int, error_string: str) -> None:
+    async def _handle_order_error(
+        self, req_id: int, error_code: int, error_string: str
+    ) -> None:
         """
         Handle errors related to orders. Manages various order-related errors, including
         rejections and cancellations, and logs or forwards them as appropriate.
@@ -223,11 +241,19 @@ class InteractiveBrokersClientErrorMixin(BaseMixin):
         if error_code in self.ORDER_REJECTION_CODES:
             # Handle various order rejections
             if handler:
-                handler(order_ref=order_ref.order_id, order_status="Rejected", reason=error_string)
+                handler(
+                    order_ref=order_ref.order_id,
+                    order_status="Rejected",
+                    reason=error_string,
+                )
         elif error_code == 202:
             # Handle order cancellation warning
             if handler:
-                handler(order_ref=order_ref.order_id, order_status="Cancelled", reason=error_string)
+                handler(
+                    order_ref=order_ref.order_id,
+                    order_status="Cancelled",
+                    reason=error_string,
+                )
         else:
             # Log unknown order warnings / errors
             self._log.warning(

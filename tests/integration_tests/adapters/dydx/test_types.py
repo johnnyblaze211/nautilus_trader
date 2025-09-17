@@ -27,7 +27,9 @@ def test_dydx_oracle_price(instrument_id: InstrumentId) -> None:
     Test the DYDXOraclePrice type.
     """
     # Arrange
-    data = DYDXOraclePrice(instrument_id=instrument_id, price=Decimal(5), ts_init=5, ts_event=6)
+    data = DYDXOraclePrice(
+        instrument_id=instrument_id, price=Decimal(5), ts_init=5, ts_event=6
+    )
 
     # Act
     data_dict = data.to_dict()

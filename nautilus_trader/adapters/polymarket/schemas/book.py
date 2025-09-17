@@ -39,7 +39,9 @@ class PolymarketBookLevel(msgspec.Struct, frozen=True):
     size: str
 
 
-class PolymarketBookSnapshot(msgspec.Struct, tag="book", tag_field="event_type", frozen=True):
+class PolymarketBookSnapshot(
+    msgspec.Struct, tag="book", tag_field="event_type", frozen=True
+):
     market: str
     asset_id: str
     bids: list[PolymarketBookLevel]
@@ -155,7 +157,9 @@ class PolymarketQuote(msgspec.Struct, frozen=True):
     size: str
 
 
-class PolymarketQuotes(msgspec.Struct, tag="price_change", tag_field="event_type", frozen=True):
+class PolymarketQuotes(
+    msgspec.Struct, tag="price_change", tag_field="event_type", frozen=True
+):
     market: str
     asset_id: str
     changes: list[PolymarketQuote]
@@ -169,7 +173,11 @@ class PolymarketQuotes(msgspec.Struct, tag="price_change", tag_field="event_type
         deltas: list[OrderBookDelta] = []
         for change in self.changes:
             order = BookOrder(
-                side=OrderSide.BUY if change.side == PolymarketOrderSide.BUY else OrderSide.SELL,
+                side=(
+                    OrderSide.BUY
+                    if change.side == PolymarketOrderSide.BUY
+                    else OrderSide.SELL
+                ),
                 price=instrument.make_price(float(change.price)),
                 size=instrument.make_qty(float(change.size)),
                 order_id=0,  # N/A for L2 books
@@ -220,7 +228,9 @@ class PolymarketQuotes(msgspec.Struct, tag="price_change", tag_field="event_type
         return quotes
 
 
-class PolymarketTrade(msgspec.Struct, tag="last_trade_price", tag_field="event_type", frozen=True):
+class PolymarketTrade(
+    msgspec.Struct, tag="last_trade_price", tag_field="event_type", frozen=True
+):
     market: str
     asset_id: str
     fee_rate_bps: str
@@ -235,7 +245,9 @@ class PolymarketTrade(msgspec.Struct, tag="last_trade_price", tag_field="event_t
         ts_init: int,
     ) -> TradeTick:
         aggressor_side = (
-            AggressorSide.BUYER if self.side == PolymarketOrderSide.BUY else AggressorSide.SELLER
+            AggressorSide.BUYER
+            if self.side == PolymarketOrderSide.BUY
+            else AggressorSide.SELLER
         )
         return TradeTick(
             instrument_id=instrument.id,

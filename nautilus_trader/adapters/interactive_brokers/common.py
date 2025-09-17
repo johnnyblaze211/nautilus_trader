@@ -14,7 +14,8 @@
 # -------------------------------------------------------------------------------------------------
 
 from decimal import Decimal
-from typing import Final, Literal
+from typing import Final
+from typing import Literal
 
 from ibapi.const import UNSET_DECIMAL
 from ibapi.contract import FundAssetType
@@ -52,7 +53,9 @@ TickTypeMapping = {
 }
 
 
-class ComboLeg(NautilusConfig, frozen=True, omit_defaults=True, repr_omit_defaults=True):
+class ComboLeg(
+    NautilusConfig, frozen=True, omit_defaults=True, repr_omit_defaults=True
+):
     """
     Class representing a leg within combo orders.
     """
@@ -174,7 +177,9 @@ class IBOrderTags(NautilusConfig, frozen=True, repr_omit_defaults=True):
 
     # Order Group conditions (One)
     ocaGroup: str = ""  # one cancels all group name
-    ocaType: int = 0  # 1 = CANCEL_WITH_BLOCK, 2 = REDUCE_WITH_BLOCK, 3 = REDUCE_NON_BLOCK
+    ocaType: int = (
+        0  # 1 = CANCEL_WITH_BLOCK, 2 = REDUCE_WITH_BLOCK, 3 = REDUCE_NON_BLOCK
+    )
 
     # Order Group conditions (All)
     allOrNone: bool = False
@@ -185,7 +190,9 @@ class IBOrderTags(NautilusConfig, frozen=True, repr_omit_defaults=True):
     goodAfterTime: str = ""  # Format: "%Y%m%d %H:%M:%S %Z"
 
     # extended order fields
-    blockOrder = False  # If set to true, specifies that the order is an ISE Block order.
+    blockOrder = (
+        False  # If set to true, specifies that the order is an ISE Block order.
+    )
     sweepToFill = False
     outsideRth: bool = False
 
@@ -288,7 +295,8 @@ def dict_to_contract_details(dict_details: dict) -> IBContractDetails:
 
     if details_copy.get("secIdList") and isinstance(details_copy["secIdList"], dict):
         tag_values = [
-            TagValue(tag=tag, value=value) for tag, value in details_copy["secIdList"].items()
+            TagValue(tag=tag, value=value)
+            for tag, value in details_copy["secIdList"].items()
         ]
         details_copy["secIdList"] = tag_values
 

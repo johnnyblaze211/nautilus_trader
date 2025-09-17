@@ -31,7 +31,9 @@ def test_backend_session_order_book_deltas() -> None:
         data_path = TEST_DATA_DIR / "nautilus" / "64-bit" / "deltas.parquet"
 
     session = DataBackendSession()
-    session.add_file(NautilusDataType.OrderBookDelta, "order_book_deltas", str(data_path))
+    session.add_file(
+        NautilusDataType.OrderBookDelta, "order_book_deltas", str(data_path)
+    )
 
     # Act
     result = session.to_query_result()
@@ -68,9 +70,12 @@ def test_backend_session_quotes() -> None:
     # Assert
     assert len(quotes) == 9_500
     assert (
-        str(quotes[-1]) == "EUR/USD.SIM,112.13000,112.13200,10000000,10000000,1577919652000000125"
+        str(quotes[-1])
+        == "EUR/USD.SIM,112.13000,112.13200,10000000,10000000,1577919652000000125"
     )
-    is_ascending = all(quotes[i].ts_init <= quotes[i + 1].ts_init for i in range(len(quotes) - 1))
+    is_ascending = all(
+        quotes[i].ts_init <= quotes[i + 1].ts_init for i in range(len(quotes) - 1)
+    )
     assert is_ascending
 
 
@@ -93,7 +98,9 @@ def test_backend_session_trades() -> None:
 
     # Assert
     assert len(trades) == 100
-    is_ascending = all(trades[i].ts_init <= trades[i + 1].ts_init for i in range(len(trades) - 1))
+    is_ascending = all(
+        trades[i].ts_init <= trades[i + 1].ts_init for i in range(len(trades) - 1)
+    )
     assert is_ascending
 
 
@@ -116,7 +123,9 @@ def test_backend_session_bars() -> None:
 
     # Assert
     assert len(bars) == 10
-    is_ascending = all(bars[i].ts_init <= bars[i + 1].ts_init for i in range(len(bars) - 1))
+    is_ascending = all(
+        bars[i].ts_init <= bars[i + 1].ts_init for i in range(len(bars) - 1)
+    )
     assert is_ascending
 
 
@@ -142,7 +151,9 @@ def test_backend_session_multiple_types() -> None:
 
     # Assert
     assert len(data) == 9_600
-    is_ascending = all(data[i].ts_init <= data[i + 1].ts_init for i in range(len(data) - 1))
+    is_ascending = all(
+        data[i].ts_init <= data[i + 1].ts_init for i in range(len(data) - 1)
+    )
     assert is_ascending
 
 
@@ -172,7 +183,9 @@ def test_backend_session_register_object_store_from_uri_local_file() -> None:
 
     # Assert
     assert len(trades) == 100
-    is_ascending = all(trades[i].ts_init <= trades[i + 1].ts_init for i in range(len(trades) - 1))
+    is_ascending = all(
+        trades[i].ts_init <= trades[i + 1].ts_init for i in range(len(trades) - 1)
+    )
     assert is_ascending
 
 

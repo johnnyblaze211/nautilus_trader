@@ -729,4 +729,6 @@ class TestBybitWsDecoders:
             ts_init=1672364174455000000,
         )
 
-        assert fill_report.commission == Money(Decimal("0.005061"), Currency.from_str("USDT"))
+        assert fill_report.commission == Money(
+            Decimal("0.005061"), Currency.from_str("USDT")
+        )

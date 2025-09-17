@@ -329,7 +329,9 @@ class TestLiveRiskEngine:
         await eventually(lambda: self.risk_engine.event_count == 1)
 
     @pytest.mark.asyncio
-    async def test_graceful_shutdown_cmd_queue_exception_enabled_calls_shutdown_system(self):
+    async def test_graceful_shutdown_cmd_queue_exception_enabled_calls_shutdown_system(
+        self,
+    ):
         """
         Test that when graceful_shutdown_on_exception=True, shutdown_system is called on
         command queue exception.
@@ -428,7 +430,9 @@ class TestLiveRiskEngine:
             def mock_execute_command(command):
                 raise ValueError("Test exception for immediate crash in cmd queue")
 
-            with patch.object(engine, "_execute_command", side_effect=mock_execute_command):
+            with patch.object(
+                engine, "_execute_command", side_effect=mock_execute_command
+            ):
                 engine.start()
 
                 # Act - Send command that will trigger the exception
@@ -456,7 +460,9 @@ class TestLiveRiskEngine:
             await eventually(lambda: engine.cmd_qsize() == 0)
 
     @pytest.mark.asyncio
-    async def test_graceful_shutdown_evt_queue_exception_enabled_calls_shutdown_system(self):
+    async def test_graceful_shutdown_evt_queue_exception_enabled_calls_shutdown_system(
+        self,
+    ):
         """
         Test that when graceful_shutdown_on_exception=True, shutdown_system is called on
         event queue exception.

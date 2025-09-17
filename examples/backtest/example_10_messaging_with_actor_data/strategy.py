@@ -99,7 +99,9 @@ class DemoStrategy(Strategy):
 
         # Subscribe to our custom data type
         self.subscribe_data(DataType(Last10BarsStats))
-        self.log.info("Subscribed to data of type: Last10BarsStatistics", color=LogColor.YELLOW)
+        self.log.info(
+            "Subscribed to data of type: Last10BarsStatistics", color=LogColor.YELLOW
+        )
 
     def on_bar(self, bar: Bar):
         # Count processed bars

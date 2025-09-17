@@ -139,7 +139,9 @@ class BetfairTestStubs:
                 return resp
             elif request.endpoint_type == EndpointType.NAVIGATION:
                 resp = MagicMock(spec=ClientResponse)
-                resp.body = msgspec.json.encode(BetfairResponses.navigation_list_navigation())
+                resp.body = msgspec.json.encode(
+                    BetfairResponses.navigation_list_navigation()
+                )
                 return resp
             else:
                 raise KeyError(rpc_method)
@@ -263,7 +265,11 @@ class BetfairTestStubs:
         )
         run_config = BacktestRunConfig(
             engine=engine_config,
-            venues=[BetfairTestStubs.betfair_venue_config(name=venue_name, book_type=book_type)],
+            venues=[
+                BetfairTestStubs.betfair_venue_config(
+                    name=venue_name, book_type=book_type
+                )
+            ],
             data=[
                 BacktestDataConfig(
                     data_cls=TradeTick.fully_qualified_name(),
@@ -287,7 +293,11 @@ class BetfairRequests:
     @staticmethod
     def load(filename, cls=None):
         raw = (RESOURCES_PATH / "requests" / filename).read_bytes()
-        return msgspec.json.decode(raw, type=cls) if cls is not None else msgspec.json.decode(raw)
+        return (
+            msgspec.json.decode(raw, type=cls)
+            if cls is not None
+            else msgspec.json.decode(raw)
+        )
 
     @staticmethod
     def account_details():
@@ -399,7 +409,9 @@ class BetfairResponses:
 
     @staticmethod
     def list_current_orders_on_close_execution_complete():
-        return BetfairResponses.load("list_current_orders_on_close_execution_complete.json")
+        return BetfairResponses.load(
+            "list_current_orders_on_close_execution_complete.json"
+        )
 
     @staticmethod
     def list_current_orders_execution_complete():
@@ -455,7 +467,9 @@ class BetfairStreaming:
     @staticmethod
     def decode(raw: bytes, iterate: bool = False):
         if iterate:
-            return [stream_decode(msgspec.json.encode(r)) for r in msgspec.json.decode(raw)]
+            return [
+                stream_decode(msgspec.json.encode(r)) for r in msgspec.json.decode(raw)
+            ]
         return stream_decode(raw)
 
     @staticmethod
@@ -469,7 +483,9 @@ class BetfairStreaming:
 
     @staticmethod
     def load_many(filename) -> list[bytes]:
-        lines = msgspec.json.decode((RESOURCES_PATH / "streaming" / filename).read_bytes())
+        lines = msgspec.json.decode(
+            (RESOURCES_PATH / "streaming" / filename).read_bytes()
+        )
         return [msgspec.json.encode(line) for line in lines]
 
     @staticmethod
@@ -765,10 +781,14 @@ class BetfairDataProvider:
 
     @staticmethod
     def read_mcm(filename: str) -> list[MCM]:
-        return [stream_decode(line) for line in BetfairDataProvider.read_lines(filename)]
+        return [
+            stream_decode(line) for line in BetfairDataProvider.read_lines(filename)
+        ]
 
     @staticmethod
-    def market_updates(filename="1-166811431.bz2", runner1="60424", runner2="237478") -> list:
+    def market_updates(
+        filename="1-166811431.bz2", runner1="60424", runner2="237478"
+    ) -> list:
         market_id = pathlib.Path(filename).name
         assert market_id.startswith("1-")
 
@@ -789,7 +809,9 @@ class BetfairDataProvider:
         instruments: list[BettingInstrument] = []
         for mc in mcm.mc:
             if mc.market_definition:
-                market_def = msgspec.structs.replace(mc.market_definition, market_id=mc.id)
+                market_def = msgspec.structs.replace(
+                    mc.market_definition, market_id=mc.id
+                )
                 instruments.extend(
                     market_definition_to_instruments(
                         market_def,

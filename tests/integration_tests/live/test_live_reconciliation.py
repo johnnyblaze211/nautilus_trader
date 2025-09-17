@@ -725,7 +725,9 @@ async def test_concurrent_order_reconciliation(
     assert result is True
     # After reconciliation, orders should match their venue states exactly
     assert orders[0].status == OrderStatus.ACCEPTED  # Venue reported ACCEPTED
-    assert orders[1].status == OrderStatus.PARTIALLY_FILLED  # Venue reported PARTIALLY_FILLED
+    assert (
+        orders[1].status == OrderStatus.PARTIALLY_FILLED
+    )  # Venue reported PARTIALLY_FILLED
     assert orders[1].filled_qty == Quantity.from_int(5_000)  # Verify fill amount
     assert orders[2].status == OrderStatus.FILLED  # Venue reported FILLED
     assert orders[2].filled_qty == Quantity.from_int(30_000)  # Verify complete fill

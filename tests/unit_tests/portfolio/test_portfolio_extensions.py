@@ -59,7 +59,9 @@ def test_portfolio_calculates_realized_pnl_with_position_snapshots(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -147,7 +149,9 @@ def test_portfolio_reset_clears_all_state(
         account_type=AccountType.MARGIN,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -202,7 +206,9 @@ def test_netting_oms_position_lifecycle_with_snapshots(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),

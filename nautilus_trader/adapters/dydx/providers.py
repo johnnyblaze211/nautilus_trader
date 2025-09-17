@@ -66,7 +66,9 @@ class DYDXInstrumentProvider(InstrumentProvider):
         self._clock = clock
         self._client = client
         self._venue = venue
-        self._wallet_address = wallet_address or get_wallet_address(is_testnet=is_testnet)
+        self._wallet_address = wallet_address or get_wallet_address(
+            is_testnet=is_testnet
+        )
 
         # GRPC API
         self._grpc_account = grpc_account_client
@@ -101,12 +103,16 @@ class DYDXInstrumentProvider(InstrumentProvider):
 
         # Check all instrument IDs
         for instrument_id in instrument_ids:
-            PyCondition.equal(instrument_id.venue, self._venue, "instrument_id.venue", "DYDX")
+            PyCondition.equal(
+                instrument_id.venue, self._venue, "instrument_id.venue", "DYDX"
+            )
 
         fee_tier: fee_tier_query.QueryUserFeeTierResponse | None = None
 
         try:
-            fee_tier = await self._grpc_account.get_user_fee_tier(address=self._wallet_address)
+            fee_tier = await self._grpc_account.get_user_fee_tier(
+                address=self._wallet_address
+            )
         except AioRpcError as e:
             self._log.warning(f"Failed to get the user fee tier: {e}")
 
@@ -116,17 +122,23 @@ class DYDXInstrumentProvider(InstrumentProvider):
                 fee_tier=fee_tier,
             )
 
-    async def load_async(self, instrument_id: InstrumentId, filters: dict | None = None) -> None:
+    async def load_async(
+        self, instrument_id: InstrumentId, filters: dict | None = None
+    ) -> None:
         """
         Load a single instrument by its ID.
         """
         PyCondition.not_none(instrument_id, "instrument_id")
-        PyCondition.equal(instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE")
+        PyCondition.equal(
+            instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE"
+        )
 
         filters_str = "..." if not filters else f" with filters {filters}..."
         self._log.debug(f"Loading instrument {instrument_id}{filters_str}.")
 
-        await self._load_instruments(symbol=instrument_id.symbol.value.removesuffix("-PERP"))
+        await self._load_instruments(
+            symbol=instrument_id.symbol.value.removesuffix("-PERP")
+        )
 
     async def _load_instruments(
         self,
@@ -144,11 +156,15 @@ class DYDXInstrumentProvider(InstrumentProvider):
 
         if fee_tier is None:
             try:
-                fee_tier = await self._grpc_account.get_user_fee_tier(address=self._wallet_address)
+                fee_tier = await self._grpc_account.get_user_fee_tier(
+                    address=self._wallet_address
+                )
                 maker_fee = Decimal(fee_tier.tier.maker_fee_ppm) / FEE_SCALING
                 taker_fee = Decimal(fee_tier.tier.taker_fee_ppm) / FEE_SCALING
             except AioRpcError as e:
-                self._log.error(f"Failed to get the user fee tier: {e}. Set fees to zero.")
+                self._log.error(
+                    f"Failed to get the user fee tier: {e}. Set fees to zero."
+                )
 
         ts_init = self._clock.timestamp_ns()
 
@@ -170,4 +186,6 @@ class DYDXInstrumentProvider(InstrumentProvider):
                 self.add(instrument)
             except ValueError as e:
                 if self._log_warnings:
-                    self._log.warning(f"Unable to parse instrument {market.ticker}: {e}")
+                    self._log.warning(
+                        f"Unable to parse instrument {market.ticker}: {e}"
+                    )

@@ -168,9 +168,9 @@ class MACDStrategy(Strategy):
         if not self._position:
             return
 
-        exit_now = (self._position.side == PositionSide.SHORT and self.macd.value >= 0.0) or (
-            self._position.side == PositionSide.LONG and self.macd.value < 0.0
-        )
+        exit_now = (
+            self._position.side == PositionSide.SHORT and self.macd.value >= 0.0
+        ) or (self._position.side == PositionSide.LONG and self.macd.value < 0.0)
 
         if exit_now and not self._closing:
             self._closing = True

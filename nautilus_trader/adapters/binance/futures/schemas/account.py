@@ -47,8 +47,12 @@ class BinanceFuturesBalanceInfo(msgspec.Struct, frozen=True):
     marginBalance: str  # margin balance
     maintMargin: str  # maintenance margin required
     initialMargin: str  # total initial margin required with current mark price
-    positionInitialMargin: str  # initial margin required for positions with current mark price
-    openOrderInitialMargin: str  # initial margin required for open orders with current mark price
+    positionInitialMargin: (
+        str  # initial margin required for positions with current mark price
+    )
+    openOrderInitialMargin: (
+        str  # initial margin required for open orders with current mark price
+    )
     crossWalletBalance: str  # crossed wallet balance
     crossUnPnl: str  # unrealized profit of crossed positions
     availableBalance: str  # available balance
@@ -93,19 +97,27 @@ class BinanceFuturesAccountInfo(msgspec.Struct, kw_only=True, frozen=True):
     totalInitialMargin: str | None = (
         None  # total initial margin required with current mark price (useless with isolated positions), only for USDT
     )
-    totalMaintMargin: str | None = None  # total maintenance margin required, only for USDT asset
+    totalMaintMargin: str | None = (
+        None  # total maintenance margin required, only for USDT asset
+    )
     totalWalletBalance: str | None = None  # total wallet balance, only for USDT asset
-    totalUnrealizedProfit: str | None = None  # total unrealized profit, only for USDT asset
+    totalUnrealizedProfit: str | None = (
+        None  # total unrealized profit, only for USDT asset
+    )
     totalMarginBalance: str | None = None  # total margin balance, only for USDT asset
     # initial margin required for positions with current mark price, only for USDT asset
     totalPositionInitialMargin: str | None = None
     # initial margin required for open orders with current mark price, only for USDT asset
     totalOpenOrderInitialMargin: str | None = None
-    totalCrossWalletBalance: str | None = None  # crossed wallet balance, only for USDT asset
+    totalCrossWalletBalance: str | None = (
+        None  # crossed wallet balance, only for USDT asset
+    )
     # unrealized profit of crossed positions, only for USDT asset
     totalCrossUnPnl: str | None = None
     availableBalance: str | None = None  # available balance, only for USDT asset
-    maxWithdrawAmount: str | None = None  # maximum amount for transfer out, only for USDT asset
+    maxWithdrawAmount: str | None = (
+        None  # maximum amount for transfer out, only for USDT asset
+    )
     assets: list[BinanceFuturesBalanceInfo]
 
     def parse_to_account_balances(self) -> list[AccountBalance]:

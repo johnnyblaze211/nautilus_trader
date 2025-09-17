@@ -133,14 +133,18 @@ async def test_retry_manager_with_retries(mock_logger) -> None:
         exc_types=(Exception,),
         logger=mock_logger,
     )
-    mock_func = AsyncMock(side_effect=[Exception("Test Error"), Exception("Test Error"), None])
+    mock_func = AsyncMock(
+        side_effect=[Exception("Test Error"), Exception("Test Error"), None]
+    )
 
     # Act
     await retry_manager.run(name="test", details=["ID123"], func=mock_func)
 
     # Assert
     assert mock_func.await_count == 3
-    assert mock_logger.warning.call_count == 2  # Only retry warnings, not exception warnings
+    assert (
+        mock_logger.warning.call_count == 2
+    )  # Only retry warnings, not exception warnings
     mock_logger.error.assert_not_called()
 
 
@@ -162,7 +166,9 @@ async def test_retry_manager_exhausts_retries(mock_logger) -> None:
 
     # Assert
     assert mock_func.await_count == 3
-    assert mock_logger.warning.call_count == 2  # Only retry warnings, not exception warnings
+    assert (
+        mock_logger.warning.call_count == 2
+    )  # Only retry warnings, not exception warnings
     mock_logger.error.assert_called_once()
 
 
@@ -232,7 +238,9 @@ async def test_retry_manager_with_retry_check(mock_logger) -> None:
         logger=mock_logger,
         retry_check=retry_check,
     )
-    mock_func = AsyncMock(side_effect=[Exception("Do not retry"), Exception("Retry Error"), None])
+    mock_func = AsyncMock(
+        side_effect=[Exception("Do not retry"), Exception("Retry Error"), None]
+    )
 
     # Act
     await retry_manager.run(name="test", details=["ID123"], func=mock_func)

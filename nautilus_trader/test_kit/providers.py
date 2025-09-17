@@ -622,7 +622,9 @@ class TestInstrumentProvider:
         expiry_year: int,
         expiry_month: int,
     ) -> FuturesContract:
-        activation_date = first_friday_two_years_six_months_ago(expiry_year, expiry_month)
+        activation_date = first_friday_two_years_six_months_ago(
+            expiry_year, expiry_month
+        )
         expiration_date = third_friday_of_month(expiry_year, expiry_month)
 
         activation_time = pd.Timedelta(hours=21, minutes=30)
@@ -655,7 +657,9 @@ class TestInstrumentProvider:
         expiry_month: int,
         venue_name: str = "XCME",
     ) -> FuturesContract:
-        activation_date = first_friday_two_years_six_months_ago(expiry_year, expiry_month)
+        activation_date = first_friday_two_years_six_months_ago(
+            expiry_year, expiry_month
+        )
         expiration_date = third_friday_of_month(expiry_year, expiry_month)
 
         activation_time = pd.Timedelta(hours=21, minutes=30)
@@ -664,10 +668,14 @@ class TestInstrumentProvider:
         expiration_utc = pd.Timestamp(expiration_date, tz=pytz.utc) + expiration_time
 
         base_symbol = "6E"
-        raw_symbol = f"{base_symbol}{get_contract_month_code(expiry_month)}{expiry_year % 10}"
+        raw_symbol = (
+            f"{base_symbol}{get_contract_month_code(expiry_month)}{expiry_year % 10}"
+        )
 
         return FuturesContract(
-            instrument_id=InstrumentId(symbol=Symbol(raw_symbol), venue=Venue(venue_name)),
+            instrument_id=InstrumentId(
+                symbol=Symbol(raw_symbol), venue=Venue(venue_name)
+            ),
             raw_symbol=Symbol(raw_symbol),
             asset_class=AssetClass.FX,
             exchange=venue_name,
@@ -710,7 +718,9 @@ class TestInstrumentProvider:
     @staticmethod
     def aapl_option() -> OptionContract:
         return OptionContract(
-            instrument_id=InstrumentId(symbol=Symbol("AAPL211217C00150000"), venue=Venue("OPRA")),
+            instrument_id=InstrumentId(
+                symbol=Symbol("AAPL211217C00150000"), venue=Venue("OPRA")
+            ),
             raw_symbol=Symbol("AAPL211217C00150000"),
             asset_class=AssetClass.EQUITY,
             exchange="GMNI",
@@ -854,7 +864,9 @@ def get_contract_month_code(expiry_month: int) -> str:  # noqa: C901 (too comple
         case 12:
             return "Z"
         case _:
-            raise ValueError(f"invalid `expiry_month`, was {expiry_month}. Use [1, 12].")
+            raise ValueError(
+                f"invalid `expiry_month`, was {expiry_month}. Use [1, 12]."
+            )
 
 
 class TestDataProvider:
@@ -894,9 +906,13 @@ class TestDataProvider:
             self.root = test_data_dir
             self.fs = fsspec.filesystem("file")
         else:
-            print("Couldn't find test data directory, test data will be pulled from GitHub")
+            print(
+                "Couldn't find test data directory, test data will be pulled from GitHub"
+            )
             self.root = "tests/test_data"
-            self.fs = fsspec.filesystem("github", org="nautechsystems", repo="nautilus_trader")
+            self.fs = fsspec.filesystem(
+                "github", org="nautechsystems", repo="nautilus_trader"
+            )
 
     def _make_uri(self, path: str) -> str:
         # Moved here from top level import because GithubFileSystem has extra deps we may not have installed.
@@ -929,10 +945,14 @@ class TestDataProvider:
         with fsspec.open(uri) as f:
             return CSVBarDataLoader.load(file_path=f)
 
-    def read_parquet_ticks(self, path: str, timestamp_column: str = "timestamp") -> pd.DataFrame:
+    def read_parquet_ticks(
+        self, path: str, timestamp_column: str = "timestamp"
+    ) -> pd.DataFrame:
         uri = self._make_uri(path=path)
         with fsspec.open(uri) as f:
-            return ParquetTickDataLoader.load(file_path=f, timestamp_column=timestamp_column)
+            return ParquetTickDataLoader.load(
+                file_path=f, timestamp_column=timestamp_column
+            )
 
     def read_parquet_bars(self, path: str) -> pd.DataFrame:
         uri = self._make_uri(path=path)
@@ -991,7 +1011,9 @@ class TestDataGenerator:
         quantity_diffs = TestDataGenerator.simulate_value_diffs(count)
         quantity = pd.Series(default_quantity + quantity_diffs).astype(int)
 
-        index = TestDataGenerator.generate_time_series_index(start_timestamp, max_freq, count)
+        index = TestDataGenerator.generate_time_series_index(
+            start_timestamp, max_freq, count
+        )
         return pd.DataFrame(
             index=index,
             data={"price": prices.to_numpy(), "quantity": quantity.to_numpy()},
@@ -1121,7 +1143,9 @@ def get_test_data_large_checksums_filepath() -> Path:
 def ensure_test_data_exists(filename: str, url: str) -> Path:
     filepath = (get_test_data_large_path() / filename).resolve()
     checksums_filepath = get_test_data_large_checksums_filepath()
-    nautilus_pyo3.ensure_file_exists_or_download_http(str(filepath), url, str(checksums_filepath))
+    nautilus_pyo3.ensure_file_exists_or_download_http(
+        str(filepath), url, str(checksums_filepath)
+    )
     return filepath
 
 

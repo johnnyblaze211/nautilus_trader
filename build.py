@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""
+Nautilus Trader Build System
+
+This module provides the build system for Nautilus Trader, handling both
+Cython and Rust compilation with various configuration options.
+"""
 
 import datetime as dt
 import itertools
@@ -10,42 +16,63 @@ import subprocess
 import sys
 import sysconfig
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-from Cython.Build import build_ext
-from Cython.Build import cythonize
+from Cython.Build import build_ext, cythonize
 from Cython.Compiler import Options
 from Cython.Compiler.Version import version as cython_compiler_version
 from packaging.version import Version
-from setuptools import Distribution
-from setuptools import Extension
+from setuptools import Distribution, Extension
 
 
-# Platform constants
-IS_LINUX = platform.system() == "Linux"
-IS_MACOS = platform.system() == "Darwin"
-IS_WINDOWS = platform.system() == "Windows"
-IS_ARM64 = platform.machine() in ("arm64", "aarch64")
+class BuildConfig:
+    """Configuration class for build settings."""
+    
+    def __init__(self):
+        # Platform detection
+        self.is_linux = platform.system() == "Linux"
+        self.is_macos = platform.system() == "Darwin"
+        self.is_windows = platform.system() == "Windows"
+        self.is_arm64 = platform.machine() in ("arm64", "aarch64")
+        
+        # Build configuration from environment
+        self.rustup_toolchain = os.getenv("RUSTUP_TOOLCHAIN", "stable")
+        self.build_mode = os.getenv("BUILD_MODE", "release")
+        self.profile_mode = self._get_bool_env("PROFILE_MODE")
+        self.annotation_mode = self._get_bool_env("ANNOTATION_MODE")
+        self.parallel_build = self._get_bool_env("PARALLEL_BUILD", default=True)
+        self.copy_to_source = self._get_bool_env("COPY_TO_SOURCE", default=True)
+        self.force_strip = self._get_bool_env("FORCE_STRIP")
+        self.pyo3_only = self._get_bool_env("PYO3_ONLY")
+        self.dry_run = self._get_bool_env("DRY_RUN")
+    
+    @staticmethod
+    def _get_bool_env(env_var: str, default: bool = False) -> bool:
+        """Get boolean value from environment variable."""
+        value = os.getenv(env_var, "").lower()
+        if not value:
+            return default
+        return value in ("true", "1", "yes", "on")
 
 
-# The Rust toolchain to use for builds
-RUSTUP_TOOLCHAIN = os.getenv("RUSTUP_TOOLCHAIN", "stable")
-# The Cargo build mode
-BUILD_MODE = os.getenv("BUILD_MODE", "release")
-# If PROFILE_MODE mode is enabled, include traces necessary for coverage and profiling
-PROFILE_MODE = bool(os.getenv("PROFILE_MODE", ""))
-# If ANNOTATION mode is enabled, generate an annotated HTML version of the input source files
-ANNOTATION_MODE = bool(os.getenv("ANNOTATION_MODE", ""))
-# If PARALLEL build is enabled, uses all CPUs for compile stage of build
-PARALLEL_BUILD = os.getenv("PARALLEL_BUILD", "true").lower() == "true"
-# If COPY_TO_SOURCE is enabled, copy built *.so files back into the source tree
-COPY_TO_SOURCE = os.getenv("COPY_TO_SOURCE", "true").lower() == "true"
-# Force stripping of debug symbols even in non-release builds
-FORCE_STRIP = os.getenv("FORCE_STRIP", "false").lower() == "true"
-# If PyO3 only then don't build C extensions to reduce compilation time
-PYO3_ONLY = os.getenv("PYO3_ONLY", "").lower() != ""
-# If dry run only print the commands that would be executed
-DRY_RUN = bool(os.getenv("DRY_RUN", ""))
+# Global build configuration
+BUILD_CONFIG = BuildConfig()
+
+# Legacy constants for backward compatibility
+IS_LINUX = BUILD_CONFIG.is_linux
+IS_MACOS = BUILD_CONFIG.is_macos
+IS_WINDOWS = BUILD_CONFIG.is_windows
+IS_ARM64 = BUILD_CONFIG.is_arm64
+RUSTUP_TOOLCHAIN = BUILD_CONFIG.rustup_toolchain
+BUILD_MODE = BUILD_CONFIG.build_mode
+PROFILE_MODE = BUILD_CONFIG.profile_mode
+ANNOTATION_MODE = BUILD_CONFIG.annotation_mode
+PARALLEL_BUILD = BUILD_CONFIG.parallel_build
+COPY_TO_SOURCE = BUILD_CONFIG.copy_to_source
+FORCE_STRIP = BUILD_CONFIG.force_strip
+PYO3_ONLY = BUILD_CONFIG.pyo3_only
+DRY_RUN = BUILD_CONFIG.dry_run
 
 # Precision mode configuration
 # https://nautilustrader.io/docs/nightly/getting_started/installation#precision-mode
@@ -70,7 +97,9 @@ else:
 #  RUST BUILD
 ################################################################################
 
-USE_SCCACHE = "sccache" in os.environ.get("CC", "") or "sccache" in os.environ.get("CXX", "")
+USE_SCCACHE = "sccache" in os.environ.get("CC", "") or "sccache" in os.environ.get(
+    "CXX", ""
+)
 
 if IS_LINUX:
     # Use clang as the default compiler
@@ -90,7 +119,9 @@ if IS_LINUX and IS_ARM64:
     python_version = ".".join(platform.python_version_tuple()[:2])  # e.g. "3.12"
 
     if python_lib_dir:
-        print(f"Setting RUSTFLAGS to link with Python {python_version} in {python_lib_dir}")
+        print(
+            f"Setting RUSTFLAGS to link with Python {python_version} in {python_lib_dir}"
+        )
         rustflags = f"{os.environ.get('RUSTFLAGS', '')} -C link-arg=-L{python_lib_dir} -C link-arg=-lpython{python_version}"
         os.environ["RUSTFLAGS"] = rustflags
 
@@ -443,7 +474,8 @@ def _ensure_windows_python_import_lib() -> None:
 
             if src.exists() and not dst.exists():
                 print(
-                    "Creating missing Windows import lib " f"{dst} (copying from {src})",
+                    "Creating missing Windows import lib "
+                    f"{dst} (copying from {src})",
                 )
                 shutil.copyfile(src, dst)
     except Exception as exc:  # pragma: no cover - defensive
@@ -462,11 +494,21 @@ def _strip_unneeded_symbols() -> None:
             total_before += size_before
 
             if IS_LINUX:
-                strip_cmd = ["strip", "--strip-all", "-R", ".comment", "-R", ".note", so]
+                strip_cmd = [
+                    "strip",
+                    "--strip-all",
+                    "-R",
+                    ".comment",
+                    "-R",
+                    ".note",
+                    so,
+                ]
             elif IS_MACOS:
                 strip_cmd = ["strip", "-x", so]
             else:
-                raise RuntimeError(f"Cannot strip symbols for platform {platform.system()}")
+                raise RuntimeError(
+                    f"Cannot strip symbols for platform {platform.system()}"
+                )
             subprocess.run(
                 strip_cmd,  # type: ignore [arg-type]
                 check=True,
@@ -558,7 +600,9 @@ if __name__ == "__main__":
     print("\033[36m")
     print("=====================================================================")
     print(f"Nautilus Builder {_get_nautilus_version()}")
-    print("=====================================================================\033[0m")
+    print(
+        "=====================================================================\033[0m"
+    )
     print(f"System: {platform.system()} {platform.machine()}")
     print(f"Clang:  {_get_clang_version()}")
     print(f"Rust:   {_get_rustc_version()}")

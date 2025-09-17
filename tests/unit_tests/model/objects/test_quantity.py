@@ -93,7 +93,9 @@ class TestQuantity:
             [Quantity(2.255, precision=3), 2, Decimal("2.26")],
         ],
     )
-    def test_round_with_various_digits_returns_expected_decimal(self, value, precision, expected):
+    def test_round_with_various_digits_returns_expected_decimal(
+        self, value, precision, expected
+    ):
         # Arrange, Act
         result = round(value, precision)
 
@@ -140,7 +142,9 @@ class TestQuantity:
             [Quantity(1.1, precision=1), Quantity(1.1, precision=1)],
         ],
     )
-    def test_instantiate_with_various_valid_inputs_returns_expected_decimal(self, value, expected):
+    def test_instantiate_with_various_valid_inputs_returns_expected_decimal(
+        self, value, expected
+    ):
         # Arrange, Act
         decimal_object = Quantity(value, 2)
 
@@ -181,7 +185,9 @@ class TestQuantity:
             [1.1, 1.12, False],
         ],
     )
-    def test_equality_with_various_values_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_values_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result = Quantity(value1, 2) == Quantity(value2, 2)
 
@@ -198,7 +204,9 @@ class TestQuantity:
             [1, 2, False],
         ],
     )
-    def test_equality_with_various_int_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_int_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result1 = Quantity(value1, 0) == value2
         result2 = value2 == Quantity(value1, 0)
@@ -215,7 +223,9 @@ class TestQuantity:
             [Quantity(1, precision=0), Decimal(0), False],
         ],
     )
-    def test_equality_with_various_decimals_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_decimals_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result = value1 == value2
 
@@ -239,10 +249,18 @@ class TestQuantity:
         expected4,
     ):
         # Arrange, Act, Assert
-        assert (Quantity(value1, precision=0) > Quantity(value2, precision=0)) == expected1
-        assert (Quantity(value1, precision=0) >= Quantity(value2, precision=0)) == expected2
-        assert (Quantity(value1, precision=0) <= Quantity(value2, precision=0)) == expected3
-        assert (Quantity(value1, precision=0) < Quantity(value2, precision=0)) == expected4
+        assert (
+            Quantity(value1, precision=0) > Quantity(value2, precision=0)
+        ) == expected1
+        assert (
+            Quantity(value1, precision=0) >= Quantity(value2, precision=0)
+        ) == expected2
+        assert (
+            Quantity(value1, precision=0) <= Quantity(value2, precision=0)
+        ) == expected3
+        assert (
+            Quantity(value1, precision=0) < Quantity(value2, precision=0)
+        ) == expected4
 
     @pytest.mark.parametrize(
         ("value1", "value2", "expected_type", "expected_value"),
@@ -559,7 +577,9 @@ class TestQuantity:
         ("value", "expected"),
         [[0, 0], [-0, 0], [1, 1], [1.1, 1.1]],
     )
-    def test_as_double_with_various_values_returns_expected_value(self, value, expected):
+    def test_as_double_with_various_values_returns_expected_value(
+        self, value, expected
+    ):
         # Arrange, Act
         result = Quantity(value, 1).as_double()
 
@@ -639,7 +659,11 @@ class TestQuantity:
                 "0.123456789012345" if FIXED_PRECISION > 9 else "0.123456789",
                 min(15, FIXED_PRECISION),
             ],
-            ["987654321.123456789", "987654321.123456789", 9],  # Full precision preserved
+            [
+                "987654321.123456789",
+                "987654321.123456789",
+                9,
+            ],  # Full precision preserved
             # Rounding behavior verification
             ["2.115", "2.115", 3],
             ["2.125", "2.125", 3],
@@ -688,7 +712,9 @@ class TestQuantity:
     )
     def test_from_str_invalid_input_raises_value_error(self, invalid_input):
         # Arrange, Act, Assert
-        with pytest.raises(Exception):  # Various exceptions can be raised for invalid input
+        with pytest.raises(
+            Exception
+        ):  # Various exceptions can be raised for invalid input
             Quantity.from_str(invalid_input)
 
     def test_from_str_with_negative_value_raises_value_error(self):
@@ -700,11 +726,15 @@ class TestQuantity:
     def test_from_str_with_precision_exceeding_max_raises_value_error(self):
         if FIXED_PRECISION <= 9:
             # On Windows with 9 decimal max
-            with pytest.raises(ValueError, match="invalid `precision` greater than max"):
+            with pytest.raises(
+                ValueError, match="invalid `precision` greater than max"
+            ):
                 Quantity.from_str("1." + "0" * 10)  # 10 decimals > 9
         else:
             # On Linux/Mac with 16 decimal max
-            with pytest.raises(ValueError, match="invalid `precision` greater than max"):
+            with pytest.raises(
+                ValueError, match="invalid `precision` greater than max"
+            ):
                 Quantity.from_str("1." + "0" * 17)  # 17 decimals > 16
 
     def test_from_str_precision_preservation(self):

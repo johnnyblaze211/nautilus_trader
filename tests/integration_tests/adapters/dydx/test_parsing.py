@@ -237,11 +237,23 @@ def test_parse_dydx_position_side(
     ("bar_type", "dydx_kline_interval"),
     [
         ("ETH-USD-PERP.DYDX-1-MINUTE-LAST-EXTERNAL", DYDXCandlesResolution.ONE_MINUTE),
-        ("ETH-USD-PERP.DYDX-5-MINUTE-LAST-EXTERNAL", DYDXCandlesResolution.FIVE_MINUTES),
-        ("ETH-USD-PERP.DYDX-15-MINUTE-LAST-EXTERNAL", DYDXCandlesResolution.FIFTEEN_MINUTES),
-        ("ETH-USD-PERP.DYDX-30-MINUTE-LAST-EXTERNAL", DYDXCandlesResolution.THIRTY_MINUTES),
+        (
+            "ETH-USD-PERP.DYDX-5-MINUTE-LAST-EXTERNAL",
+            DYDXCandlesResolution.FIVE_MINUTES,
+        ),
+        (
+            "ETH-USD-PERP.DYDX-15-MINUTE-LAST-EXTERNAL",
+            DYDXCandlesResolution.FIFTEEN_MINUTES,
+        ),
+        (
+            "ETH-USD-PERP.DYDX-30-MINUTE-LAST-EXTERNAL",
+            DYDXCandlesResolution.THIRTY_MINUTES,
+        ),
         ("ETH-USD-PERP.DYDX-60-MINUTE-LAST-EXTERNAL", DYDXCandlesResolution.ONE_HOUR),
-        ("ETH-USD-PERP.DYDX-240-MINUTE-LAST-EXTERNAL", DYDXCandlesResolution.FOUR_HOURS),
+        (
+            "ETH-USD-PERP.DYDX-240-MINUTE-LAST-EXTERNAL",
+            DYDXCandlesResolution.FOUR_HOURS,
+        ),
         ("ETHUSDT.BYBIT-1-HOUR-LAST-EXTERNAL", DYDXCandlesResolution.ONE_HOUR),
         ("ETHUSDT.BYBIT-4-HOUR-LAST-EXTERNAL", DYDXCandlesResolution.FOUR_HOURS),
         ("ETHUSDT.BYBIT-24-HOUR-LAST-EXTERNAL", DYDXCandlesResolution.ONE_DAY),
@@ -294,7 +306,9 @@ def test_order_type_bidirectional_mapping_consistency(
     for nautilus_type in basic_nautilus_types:
         dydx_type = enum_parser.parse_nautilus_order_type(nautilus_type)
         back_to_nautilus = enum_parser.parse_dydx_order_type(dydx_type)
-        assert back_to_nautilus == nautilus_type, f"Inconsistent mapping for {nautilus_type}"
+        assert (
+            back_to_nautilus == nautilus_type
+        ), f"Inconsistent mapping for {nautilus_type}"
 
     take_profit_mappings = [
         (DYDXOrderType.TAKE_PROFIT, OrderType.LIMIT_IF_TOUCHED),

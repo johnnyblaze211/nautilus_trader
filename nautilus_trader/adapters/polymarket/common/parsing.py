@@ -22,7 +22,9 @@ from nautilus_trader.adapters.polymarket.common.enums import PolymarketLiquidity
 from nautilus_trader.adapters.polymarket.common.enums import PolymarketOrderSide
 from nautilus_trader.adapters.polymarket.common.enums import PolymarketOrderStatus
 from nautilus_trader.adapters.polymarket.common.enums import PolymarketOrderType
-from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_instrument_id
+from nautilus_trader.adapters.polymarket.common.symbol import (
+    get_polymarket_instrument_id,
+)
 from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_token_id
 from nautilus_trader.adapters.polymarket.schemas.book import PolymarketTickSizeChange
 from nautilus_trader.model.currencies import USDC_POS
@@ -90,7 +92,9 @@ def parse_instrument(
     outcome: str,
     ts_init: int,
 ) -> BinaryOption:
-    instrument_id = get_polymarket_instrument_id(str(market_info["condition_id"]), token_id)
+    instrument_id = get_polymarket_instrument_id(
+        str(market_info["condition_id"]), token_id
+    )
     raw_symbol = Symbol(get_polymarket_token_id(instrument_id))
     description = market_info["question"]
     price_increment = Price.from_str(str(market_info["minimum_tick_size"]))

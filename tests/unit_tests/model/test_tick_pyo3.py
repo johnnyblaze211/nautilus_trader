@@ -42,7 +42,8 @@ class TestQuoteTick:
     def test_fully_qualified_name(self):
         # Arrange, Act, Assert
         assert (
-            QuoteTick.fully_qualified_name() == "nautilus_trader.core.nautilus_pyo3.model:QuoteTick"
+            QuoteTick.fully_qualified_name()
+            == "nautilus_trader.core.nautilus_pyo3.model:QuoteTick"
         )
 
     def test_tick_hash_str_and_repr(self):
@@ -203,7 +204,8 @@ class TestTradeTick:
     def test_fully_qualified_name(self):
         # Arrange, Act, Assert
         assert (
-            TradeTick.fully_qualified_name() == "nautilus_trader.core.nautilus_pyo3.model:TradeTick"
+            TradeTick.fully_qualified_name()
+            == "nautilus_trader.core.nautilus_pyo3.model:TradeTick"
         )
 
     def test_hash_str_and_repr(self):
@@ -286,7 +288,9 @@ class TestTradeTick:
 
         # Assert
         assert unpickled == tick
-        assert repr(unpickled) == "TradeTick(AUD/USD.SIM,1.00000,50000,BUYER,123456789,1)"
+        assert (
+            repr(unpickled) == "TradeTick(AUD/USD.SIM,1.00000,50000,BUYER,123456789,1)"
+        )
 
     @pytest.mark.skip(reason="Potentially don't expose through Python API")
     def test_from_raw_returns_expected_tick(self):

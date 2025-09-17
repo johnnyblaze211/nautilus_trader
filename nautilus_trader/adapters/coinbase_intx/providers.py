@@ -81,6 +81,8 @@ class CoinbaseIntxInstrumentProvider(InstrumentProvider):
                     continue  # Filter instrument ID
                 self.add(instrument=instrument)
 
-    async def load_async(self, instrument_id: InstrumentId, filters: dict | None = None) -> None:
+    async def load_async(
+        self, instrument_id: InstrumentId, filters: dict | None = None
+    ) -> None:
         PyCondition.not_none(instrument_id, "instrument_id")
         await self.load_ids_async([instrument_id], filters)

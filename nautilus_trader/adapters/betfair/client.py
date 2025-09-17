@@ -139,7 +139,9 @@ class BetfairHttpClient:
             return
 
         self._log.info("Connecting (Betfair login)")
-        request = Login.with_params(username=self.username, password=self.password.get_value())
+        request = Login.with_params(
+            username=self.username, password=self.password.get_value()
+        )
         resp: LoginResponse = await self._post(request)
         if resp.status != LoginStatus.SUCCESS:
             raise RuntimeError(f"Login not successful: {resp.status.value}")
@@ -197,7 +199,9 @@ class BetfairHttpClient:
     async def get_account_details(self) -> AccountDetailsResponse:
         return await self._post(request=GetAccountDetails.with_params())
 
-    async def get_account_funds(self, wallet: str | None = None) -> AccountFundsResponse:
+    async def get_account_funds(
+        self, wallet: str | None = None
+    ) -> AccountFundsResponse:
         return await self._post(request=GetAccountFunds.with_params(wallet=wallet))
 
     async def place_orders(self, request: PlaceOrders) -> PlaceExecutionReport:

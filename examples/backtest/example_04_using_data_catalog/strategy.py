@@ -32,7 +32,9 @@ class DemoStrategy(Strategy):
 
         # Save the 1-minute bar configuration and create a counter to track how many bars we receive
         self.bar_type_1min = bar_type_1min
-        self.count_1min_bars = 0  # This will increment each time we receive a 1-minute bar
+        self.count_1min_bars = (
+            0  # This will increment each time we receive a 1-minute bar
+        )
 
         # Track when the strategy starts and ends
         self.start_time = None

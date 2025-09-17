@@ -28,7 +28,9 @@ def serialize(event: ComponentStateChanged | TradingStateChanged) -> pa.RecordBa
 
 
 def deserialize(cls):
-    def inner(batch: pa.RecordBatch) -> list[ComponentStateChanged | TradingStateChanged]:
+    def inner(
+        batch: pa.RecordBatch,
+    ) -> list[ComponentStateChanged | TradingStateChanged]:
         def parse(data):
             data["config"] = msgspec.json.decode(data["config"])
             return data

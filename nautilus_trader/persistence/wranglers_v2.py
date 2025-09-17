@@ -14,7 +14,8 @@
 # -------------------------------------------------------------------------------------------------
 
 import abc
-from typing import Any, ClassVar
+from typing import Any
+from typing import ClassVar
 
 import pandas as pd
 import pyarrow as pa
@@ -54,7 +55,11 @@ class WranglerBase(abc.ABC):
 
         metadata = schema.metadata
         return cls(
-            **{k.decode(): decode(k, v) for k, v in metadata.items() if k not in cls.IGNORE_KEYS},
+            **{
+                k.decode(): decode(k, v)
+                for k, v in metadata.items()
+                if k not in cls.IGNORE_KEYS
+            },
         )
 
 
@@ -153,12 +158,20 @@ class OrderBookDeltaDataWranglerV2(WranglerBase):
         # Convert prices and sizes to fixed binary
         price = (
             (df["price"] * FIXED_SCALAR)
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="big", signed=True))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="big", signed=True
+                )
+            )
             .to_numpy()
         )
         size = (
             (df["quantity"] if "quantity" in df else df["size"] * FIXED_SCALAR)
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="big", signed=False))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="big", signed=False
+                )
+            )
             .to_numpy()
         )
 
@@ -238,7 +251,9 @@ class OrderBookDepth10DataWranglerV2(WranglerBase):
         data: bytes = sink.getvalue().to_pybytes()
         return self._inner.process_record_batch_bytes(data)
 
-    def _process_price_column(self, df: pd.DataFrame, col_name: str, default_bytes: bytes) -> list:
+    def _process_price_column(
+        self, df: pd.DataFrame, col_name: str, default_bytes: bytes
+    ) -> list:
         """
         Process a price column from the DataFrame.
         """
@@ -247,14 +262,18 @@ class OrderBookDepth10DataWranglerV2(WranglerBase):
                 df[col_name]
                 .apply(lambda x: int(x * FIXED_SCALAR))
                 .apply(
-                    lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="big", signed=True),
+                    lambda x: x.to_bytes(
+                        FIXED_PRECISION_BYTES, byteorder="big", signed=True
+                    ),
                 )
                 .to_numpy()
             )
         else:
             return [default_bytes] * len(df)
 
-    def _process_size_column(self, df: pd.DataFrame, col_name: str, default_bytes: bytes) -> list:
+    def _process_size_column(
+        self, df: pd.DataFrame, col_name: str, default_bytes: bytes
+    ) -> list:
         """
         Process a size column from the DataFrame.
         """
@@ -263,7 +282,9 @@ class OrderBookDepth10DataWranglerV2(WranglerBase):
                 df[col_name]
                 .apply(lambda x: int(x * FIXED_SCALAR))
                 .apply(
-                    lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="big", signed=False),
+                    lambda x: x.to_bytes(
+                        FIXED_PRECISION_BYTES, byteorder="big", signed=False
+                    ),
                 )
                 .to_numpy()
             )
@@ -349,8 +370,12 @@ class OrderBookDepth10DataWranglerV2(WranglerBase):
         fields = []
 
         # Create default zero bytes for missing values
-        zero_price_bytes = (0).to_bytes(FIXED_PRECISION_BYTES, byteorder="big", signed=True)
-        zero_size_bytes = (0).to_bytes(FIXED_PRECISION_BYTES, byteorder="big", signed=False)
+        zero_price_bytes = (0).to_bytes(
+            FIXED_PRECISION_BYTES, byteorder="big", signed=True
+        )
+        zero_size_bytes = (0).to_bytes(
+            FIXED_PRECISION_BYTES, byteorder="big", signed=False
+        )
 
         # Process all price and size columns
         depth = 10
@@ -360,28 +385,36 @@ class OrderBookDepth10DataWranglerV2(WranglerBase):
             col_name = f"bid_price_{idx}"
             bid_price = self._process_price_column(df, col_name, zero_price_bytes)
             arrays.append(pa.array(bid_price, type=pa.binary(FIXED_PRECISION_BYTES)))
-            fields.append(pa.field(col_name, pa.binary(FIXED_PRECISION_BYTES), nullable=False))
+            fields.append(
+                pa.field(col_name, pa.binary(FIXED_PRECISION_BYTES), nullable=False)
+            )
 
         for idx in range(depth):
             # Process ask price
             col_name = f"ask_price_{idx}"
             ask_price = self._process_price_column(df, col_name, zero_price_bytes)
             arrays.append(pa.array(ask_price, type=pa.binary(FIXED_PRECISION_BYTES)))
-            fields.append(pa.field(col_name, pa.binary(FIXED_PRECISION_BYTES), nullable=False))
+            fields.append(
+                pa.field(col_name, pa.binary(FIXED_PRECISION_BYTES), nullable=False)
+            )
 
         for idx in range(depth):
             # Process bid size
             col_name = f"bid_size_{idx}"
             bid_size = self._process_size_column(df, col_name, zero_size_bytes)
             arrays.append(pa.array(bid_size, type=pa.binary(FIXED_PRECISION_BYTES)))
-            fields.append(pa.field(col_name, pa.binary(FIXED_PRECISION_BYTES), nullable=False))
+            fields.append(
+                pa.field(col_name, pa.binary(FIXED_PRECISION_BYTES), nullable=False)
+            )
 
         for idx in range(depth):
             # Process ask size
             col_name = f"ask_size_{idx}"
             ask_size = self._process_size_column(df, col_name, zero_size_bytes)
             arrays.append(pa.array(ask_size, type=pa.binary(FIXED_PRECISION_BYTES)))
-            fields.append(pa.field(col_name, pa.binary(FIXED_PRECISION_BYTES), nullable=False))
+            fields.append(
+                pa.field(col_name, pa.binary(FIXED_PRECISION_BYTES), nullable=False)
+            )
 
         for idx in range(depth):
             # Process bid count
@@ -436,7 +469,9 @@ class QuoteTickDataWranglerV2(WranglerBase):
 
     """
 
-    def __init__(self, instrument_id: str, price_precision: int, size_precision: int) -> None:
+    def __init__(
+        self, instrument_id: str, price_precision: int, size_precision: int
+    ) -> None:
         self._inner = nautilus_pyo3.QuoteTickDataWrangler(
             instrument_id=instrument_id,
             price_precision=price_precision,
@@ -519,25 +554,41 @@ class QuoteTickDataWranglerV2(WranglerBase):
         bid_price = (
             df["bid_price"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=True))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=True
+                )
+            )
             .to_numpy()
         )
         ask_price = (
             df["ask_price"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=True))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=True
+                )
+            )
             .to_numpy()
         )
         bid_size = (
             df["bid_size"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=False))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=False
+                )
+            )
             .to_numpy()
         )
         ask_size = (
             df["ask_size"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=False))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=False
+                )
+            )
             .to_numpy()
         )
 
@@ -661,13 +712,21 @@ class TradeTickDataWranglerV2(WranglerBase):
         price = (
             df["price"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=True))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=True
+                )
+            )
         )
 
         size = (
             df["size"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=False))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=False
+                )
+            )
         )
 
         aggressor_side = df["aggressor_side"].map(_map_aggressor_side)
@@ -802,27 +861,47 @@ class BarDataWranglerV2(WranglerBase):
         open_price = (
             df["open"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=True))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=True
+                )
+            )
         )
         high_price = (
             df["high"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=True))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=True
+                )
+            )
         )
         low_price = (
             df["low"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=True))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=True
+                )
+            )
         )
         close_price = (
             df["close"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=True))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=True
+                )
+            )
         )
         volume = (
             df["volume"]
             .apply(lambda x: int(x * FIXED_SCALAR))
-            .apply(lambda x: x.to_bytes(FIXED_PRECISION_BYTES, byteorder="little", signed=False))
+            .apply(
+                lambda x: x.to_bytes(
+                    FIXED_PRECISION_BYTES, byteorder="little", signed=False
+                )
+            )
         )
 
         fields = [

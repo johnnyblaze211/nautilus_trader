@@ -46,7 +46,9 @@ from nautilus_trader.model.objects import Currency
 from nautilus_trader.model.objects import Money
 
 
-class BetfairInstrumentProviderConfig(InstrumentProviderConfig, frozen=True, kw_only=True):
+class BetfairInstrumentProviderConfig(
+    InstrumentProviderConfig, frozen=True, kw_only=True
+):
     """
     Configuration for ``BetfairInstrumentProvider`` instances.
 
@@ -139,9 +141,11 @@ class BetfairInstrumentProvider(InstrumentProvider):
             event_type_ids=filters.get("event_type_ids") or self.config.event_type_ids,
             event_ids=filters.get("event_ids") or self.config.event_ids,
             market_ids=filters.get("market_ids") or self.config.market_ids,
-            event_country_codes=filters.get("country_codes") or self.config.country_codes,
+            event_country_codes=filters.get("country_codes")
+            or self.config.country_codes,
             market_market_types=filters.get("market_types") or self.config.market_types,
-            event_type_names=filters.get("event_type_names") or self.config.event_type_names,
+            event_type_names=filters.get("event_type_names")
+            or self.config.event_type_names,
         )
 
         self._log.info(f"Found {len(markets)} markets, loading metadata")
@@ -199,8 +203,12 @@ def market_catalog_to_instruments(
             venue_name=BETFAIR_VENUE.value,
             event_type_id=market_catalog.event_type.id,
             event_type_name=market_catalog.event_type.name,
-            competition_id=market_catalog.competition.id if market_catalog.competition else 0,
-            competition_name=market_catalog.competition.name if market_catalog.competition else "",
+            competition_id=(
+                market_catalog.competition.id if market_catalog.competition else 0
+            ),
+            competition_name=(
+                market_catalog.competition.name if market_catalog.competition else ""
+            ),
             event_id=market_catalog.event.id,
             event_name=market_catalog.event.name,
             event_country_code=market_catalog.event.country_code or "",

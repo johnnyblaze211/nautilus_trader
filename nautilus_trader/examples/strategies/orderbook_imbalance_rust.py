@@ -91,11 +91,15 @@ class OrderBookImbalance(Strategy):
         self.instrument: Instrument | None = None
         if self.config.use_quote_ticks:
             assert self.config.book_type == "L1_MBP"
-        self.book_type: nautilus_pyo3.BookType = nautilus_pyo3.BookType(self.config.book_type)
+        self.book_type: nautilus_pyo3.BookType = nautilus_pyo3.BookType(
+            self.config.book_type
+        )
         self._last_trigger_timestamp: datetime.datetime | None = None
 
         # We need to initialize the Rust pyo3 objects
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(self.config.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            self.config.instrument_id.value
+        )
         self.book = nautilus_pyo3.OrderBook(pyo3_instrument_id, self.book_type)
         self.imbalance = nautilus_pyo3.BookImbalanceRatio()
 
@@ -172,14 +176,19 @@ class OrderBookImbalance(Strategy):
             self.clock.utc_now() - self._last_trigger_timestamp
         ).total_seconds()
 
-        if larger > self.config.trigger_min_size and ratio < self.config.trigger_imbalance_ratio:
+        if (
+            larger > self.config.trigger_min_size
+            and ratio < self.config.trigger_imbalance_ratio
+        ):
             self.log.info(
                 "Trigger conditions met, checking for existing orders and time since last order",
             )
             if len(self.cache.orders_inflight(strategy_id=self.id)) > 0:
                 self.log.info("Already have orders in flight - skipping.")
             elif seconds_since_last_trigger < self.config.min_seconds_between_triggers:
-                self.log.info("Time since last order < min_seconds_between_triggers - skipping")
+                self.log.info(
+                    "Time since last order < min_seconds_between_triggers - skipping"
+                )
             elif bid_size.as_double() > ask_size.as_double():
                 order = self.order_factory.limit(
                     instrument_id=self.instrument.id,

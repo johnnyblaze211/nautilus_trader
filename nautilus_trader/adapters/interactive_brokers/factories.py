@@ -19,14 +19,28 @@ import os
 # fmt: off
 from nautilus_trader.adapters.interactive_brokers.client import InteractiveBrokersClient
 from nautilus_trader.adapters.interactive_brokers.common import IB_VENUE
-from nautilus_trader.adapters.interactive_brokers.config import DockerizedIBGatewayConfig
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersDataClientConfig
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersExecClientConfig
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersInstrumentProviderConfig
-from nautilus_trader.adapters.interactive_brokers.data import InteractiveBrokersDataClient
-from nautilus_trader.adapters.interactive_brokers.execution import InteractiveBrokersExecutionClient
+from nautilus_trader.adapters.interactive_brokers.config import (
+    DockerizedIBGatewayConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersDataClientConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersExecClientConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersInstrumentProviderConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.data import (
+    InteractiveBrokersDataClient,
+)
+from nautilus_trader.adapters.interactive_brokers.execution import (
+    InteractiveBrokersExecutionClient,
+)
 from nautilus_trader.adapters.interactive_brokers.gateway import DockerizedIBGateway
-from nautilus_trader.adapters.interactive_brokers.providers import InteractiveBrokersInstrumentProvider
+from nautilus_trader.adapters.interactive_brokers.providers import (
+    InteractiveBrokersInstrumentProvider,
+)
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.common.component import MessageBus
@@ -89,7 +103,9 @@ def get_cached_ib_client(
 
     if dockerized_gateway:
         PyCondition.equal(host, "127.0.0.1", "host", "127.0.0.1")
-        PyCondition.none(port, "Ensure `port` is set to None when using DockerizedIBGatewayConfig.")
+        PyCondition.none(
+            port, "Ensure `port` is set to None when using DockerizedIBGatewayConfig."
+        )
 
         if GATEWAY is None:
             GATEWAY = DockerizedIBGateway(dockerized_gateway)
@@ -102,7 +118,9 @@ def get_cached_ib_client(
             host,
             "Please provide the `host` IP address for the IB TWS or Gateway.",
         )
-        PyCondition.not_none(port, "Please provide the `port` for the IB TWS or Gateway.")
+        PyCondition.not_none(
+            port, "Please provide the `port` for the IB TWS or Gateway."
+        )
 
     client_key: tuple = (host, port, client_id)
 
@@ -156,7 +174,9 @@ def get_cached_interactive_brokers_instrument_provider(
     provider_key = (client_key, hash(config))
 
     if provider_key not in IB_INSTRUMENT_PROVIDERS:
-        provider = InteractiveBrokersInstrumentProvider(client=client, clock=clock, config=config)
+        provider = InteractiveBrokersInstrumentProvider(
+            client=client, clock=clock, config=config
+        )
         IB_INSTRUMENT_PROVIDERS[provider_key] = provider
 
     return IB_INSTRUMENT_PROVIDERS[provider_key]

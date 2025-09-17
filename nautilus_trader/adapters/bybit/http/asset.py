@@ -17,8 +17,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from nautilus_trader.adapters.bybit.endpoints.asset.coin_info import BybitCoinInfoEndpoint
-from nautilus_trader.adapters.bybit.endpoints.asset.coin_info import BybitCoinInfoGetParams
+from nautilus_trader.adapters.bybit.endpoints.asset.coin_info import (
+    BybitCoinInfoEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.asset.coin_info import (
+    BybitCoinInfoGetParams,
+)
 from nautilus_trader.core.correctness import PyCondition
 
 

@@ -155,7 +155,9 @@ class MockCacheDatabase(CacheDatabaseFacade):
     def add_position(self, position: Position) -> None:
         self.positions[position.id] = position
 
-    def index_order_position(self, client_order_id: ClientOrderId, position_id: PositionId) -> None:
+    def index_order_position(
+        self, client_order_id: ClientOrderId, position_id: PositionId
+    ) -> None:
         self._index_order_position[client_order_id] = position_id
 
     def update_account(self, event: Account) -> None:

@@ -49,7 +49,14 @@ def test_load_deltas() -> None:
 
 
 bar_timestamp_tests_params = (
-    ("timestamp_is_close", "interval_ms", "ts_event1", "ts_event2", "ts_event3", "ts_event4"),
+    (
+        "timestamp_is_close",
+        "interval_ms",
+        "ts_event1",
+        "ts_event2",
+        "ts_event3",
+        "ts_event4",
+    ),
     [
         [
             True,
@@ -155,7 +162,9 @@ def test_trade_bar_data_wrangler_size_precision(is_raw: bool) -> None:
         expected_size = round(data["volume"].iloc[0] / 4, spy.size_precision)
     else:
         # For non-raw data, apply standard precision and scale back up to compare with raw
-        expected_size = round(data["volume"].iloc[0] / 4, spy.size_precision) * FIXED_SCALAR
+        expected_size = (
+            round(data["volume"].iloc[0] / 4, spy.size_precision) * FIXED_SCALAR
+        )
 
     # Act
     ticks = wrangler.process_bar_data(

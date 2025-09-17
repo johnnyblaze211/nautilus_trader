@@ -56,7 +56,9 @@ class BybitBatchCancelOrderEndpoint(BybitHttpEndpoint):
         )
         self._resp_decoder = msgspec.json.Decoder(BybitBatchCancelOrderResponse)
 
-    async def post(self, params: BybitBatchCancelOrderPostParams) -> BybitBatchCancelOrderResponse:
+    async def post(
+        self, params: BybitBatchCancelOrderPostParams
+    ) -> BybitBatchCancelOrderResponse:
         method_type = HttpMethod.POST
         raw = await self._method(method_type, params)
         try:

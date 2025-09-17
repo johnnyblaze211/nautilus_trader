@@ -23,14 +23,20 @@ import pandas as pd
 from nautilus_trader.adapters.binance import BINANCE_VENUE
 from nautilus_trader.adapters.binance import get_cached_binance_http_client
 from nautilus_trader.adapters.binance.common.enums import BinanceAccountType
-from nautilus_trader.adapters.binance.futures.providers import BinanceFuturesInstrumentProvider
+from nautilus_trader.adapters.binance.futures.providers import (
+    BinanceFuturesInstrumentProvider,
+)
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.engine import BacktestEngineConfig
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.config import InstrumentProviderConfig
 from nautilus_trader.config import LoggingConfig
-from nautilus_trader.examples.strategies.ema_cross_trailing_stop import EMACrossTrailingStop
-from nautilus_trader.examples.strategies.ema_cross_trailing_stop import EMACrossTrailingStopConfig
+from nautilus_trader.examples.strategies.ema_cross_trailing_stop import (
+    EMACrossTrailingStop,
+)
+from nautilus_trader.examples.strategies.ema_cross_trailing_stop import (
+    EMACrossTrailingStopConfig,
+)
 from nautilus_trader.model.data import BarType
 from nautilus_trader.model.enums import AccountType
 from nautilus_trader.model.enums import OmsType

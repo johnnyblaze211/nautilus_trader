@@ -128,7 +128,10 @@ def test_own_book_order_repr():
         "order_type=LIMIT, time_in_force=GTC, status=ACCEPTED, ts_last=2, ts_accepted=2, ts_submitted=1, ts_init=1)"
     )
     assert repr(order) == expected_repr
-    assert str(order) == 'TRADER-001,O-12345,Some(u!("1")),BUY,100.00,10,LIMIT,GTC,ACCEPTED,2,2,1,1'
+    assert (
+        str(order)
+        == 'TRADER-001,O-12345,Some(u!("1")),BUY,100.00,10,LIMIT,GTC,ACCEPTED,2,2,1,1'
+    )
 
 
 # ------------------------------------------------------------------------------
@@ -674,15 +677,24 @@ def test_bids_to_dict_with_status_filter():
     submitted_orders = book.bids_to_dict(status={OrderStatus.SUBMITTED})
     assert len(submitted_orders) == 1  # One price level
     assert len(submitted_orders[Price(100.0, 2).as_decimal()]) == 1
-    assert submitted_orders[Price(100.0, 2).as_decimal()][0].status == OrderStatus.SUBMITTED
+    assert (
+        submitted_orders[Price(100.0, 2).as_decimal()][0].status
+        == OrderStatus.SUBMITTED
+    )
 
     # Test with multiple status filter
-    filtered_orders = book.bids_to_dict(status={OrderStatus.ACCEPTED, OrderStatus.CANCELED})
+    filtered_orders = book.bids_to_dict(
+        status={OrderStatus.ACCEPTED, OrderStatus.CANCELED}
+    )
     assert len(filtered_orders) == 2  # Two price levels
     assert len(filtered_orders[Price(100.0, 2).as_decimal()]) == 1
-    assert filtered_orders[Price(100.0, 2).as_decimal()][0].status == OrderStatus.ACCEPTED
+    assert (
+        filtered_orders[Price(100.0, 2).as_decimal()][0].status == OrderStatus.ACCEPTED
+    )
     assert len(filtered_orders[Price(99.5, 2).as_decimal()]) == 1
-    assert filtered_orders[Price(99.5, 2).as_decimal()][0].status == OrderStatus.CANCELED
+    assert (
+        filtered_orders[Price(99.5, 2).as_decimal()][0].status == OrderStatus.CANCELED
+    )
 
     # Test with non-existent status
     empty_orders = book.bids_to_dict(status={OrderStatus.FILLED})
@@ -1112,7 +1124,9 @@ def test_quantity_methods_with_status_and_grouping():
             OwnBookOrder(
                 trader_id=TraderId("TRADER-001"),
                 client_order_id=ClientOrderId(f"O-{i+1}"),
-                venue_order_id=VenueOrderId(f"{i+1}") if status == OrderStatus.ACCEPTED else None,
+                venue_order_id=(
+                    VenueOrderId(f"{i+1}") if status == OrderStatus.ACCEPTED else None
+                ),
                 side=OrderSide.BUY,
                 price=Price(price, 2),
                 size=Quantity(size, 0),

@@ -555,7 +555,9 @@ class BybitEnumParser:
         self.nautilus_to_bybit_trigger_type = {
             b: a for a, b in self.bybit_to_nautilus_trigger_type.items()
         }
-        self.nautilus_to_bybit_trigger_type[TriggerType.DEFAULT] = BybitTriggerType.LAST_PRICE
+        self.nautilus_to_bybit_trigger_type[TriggerType.DEFAULT] = (
+            BybitTriggerType.LAST_PRICE
+        )
 
         # klines
         self.minute_klines_interval = [1, 3, 5, 15, 30]
@@ -576,7 +578,9 @@ class BybitEnumParser:
             BarAggregation.MONTH: lambda x: (
                 BybitKlineInterval("M")
                 if x == 1
-                else raise_error(ValueError(f"Bybit incorrect month kline interval {x}"))
+                else raise_error(
+                    ValueError(f"Bybit incorrect month kline interval {x}")
+                )
             ),
         }
         self.valid_time_in_force = {
@@ -607,7 +611,9 @@ class BybitEnumParser:
         order_type: OrderType,
         order_status: BybitOrderStatus,
     ) -> OrderStatus:
-        return check_dict_keys((order_type, order_status), self.bybit_to_nautilus_order_status)
+        return check_dict_keys(
+            (order_type, order_status), self.bybit_to_nautilus_order_status
+        )
 
     def parse_bybit_time_in_force(self, time_in_force: BybitTimeInForce) -> TimeInForce:
         return check_dict_keys(time_in_force, self.bybit_to_nautilus_time_in_force)
@@ -630,7 +636,9 @@ class BybitEnumParser:
             self.bybit_to_nautilus_order_type,
         )
 
-    def parse_nautilus_time_in_force(self, time_in_force: TimeInForce) -> BybitTimeInForce:
+    def parse_nautilus_time_in_force(
+        self, time_in_force: TimeInForce
+    ) -> BybitTimeInForce:
         try:
             return self.nautilus_to_bybit_time_in_force[time_in_force]
         except KeyError as e:
@@ -638,7 +646,9 @@ class BybitEnumParser:
                 f"unrecognized Bybit time in force, was {time_in_force_to_str(time_in_force)}",  # pragma: no cover
             ) from e
 
-    def parse_nautilus_trigger_type(self, trigger_type: TriggerType) -> BybitTriggerType:
+    def parse_nautilus_trigger_type(
+        self, trigger_type: TriggerType
+    ) -> BybitTriggerType:
         return check_dict_keys(trigger_type, self.nautilus_to_bybit_trigger_type)
 
     def parse_bybit_trigger_type(self, trigger_type: BybitTriggerType) -> TriggerType:

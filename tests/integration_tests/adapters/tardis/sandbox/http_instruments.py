@@ -45,7 +45,9 @@ async def run():
     )
 
     for pyo3_inst in pyo3_instruments:
-        inst = CryptoPerpetual.from_pyo3(pyo3_inst)  # Remove/change this if not filtering for perps
+        inst = CryptoPerpetual.from_pyo3(
+            pyo3_inst
+        )  # Remove/change this if not filtering for perps
         print(repr(inst))
         print(pd.Timestamp(inst.ts_event))
 

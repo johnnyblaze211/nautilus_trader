@@ -27,10 +27,14 @@ from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.identifiers import Symbol
 from nautilus_trader.model.identifiers import Venue
 from nautilus_trader.model.objects import Price
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestContractStubs
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestContractStubs,
+)
 
 
-def mock_ib_contract_calls(mocker, instrument_provider, contract_details: ContractDetails):
+def mock_ib_contract_calls(
+    mocker, instrument_provider, contract_details: ContractDetails
+):
     mocker.patch.object(
         instrument_provider._client,
         "get_contract_details",
@@ -75,7 +79,9 @@ async def test_load_futures_contract_instrument(mocker, instrument_provider):
     )
 
     # Act
-    await instrument_provider.load_async(IBContract(secType="FUT", symbol="CLZ3", exchange="NYMEX"))
+    await instrument_provider.load_async(
+        IBContract(secType="FUT", symbol="CLZ3", exchange="NYMEX")
+    )
     future = instrument_provider.find(instrument_id)
     instrument_provider._client.stop()
 
@@ -148,7 +154,9 @@ async def test_contract_id_to_instrument_id(mocker, instrument_provider):
     )
 
     # Act
-    await instrument_provider.load_async(IBContract(secType="FUT", symbol="CLZ3", exchange="NYMEX"))
+    await instrument_provider.load_async(
+        IBContract(secType="FUT", symbol="CLZ3", exchange="NYMEX")
+    )
     instrument_provider._client.stop()
 
     # Assert
@@ -272,7 +280,9 @@ async def test_bag_contract_venue_determination(instrument_provider):
 
     # Act
     venue_smart = instrument_provider.determine_venue_from_contract(bag_contract_smart)
-    venue_direct = instrument_provider.determine_venue_from_contract(bag_contract_direct)
+    venue_direct = instrument_provider.determine_venue_from_contract(
+        bag_contract_direct
+    )
 
     # Assert
     assert venue_smart == "CME"  # Should use primaryExchange when exchange is SMART

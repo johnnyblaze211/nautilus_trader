@@ -313,7 +313,9 @@ class TestTrader:
             StrategyId("Strategy-001"): "READY",
         }
 
-    def test_add_strategies_with_duplicate_order_id_tags_raises_runtime_error(self) -> None:
+    def test_add_strategies_with_duplicate_order_id_tags_raises_runtime_error(
+        self,
+    ) -> None:
         # Arrange
         config = MyStrategyConfig(
             instrument_id=USDJPY_SIM.id,
@@ -440,7 +442,10 @@ class TestTrader:
         self.trader.add_exec_algorithms(exec_algorithms)
 
         # Assert
-        assert self.trader.exec_algorithm_ids() == [exec_algorithm1.id, exec_algorithm2.id]
+        assert self.trader.exec_algorithm_ids() == [
+            exec_algorithm1.id,
+            exec_algorithm2.id,
+        ]
         assert self.trader.exec_algorithms() == [exec_algorithm1, exec_algorithm2]
         assert self.trader.exec_algorithm_states() == {
             exec_algorithm1.id: "READY",
@@ -450,8 +455,12 @@ class TestTrader:
     def test_clear_exec_algorithms(self) -> None:
         # Arrange
         exec_algorithms = [
-            ExecAlgorithm(ExecAlgorithmConfig(exec_algorithm_id=ExecAlgorithmId("001"))),
-            ExecAlgorithm(ExecAlgorithmConfig(exec_algorithm_id=ExecAlgorithmId("002"))),
+            ExecAlgorithm(
+                ExecAlgorithmConfig(exec_algorithm_id=ExecAlgorithmId("001"))
+            ),
+            ExecAlgorithm(
+                ExecAlgorithmConfig(exec_algorithm_id=ExecAlgorithmId("002"))
+            ),
         ]
 
         self.trader.add_exec_algorithms(exec_algorithms)

@@ -170,14 +170,19 @@ class OrderBookImbalance(Strategy):
             self.clock.utc_now() - self._last_trigger_timestamp
         ).total_seconds()
 
-        if larger > self.config.trigger_min_size and ratio < self.config.trigger_imbalance_ratio:
+        if (
+            larger > self.config.trigger_min_size
+            and ratio < self.config.trigger_imbalance_ratio
+        ):
             self.log.info(
                 "Trigger conditions met, checking for existing orders and time since last order",
             )
             if len(self.cache.orders_inflight(strategy_id=self.id)) > 0:
                 self.log.info("Already have orders in flight - skipping.")
             elif seconds_since_last_trigger < self.config.min_seconds_between_triggers:
-                self.log.info("Time since last order < min_seconds_between_triggers - skipping")
+                self.log.info(
+                    "Time since last order < min_seconds_between_triggers - skipping"
+                )
             elif bid_size > ask_size:
                 order = self.order_factory.limit(
                     instrument_id=self.instrument.id,
@@ -190,7 +195,9 @@ class OrderBookImbalance(Strategy):
                 self._last_trigger_timestamp = self.clock.utc_now()
                 self.log.info(f"Hitting! {order=}", color=LogColor.BLUE)
                 if self.config.dry_run:
-                    self.log.warning("Dry run mode is active; skipping new order submission")
+                    self.log.warning(
+                        "Dry run mode is active; skipping new order submission"
+                    )
                     return
                 self.submit_order(order)
             else:
@@ -205,7 +212,9 @@ class OrderBookImbalance(Strategy):
                 self._last_trigger_timestamp = self.clock.utc_now()
                 self.log.info(f"Hitting! {order=}", color=LogColor.BLUE)
                 if self.config.dry_run:
-                    self.log.warning("Dry run mode is active; skipping new order submission")
+                    self.log.warning(
+                        "Dry run mode is active; skipping new order submission"
+                    )
                     return
                 self.submit_order(order)
 

@@ -99,7 +99,9 @@ class TestQuoteTickDataWrangler:
         wrangler = QuoteTickDataWrangler(instrument=usdjpy)
         df = pd.DataFrame.from_dict(
             {
-                "timestamp": [pd.Timestamp("2023-01-04 23:59:01.642000+0000", tz="UTC")],
+                "timestamp": [
+                    pd.Timestamp("2023-01-04 23:59:01.642000+0000", tz="UTC")
+                ],
                 "bid_price": [1.0],
                 "ask_price": [1.0],
             },
@@ -186,7 +188,9 @@ class TestTradeTickDataWrangler:
         provider = TestDataProvider()
 
         # Act
-        ticks = wrangler.process(provider.read_csv_ticks("binance/ethusdt-trades.csv")[:100])
+        ticks = wrangler.process(
+            provider.read_csv_ticks("binance/ethusdt-trades.csv")[:100]
+        )
 
         # Assert
         assert len(ticks) == 100
@@ -224,7 +228,9 @@ class TestTradeTickDataWrangler:
         wrangler = TradeTickDataWrangler(instrument=usdjpy)
         df = pd.DataFrame.from_dict(
             {
-                "timestamp": [pd.Timestamp("2023-01-04 23:59:01.642000+0000", tz="UTC")],
+                "timestamp": [
+                    pd.Timestamp("2023-01-04 23:59:01.642000+0000", tz="UTC")
+                ],
                 "side": ["BUY"],
                 "trade_id": [TestIdStubs.trade_id()],
                 "price": [1.0],
@@ -253,7 +259,9 @@ class TestBarDataWrangler:
     def test_process(self):
         # Arrange, Act
         provider = TestDataProvider()
-        bars = self.wrangler.process(provider.read_csv_bars("fxcm/gbpusd-m1-bid-2012.csv")[:1000])
+        bars = self.wrangler.process(
+            provider.read_csv_bars("fxcm/gbpusd-m1-bid-2012.csv")[:1000]
+        )
 
         # Assert
         assert len(bars) == 1000

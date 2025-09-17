@@ -114,5 +114,11 @@ class TestMessage:
         )
 
         # Act, Assert
-        assert str(response) == f"Response(correlation_id={uuid_corr}, id={uuid_id}, ts_init=0)"
-        assert str(response) == f"Response(correlation_id={uuid_corr}, id={uuid_id}, ts_init=0)"
+        assert (
+            str(response)
+            == f"Response(correlation_id={uuid_corr}, id={uuid_id}, ts_init=0)"
+        )
+        assert (
+            str(response)
+            == f"Response(correlation_id={uuid_corr}, id={uuid_id}, ts_init=0)"
+        )

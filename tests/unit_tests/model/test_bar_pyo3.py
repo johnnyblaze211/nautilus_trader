@@ -93,7 +93,9 @@ class TestBarSpecification:
             BarAggregation.MONTH,
         ],
     )
-    def test_timedelta_for_unsupported_aggregations_raises_value_error(self, aggregation):
+    def test_timedelta_for_unsupported_aggregations_raises_value_error(
+        self, aggregation
+    ):
         # Arrange, Act, Assert
         with pytest.raises(ValueError):
             spec = BarSpecification(1, aggregation, price_type=PriceType.LAST)
@@ -196,7 +198,12 @@ class TestBarSpecification:
         assert spec == expected
 
     @pytest.mark.parametrize(
-        ("bar_spec", "is_time_aggregated", "is_threshold_aggregated", "is_information_aggregated"),
+        (
+            "bar_spec",
+            "is_time_aggregated",
+            "is_threshold_aggregated",
+            "is_information_aggregated",
+        ),
         [
             [
                 BarSpecification(1, BarAggregation.SECOND, PriceType.BID),
@@ -235,7 +242,10 @@ class TestBarSpecification:
         assert bar_spec.is_time_aggregated() == is_time_aggregated
         assert bar_spec.is_threshold_aggregated() == is_threshold_aggregated
         assert bar_spec.is_information_aggregated() == is_information_aggregated
-        assert BarSpecification.check_time_aggregated(bar_spec.aggregation) == is_time_aggregated
+        assert (
+            BarSpecification.check_time_aggregated(bar_spec.aggregation)
+            == is_time_aggregated
+        )
         assert (
             BarSpecification.check_threshold_aggregated(bar_spec.aggregation)
             == is_threshold_aggregated
@@ -334,7 +344,9 @@ class TestBarType:
             ],
         ],
     )
-    def test_bar_type_from_str_with_invalid_values(self, input: str, expected_err: str) -> None:
+    def test_bar_type_from_str_with_invalid_values(
+        self, input: str, expected_err: str
+    ) -> None:
         # Arrange, Act
         with pytest.raises(ValueError) as exc_info:
             BarType.from_str(input)
@@ -420,7 +432,9 @@ class TestBarType:
 class TestBar:
     def test_fully_qualified_name(self):
         # Arrange, Act, Assert
-        assert Bar.fully_qualified_name() == "nautilus_trader.core.nautilus_pyo3.model:Bar"
+        assert (
+            Bar.fully_qualified_name() == "nautilus_trader.core.nautilus_pyo3.model:Bar"
+        )
 
     def test_validation_when_high_below_open_raises_value_error(self):
         # Arrange, Act, Assert
@@ -536,7 +550,8 @@ class TestBar:
         # Act, Assert
         assert isinstance(hash(bar), int)
         assert (
-            str(bar) == "AUD/USD.SIM-1-MINUTE-BID-EXTERNAL,1.00001,1.00004,1.00000,1.00003,100000,0"
+            str(bar)
+            == "AUD/USD.SIM-1-MINUTE-BID-EXTERNAL,1.00001,1.00004,1.00000,1.00003,100000,0"
         )
         assert (
             repr(bar)

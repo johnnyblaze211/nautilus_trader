@@ -23,7 +23,9 @@ from py_clob_client.client import ClobClient
 from nautilus_trader.adapters.polymarket.common.constants import POLYMARKET_VENUE
 from nautilus_trader.adapters.polymarket.common.deltas import compute_effective_deltas
 from nautilus_trader.adapters.polymarket.common.parsing import update_instrument
-from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_instrument_id
+from nautilus_trader.adapters.polymarket.common.symbol import (
+    get_polymarket_instrument_id,
+)
 from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_token_id
 from nautilus_trader.adapters.polymarket.config import PolymarketDataClientConfig
 from nautilus_trader.adapters.polymarket.providers import PolymarketInstrumentProvider
@@ -31,8 +33,12 @@ from nautilus_trader.adapters.polymarket.schemas.book import PolymarketBookSnaps
 from nautilus_trader.adapters.polymarket.schemas.book import PolymarketQuotes
 from nautilus_trader.adapters.polymarket.schemas.book import PolymarketTickSizeChange
 from nautilus_trader.adapters.polymarket.schemas.book import PolymarketTrade
-from nautilus_trader.adapters.polymarket.websocket.client import PolymarketWebSocketChannel
-from nautilus_trader.adapters.polymarket.websocket.client import PolymarketWebSocketClient
+from nautilus_trader.adapters.polymarket.websocket.client import (
+    PolymarketWebSocketChannel,
+)
+from nautilus_trader.adapters.polymarket.websocket.client import (
+    PolymarketWebSocketClient,
+)
 from nautilus_trader.adapters.polymarket.websocket.types import MARKET_WS_MESSAGE
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
@@ -273,12 +279,16 @@ class PolymarketDataClient(LiveMarketDataClient):
             f"Cannot subscribe to {command.bar_type} bars: not implemented for Polymarket",
         )
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         self._log.error(
             f"Cannot unsubscribe from {command.instrument_id} order book deltas: unsubscribing not supported by Polymarket",
         )
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         self._log.error(
             f"Cannot unsubscribe from {command.instrument_id} order book snapshots: unsubscribing not supported by Polymarket",
         )
@@ -309,12 +319,16 @@ class PolymarketDataClient(LiveMarketDataClient):
                 f"Requesting instrument {request.instrument_id} with specified `end` which has no effect",
             )
 
-        instrument: BinaryOption | None = self._instrument_provider.find(request.instrument_id)
+        instrument: BinaryOption | None = self._instrument_provider.find(
+            request.instrument_id
+        )
         if instrument is None:
             self._log.error(f"Cannot find instrument for {request.instrument_id}")
             return
 
-        self._handle_instrument(instrument, request.id, request.start, request.end, request.params)
+        self._handle_instrument(
+            instrument, request.id, request.start, request.end, request.params
+        )
 
     async def _request_instruments(self, request: RequestInstruments) -> None:
         if request.start is not None:
@@ -359,31 +373,47 @@ class PolymarketDataClient(LiveMarketDataClient):
             for msg in ws_message:
                 if isinstance(msg, list):
                     if isinstance(msg, PolymarketBookSnapshot):
-                        instrument_id = get_polymarket_instrument_id(msg.market, msg.asset_id)
+                        instrument_id = get_polymarket_instrument_id(
+                            msg.market, msg.asset_id
+                        )
                         instrument = self._cache.instrument(instrument_id)
                         if instrument is None:
-                            self._log.error(f"Cannot find instrument for {instrument_id}")
+                            self._log.error(
+                                f"Cannot find instrument for {instrument_id}"
+                            )
                             return
-                        self._handle_book_snapshot(instrument=instrument, ws_message=msg)
+                        self._handle_book_snapshot(
+                            instrument=instrument, ws_message=msg
+                        )
                 else:
-                    instrument_id = get_polymarket_instrument_id(msg.market, msg.asset_id)
+                    instrument_id = get_polymarket_instrument_id(
+                        msg.market, msg.asset_id
+                    )
                     instrument = self._cache.instrument(instrument_id)
                     if instrument is None:
                         self._log.error(f"Cannot find instrument for {instrument_id}")
                         return
 
                     if isinstance(msg, PolymarketBookSnapshot):
-                        self._handle_book_snapshot(instrument=instrument, ws_message=msg)
+                        self._handle_book_snapshot(
+                            instrument=instrument, ws_message=msg
+                        )
                     elif isinstance(msg, PolymarketQuotes):
                         self._handle_quote(instrument=instrument, ws_message=msg)
                     elif isinstance(msg, PolymarketTrade):
                         self._handle_trade(instrument=instrument, ws_message=msg)
                     elif isinstance(msg, PolymarketTickSizeChange):
-                        self._handle_instrument_update(instrument=instrument, ws_message=msg)
+                        self._handle_instrument_update(
+                            instrument=instrument, ws_message=msg
+                        )
                     else:
-                        self._log.error(f"Unknown websocket message topic: {ws_message}")
+                        self._log.error(
+                            f"Unknown websocket message topic: {ws_message}"
+                        )
         except Exception as e:
-            self._log.exception(f"Failed to parse websocket message: {raw.decode()} with error", e)
+            self._log.exception(
+                f"Failed to parse websocket message: {raw.decode()} with error", e
+            )
 
     def _handle_book_snapshot(
         self,

@@ -422,7 +422,9 @@ class TestDataEngine:
         # Assert
         assert self.data_engine.request_count == 2
 
-    def test_execute_subscribe_when_data_type_not_implemented_logs_and_does_nothing(self):
+    def test_execute_subscribe_when_data_type_not_implemented_logs_and_does_nothing(
+        self,
+    ):
         # Arrange
         self.data_engine.register_client(self.binance_client)
 
@@ -503,7 +505,9 @@ class TestDataEngine:
         assert self.data_engine.command_count == 2
         assert self.data_engine.subscribed_custom_data() == []
 
-    def test_execute_unsubscribe_when_data_type_unrecognized_logs_and_does_nothing(self):
+    def test_execute_unsubscribe_when_data_type_unrecognized_logs_and_does_nothing(
+        self,
+    ):
         # Arrange
         self.data_engine.register_client(self.binance_client)
 
@@ -728,7 +732,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.instrument.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.instrument.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeInstrument(
             client_id=None,  # Will route to the Binance venue
@@ -755,8 +761,12 @@ class TestDataEngine:
 
         handler1 = []
         handler2 = []
-        self.msgbus.subscribe(topic="data.instrument.BINANCE.ETHUSDT", handler=handler1.append)
-        self.msgbus.subscribe(topic="data.instrument.BINANCE.ETHUSDT", handler=handler2.append)
+        self.msgbus.subscribe(
+            topic="data.instrument.BINANCE.ETHUSDT", handler=handler1.append
+        )
+        self.msgbus.subscribe(
+            topic="data.instrument.BINANCE.ETHUSDT", handler=handler2.append
+        )
 
         subscribe1 = SubscribeInstrument(
             client_id=None,  # Will route to the Binance venue
@@ -875,7 +885,9 @@ class TestDataEngine:
 
         self.data_engine.execute(subscribe)
 
-        assert self.binance_client.subscribed_order_book_deltas() == [ETHUSDT_BINANCE.id]
+        assert self.binance_client.subscribed_order_book_deltas() == [
+            ETHUSDT_BINANCE.id
+        ]
 
         unsubscribe = UnsubscribeOrderBook(
             book_data_type=OrderBookDelta,
@@ -914,7 +926,9 @@ class TestDataEngine:
         self.data_engine.execute(subscribe)
 
         assert self.binance_client.subscribed_order_book_snapshots() == []
-        assert self.binance_client.subscribed_order_book_deltas() == [ETHUSDT_BINANCE.id]
+        assert self.binance_client.subscribed_order_book_deltas() == [
+            ETHUSDT_BINANCE.id
+        ]
 
         unsubscribe = UnsubscribeOrderBook(
             client_id=None,  # Will route to the Binance venue
@@ -938,7 +952,9 @@ class TestDataEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler = []
         self.msgbus.subscribe(
@@ -975,7 +991,9 @@ class TestDataEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler = []
         self.msgbus.subscribe(
@@ -1017,10 +1035,14 @@ class TestDataEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler = []
-        self.msgbus.subscribe(topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeOrderBook(
             book_data_type=OrderBookDelta,
@@ -1050,10 +1072,14 @@ class TestDataEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler = []
-        self.msgbus.subscribe(topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeOrderBook(
             book_data_type=OrderBookDelta,
@@ -1135,7 +1161,9 @@ class TestDataEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler1 = []
         handler2 = []
@@ -1203,7 +1231,9 @@ class TestDataEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(BTCUSDT_PERP_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            BTCUSDT_PERP_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler1 = []
         handler2 = []
@@ -1268,7 +1298,9 @@ class TestDataEngine:
         # Arrange
         self.data_engine.register_client(self.betfair)
         self.betfair.start()
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         subscribe = SubscribeOrderBook(
             client_id=None,  # Will route to the Binance venue
@@ -1350,7 +1382,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.quotes.BINANCE.ETH/USD", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.quotes.BINANCE.ETH/USD", handler=handler.append
+        )
 
         subscribe = SubscribeQuoteTicks(
             client_id=None,  # Will route to the Binance venue
@@ -1372,7 +1406,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.quotes.BINANCE.ETH/USD", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.quotes.BINANCE.ETH/USD", handler=handler.append
+        )
 
         subscribe = SubscribeQuoteTicks(
             client_id=None,  # Will route to the Binance venue
@@ -1407,7 +1443,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.quotes.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.quotes.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeQuoteTicks(
             client_id=None,  # Will route to the Binance venue
@@ -1437,8 +1475,12 @@ class TestDataEngine:
         handler1 = []
         handler2 = []
 
-        self.msgbus.subscribe(topic="data.quotes.BINANCE.ETHUSDT", handler=handler1.append)
-        self.msgbus.subscribe(topic="data.quotes.BINANCE.ETHUSDT", handler=handler2.append)
+        self.msgbus.subscribe(
+            topic="data.quotes.BINANCE.ETHUSDT", handler=handler1.append
+        )
+        self.msgbus.subscribe(
+            topic="data.quotes.BINANCE.ETHUSDT", handler=handler2.append
+        )
 
         subscribe1 = SubscribeQuoteTicks(
             client_id=None,  # Will route to the Binance venue
@@ -1493,7 +1535,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.trades.BINANCE.ETH/USD", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.trades.BINANCE.ETH/USD", handler=handler.append
+        )
 
         subscribe = SubscribeTradeTicks(
             client_id=None,  # Will route to the Binance venue
@@ -1547,7 +1591,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.mark_prices.BINANCE.ETH/USD", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.mark_prices.BINANCE.ETH/USD", handler=handler.append
+        )
 
         subscribe = SubscribeMarkPrices(
             client_id=None,  # Will route to the Binance venue
@@ -1601,7 +1647,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.index_prices.BINANCE.ETH/USD", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.index_prices.BINANCE.ETH/USD", handler=handler.append
+        )
 
         subscribe = SubscribeIndexPrices(
             client_id=None,  # Will route to the Binance venue
@@ -1655,7 +1703,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.funding_rates.BINANCE.ETH/USD", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.funding_rates.BINANCE.ETH/USD", handler=handler.append
+        )
 
         subscribe = SubscribeFundingRates(
             client_id=None,  # Will route to the Binance venue
@@ -1684,13 +1734,17 @@ class TestDataEngine:
         assert self.data_engine.subscribed_funding_rates() == []
         assert self.binance_client.subscribed_funding_rates() == []
 
-    def test_process_funding_rate_when_subscriber_then_sends_to_registered_handler(self):
+    def test_process_funding_rate_when_subscriber_then_sends_to_registered_handler(
+        self,
+    ):
         # Arrange
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.funding_rates.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.funding_rates.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeFundingRates(
             client_id=None,  # Will route to the Binance venue
@@ -1720,15 +1774,21 @@ class TestDataEngine:
         assert handler == [funding_rate]
         assert self.cache.funding_rate(ETHUSDT_BINANCE.id) == funding_rate
 
-    def test_process_funding_rate_when_subscribers_then_sends_to_registered_handlers(self):
+    def test_process_funding_rate_when_subscribers_then_sends_to_registered_handlers(
+        self,
+    ):
         # Arrange
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
         handler1 = []
         handler2 = []
-        self.msgbus.subscribe(topic="data.funding_rates.BINANCE.ETHUSDT", handler=handler1.append)
-        self.msgbus.subscribe(topic="data.funding_rates.BINANCE.ETHUSDT", handler=handler2.append)
+        self.msgbus.subscribe(
+            topic="data.funding_rates.BINANCE.ETHUSDT", handler=handler1.append
+        )
+        self.msgbus.subscribe(
+            topic="data.funding_rates.BINANCE.ETHUSDT", handler=handler2.append
+        )
 
         subscribe1 = SubscribeFundingRates(
             client_id=None,  # Will route to the Binance venue
@@ -1817,7 +1877,9 @@ class TestDataEngine:
         self.binance_client.start()
 
         handler = []
-        self.msgbus.subscribe(topic="data.trades.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.trades.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeTradeTicks(
             client_id=None,  # Will route to the Binance venue
@@ -1846,8 +1908,12 @@ class TestDataEngine:
 
         handler1 = []
         handler2 = []
-        self.msgbus.subscribe(topic="data.trades.BINANCE.ETHUSDT", handler=handler1.append)
-        self.msgbus.subscribe(topic="data.trades.BINANCE.ETHUSDT", handler=handler2.append)
+        self.msgbus.subscribe(
+            topic="data.trades.BINANCE.ETHUSDT", handler=handler1.append
+        )
+        self.msgbus.subscribe(
+            topic="data.trades.BINANCE.ETHUSDT", handler=handler2.append
+        )
 
         subscribe1 = SubscribeTradeTicks(
             client_id=None,  # Will route to the Binance venue
@@ -1889,8 +1955,12 @@ class TestDataEngine:
 
         handler1 = []
         handler2 = []
-        self.msgbus.subscribe(topic="data.trades.BINANCE.ETHUSDT", handler=handler1.append)
-        self.msgbus.subscribe(topic="data.trades.SYNTH.BTC-ETH", handler=handler2.append)
+        self.msgbus.subscribe(
+            topic="data.trades.BINANCE.ETHUSDT", handler=handler1.append
+        )
+        self.msgbus.subscribe(
+            topic="data.trades.SYNTH.BTC-ETH", handler=handler2.append
+        )
 
         subscribe1 = SubscribeTradeTicks(
             client_id=None,  # Will route to the Binance venue
@@ -1948,8 +2018,12 @@ class TestDataEngine:
 
         handler1 = []
         handler2 = []
-        self.msgbus.subscribe(topic="data.quotes.BINANCE.ETHUSDT", handler=handler1.append)
-        self.msgbus.subscribe(topic="data.quotes.SYNTH.BTC-ETH", handler=handler2.append)
+        self.msgbus.subscribe(
+            topic="data.quotes.BINANCE.ETHUSDT", handler=handler1.append
+        )
+        self.msgbus.subscribe(
+            topic="data.quotes.SYNTH.BTC-ETH", handler=handler2.append
+        )
 
         subscribe1 = SubscribeQuoteTicks(
             client_id=None,  # Will route to the Binance venue
@@ -2236,7 +2310,9 @@ class TestDataEngine:
         assert handler == [bar1]
         assert self.cache.bar(bar_type) == bar1
 
-    def test_process_bar_when_revision_is_not_of_last_bar_does_not_cache_or_publish(self):
+    def test_process_bar_when_revision_is_not_of_last_bar_does_not_cache_or_publish(
+        self,
+    ):
         # Arrange
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
@@ -2486,7 +2562,9 @@ class TestDataEngine:
         catalog = setup_catalog(protocol="file", path=self.tmp_path / "catalog")
 
         idealpro = Venue("IDEALPRO")
-        base_instrument = TestInstrumentProvider.default_fx_ccy("AUD/USD", venue=idealpro)
+        base_instrument = TestInstrumentProvider.default_fx_ccy(
+            "AUD/USD", venue=idealpro
+        )
 
         # Create instruments with different ts_init values (representing different times when instrument was created/updated)
         ts_1 = 1_000_000_000_000_000_000  # Earlier time
@@ -2607,7 +2685,9 @@ class TestDataEngine:
         request = RequestInstrument(
             instrument_id=base_instrument.id,
             start=unix_nanos_to_dt(ts_1 - 500_000_000_000_000_000),  # Before ts_1
-            end=unix_nanos_to_dt(ts_1 + 500_000_000_000_000_000),  # Between ts_1 and ts_2
+            end=unix_nanos_to_dt(
+                ts_1 + 500_000_000_000_000_000
+            ),  # Between ts_1 and ts_2
             client_id=None,
             venue=idealpro,
             callback=handler.append,
@@ -2633,7 +2713,9 @@ class TestDataEngine:
         request = RequestInstrument(
             instrument_id=base_instrument.id,
             start=unix_nanos_to_dt(ts_2 - 500_000_000_000_000_000),  # Before ts_2
-            end=unix_nanos_to_dt(ts_2 + 500_000_000_000_000_000),  # Between ts_2 and ts_3
+            end=unix_nanos_to_dt(
+                ts_2 + 500_000_000_000_000_000
+            ),  # Between ts_2 and ts_3
             client_id=None,
             venue=idealpro,
             callback=handler.append,
@@ -2927,7 +3009,9 @@ class TestDataEngine:
         handler = []
         request = RequestInstruments(
             start=unix_nanos_to_dt(ts_1 - 500_000_000_000_000_000),  # Before ts_1
-            end=unix_nanos_to_dt(ts_2 + 500_000_000_000_000_000),  # After ts_2, before ts_3
+            end=unix_nanos_to_dt(
+                ts_2 + 500_000_000_000_000_000
+            ),  # After ts_2, before ts_3
             client_id=None,
             venue=idealpro,
             callback=handler.append,
@@ -3250,7 +3334,9 @@ class TestDataEngine:
             str(bar_type),
             _timestamps_to_filename(1711238400000000000, 1711324800000000000),
         )
-        other_name = os.path.join(catalog.path, "data", "bar", str(bar_type), "other.parquet")
+        other_name = os.path.join(
+            catalog.path, "data", "bar", str(bar_type), "other.parquet"
+        )
         os.rename(parquet_file, other_name)
 
         # Act
@@ -3561,9 +3647,15 @@ class TestDataEngine:
         end = utc_now - pd.Timedelta(minutes=1)
 
         bar_type_0 = data[0].bar_type
-        bar_type_1 = BarType.from_str("ESU4.GLBX-2-MINUTE-LAST-INTERNAL@1-MINUTE-EXTERNAL")
-        bar_type_2 = BarType.from_str("ESU4.GLBX-4-MINUTE-LAST-INTERNAL@2-MINUTE-INTERNAL")
-        bar_type_3 = BarType.from_str("ESU4.GLBX-5-MINUTE-LAST-INTERNAL@1-MINUTE-EXTERNAL")
+        bar_type_1 = BarType.from_str(
+            "ESU4.GLBX-2-MINUTE-LAST-INTERNAL@1-MINUTE-EXTERNAL"
+        )
+        bar_type_2 = BarType.from_str(
+            "ESU4.GLBX-4-MINUTE-LAST-INTERNAL@2-MINUTE-INTERNAL"
+        )
+        bar_type_3 = BarType.from_str(
+            "ESU4.GLBX-5-MINUTE-LAST-INTERNAL@1-MINUTE-EXTERNAL"
+        )
         bar_types = [bar_type_1, bar_type_2, bar_type_3]
 
         handler = []
@@ -3684,7 +3776,9 @@ class TestDataEngine:
         end = utc_now - pd.Timedelta(minutes=0, seconds=1)
 
         bar_type_1 = BarType.from_str("ESU4.GLBX-1-MINUTE-BID-INTERNAL")
-        bar_type_2 = BarType.from_str("ESU4.GLBX-2-MINUTE-BID-INTERNAL@1-MINUTE-INTERNAL")
+        bar_type_2 = BarType.from_str(
+            "ESU4.GLBX-2-MINUTE-BID-INTERNAL@1-MINUTE-INTERNAL"
+        )
         bar_types = [bar_type_1, bar_type_2]
 
         handler = []
@@ -3779,7 +3873,9 @@ class TestDataEngine:
         end = utc_now - pd.Timedelta(minutes=0, seconds=0)
 
         bar_type_1 = BarType.from_str("ESU4.GLBX-1-MINUTE-LAST-INTERNAL")
-        bar_type_2 = BarType.from_str("ESU4.GLBX-2-MINUTE-LAST-INTERNAL@1-MINUTE-INTERNAL")
+        bar_type_2 = BarType.from_str(
+            "ESU4.GLBX-2-MINUTE-LAST-INTERNAL@1-MINUTE-INTERNAL"
+        )
         bar_types = [bar_type_1, bar_type_2]
 
         handler = []
@@ -4403,10 +4499,14 @@ class TestDataBufferEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler = []
-        self.msgbus.subscribe(topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeOrderBook(
             client_id=ClientId(BINANCE.value),
@@ -4423,7 +4523,9 @@ class TestDataBufferEngine:
         self.data_engine.execute(subscribe)
 
         delta = TestDataStubs.order_book_delta(ETHUSDT_BINANCE.id)
-        last_delta = TestDataStubs.order_book_delta(ETHUSDT_BINANCE.id, flags=RecordFlag.F_LAST)
+        last_delta = TestDataStubs.order_book_delta(
+            ETHUSDT_BINANCE.id, flags=RecordFlag.F_LAST
+        )
 
         self.data_engine.process(delta)
 
@@ -4443,10 +4545,14 @@ class TestDataBufferEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler = []
-        self.msgbus.subscribe(topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeOrderBook(
             client_id=ClientId(BINANCE.value),
@@ -4462,7 +4568,9 @@ class TestDataBufferEngine:
 
         self.data_engine.execute(subscribe)
 
-        delta = TestDataStubs.order_book_delta(ETHUSDT_BINANCE.id, flags=RecordFlag.F_LAST)
+        delta = TestDataStubs.order_book_delta(
+            ETHUSDT_BINANCE.id, flags=RecordFlag.F_LAST
+        )
 
         # Act
         self.data_engine.process(delta)
@@ -4504,10 +4612,14 @@ class TestDataBufferEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler = []
-        self.msgbus.subscribe(topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeOrderBook(
             client_id=ClientId(BINANCE.value),
@@ -4524,7 +4636,9 @@ class TestDataBufferEngine:
         self.data_engine.execute(subscribe)
 
         deltas = TestDataStubs.order_book_deltas(ETHUSDT_BINANCE.id)
-        last_deltas = TestDataStubs.order_book_deltas(ETHUSDT_BINANCE.id, flags=RecordFlag.F_LAST)
+        last_deltas = TestDataStubs.order_book_deltas(
+            ETHUSDT_BINANCE.id, flags=RecordFlag.F_LAST
+        )
 
         self.data_engine.process(deltas)
 
@@ -4543,10 +4657,14 @@ class TestDataBufferEngine:
         self.data_engine.register_client(self.binance_client)
         self.binance_client.start()
 
-        self.data_engine.process(ETHUSDT_BINANCE)  # <-- add necessary instrument for test
+        self.data_engine.process(
+            ETHUSDT_BINANCE
+        )  # <-- add necessary instrument for test
 
         handler = []
-        self.msgbus.subscribe(topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append)
+        self.msgbus.subscribe(
+            topic="data.book.deltas.BINANCE.ETHUSDT", handler=handler.append
+        )
 
         subscribe = SubscribeOrderBook(
             client_id=ClientId(BINANCE.value),
@@ -4562,7 +4680,9 @@ class TestDataBufferEngine:
 
         self.data_engine.execute(subscribe)
 
-        deltas = TestDataStubs.order_book_deltas(ETHUSDT_BINANCE.id, flags=RecordFlag.F_LAST)
+        deltas = TestDataStubs.order_book_deltas(
+            ETHUSDT_BINANCE.id, flags=RecordFlag.F_LAST
+        )
 
         # Act
         self.data_engine.process(deltas)

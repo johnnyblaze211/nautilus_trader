@@ -34,8 +34,12 @@ class TestKeltnerPosition:
 
     def test_str_repr_returns_expected_string(self):
         # Arrange, Act, Assert
-        assert str(self.kp) == "KeltnerPosition(10, 2.5, EXPONENTIAL, SIMPLE, True, 0.0)"
-        assert repr(self.kp) == "KeltnerPosition(10, 2.5, EXPONENTIAL, SIMPLE, True, 0.0)"
+        assert (
+            str(self.kp) == "KeltnerPosition(10, 2.5, EXPONENTIAL, SIMPLE, True, 0.0)"
+        )
+        assert (
+            repr(self.kp) == "KeltnerPosition(10, 2.5, EXPONENTIAL, SIMPLE, True, 0.0)"
+        )
 
     def test_initialized_without_inputs_returns_false(self):
         # Arrange, Act, Assert

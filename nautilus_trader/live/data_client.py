@@ -172,7 +172,9 @@ class LiveDataClient(DataClient):
         asyncio.Task
 
         """
-        task_name = log_msg or getattr(coro, "__name__", None) or coro.__class__.__name__
+        task_name = (
+            log_msg or getattr(coro, "__name__", None) or coro.__class__.__name__
+        )
         self._log.debug(f"Creating task '{task_name}'")
         task = self._loop.create_task(
             coro,
@@ -457,7 +459,9 @@ class LiveMarketDataClient(MarketDataClient):
         self._log.debug(f"Creating async task '{task_name}'")
 
         if not self._loop or not self._loop.is_running():
-            self._log.error(f"Async task '{task_name}' created but event loop is not running")
+            self._log.error(
+                f"Async task '{task_name}' created but event loop is not running"
+            )
             return None
 
         task = self._loop.create_task(
@@ -512,7 +516,9 @@ class LiveMarketDataClient(MarketDataClient):
     ) -> None:
         if exception:
             tb_str = "".join(
-                traceback.format_exception(type(exception), exception, exception.__traceback__),
+                traceback.format_exception(
+                    type(exception), exception, exception.__traceback__
+                ),
             )
             self._log.error(
                 f"Error running '{coro_name}': {exception!r}\n{tb_str}",
@@ -785,7 +791,9 @@ class LiveMarketDataClient(MarketDataClient):
             success_color=LogColor.BLUE,
         )
 
-    def unsubscribe_instrument_status(self, command: UnsubscribeInstrumentStatus) -> None:
+    def unsubscribe_instrument_status(
+        self, command: UnsubscribeInstrumentStatus
+    ) -> None:
         self._remove_subscription_instrument_status(command.instrument_id)
         self.create_task(
             self._unsubscribe_instrument_status(command),
@@ -814,7 +822,9 @@ class LiveMarketDataClient(MarketDataClient):
 
     def request_instrument(self, request: RequestInstrument) -> None:
         time_range_str = format_utc_timerange(request.start, request.end)
-        self._log.info(f"Request {request.instrument_id} instrument{time_range_str}", LogColor.BLUE)
+        self._log.info(
+            f"Request {request.instrument_id} instrument{time_range_str}", LogColor.BLUE
+        )
         self.create_task(
             self._request_instrument(request),
             log_msg=f"request: instrument {request.instrument_id}",
@@ -858,7 +868,9 @@ class LiveMarketDataClient(MarketDataClient):
     def request_bars(self, request: RequestBars) -> None:
         time_range_str = format_utc_timerange(request.start, request.end)
         limit_str = f" limit={request.limit}" if request.limit != 0 else ""
-        self._log.info(f"Request {request.bar_type} bars{time_range_str}{limit_str}", LogColor.BLUE)
+        self._log.info(
+            f"Request {request.bar_type} bars{time_range_str}{limit_str}", LogColor.BLUE
+        )
         self.create_task(
             self._request_bars(request),
             log_msg=f"request: bars {request.bar_type}",
@@ -908,7 +920,9 @@ class LiveMarketDataClient(MarketDataClient):
             "implement the `_subscribe_order_book_deltas` coroutine",  # pragma: no cover
         )
 
-    async def _subscribe_order_book_snapshots(self, command: SubscribeOrderBook) -> None:
+    async def _subscribe_order_book_snapshots(
+        self, command: SubscribeOrderBook
+    ) -> None:
         raise NotImplementedError(  # pragma: no cover
             "implement the `_subscribe_order_book_snapshots` coroutine",  # pragma: no cover
         )
@@ -943,12 +957,16 @@ class LiveMarketDataClient(MarketDataClient):
             "implement the `_subscribe_bars` coroutine",  # pragma: no cover
         )
 
-    async def _subscribe_instrument_status(self, command: SubscribeInstrumentStatus) -> None:
+    async def _subscribe_instrument_status(
+        self, command: SubscribeInstrumentStatus
+    ) -> None:
         raise NotImplementedError(  # pragma: no cover
             "implement the `_subscribe_instrument_status` coroutine",  # pragma: no cover
         )
 
-    async def _subscribe_instrument_close(self, command: SubscribeInstrumentClose) -> None:
+    async def _subscribe_instrument_close(
+        self, command: SubscribeInstrumentClose
+    ) -> None:
         raise NotImplementedError(  # pragma: no cover
             "implement the `_subscribe_instrument_close` coroutine",  # pragma: no cover
         )
@@ -968,12 +986,16 @@ class LiveMarketDataClient(MarketDataClient):
             "implement the `_unsubscribe_instrument` coroutine",  # pragma: no cover
         )
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         raise NotImplementedError(  # pragma: no cover
             "implement the `_unsubscribe_order_book_deltas` coroutine",  # pragma: no cover
         )
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         raise NotImplementedError(  # pragma: no cover
             "implement the `_unsubscribe_order_book_snapshots` coroutine",  # pragma: no cover
         )
@@ -998,7 +1020,9 @@ class LiveMarketDataClient(MarketDataClient):
             "implement the `_unsubscribe_index_prices` coroutine",  # pragma: no cover
         )
 
-    async def _unsubscribe_funding_rates(self, command: UnsubscribeFundingRates) -> None:
+    async def _unsubscribe_funding_rates(
+        self, command: UnsubscribeFundingRates
+    ) -> None:
         raise NotImplementedError(  # pragma: no cover
             "implement the `_unsubscribe_funding_rates` coroutine",  # pragma: no cover
         )
@@ -1008,12 +1032,16 @@ class LiveMarketDataClient(MarketDataClient):
             "implement the `_unsubscribe_bars` coroutine",  # pragma: no cover
         )
 
-    async def _unsubscribe_instrument_status(self, command: UnsubscribeInstrumentStatus) -> None:
+    async def _unsubscribe_instrument_status(
+        self, command: UnsubscribeInstrumentStatus
+    ) -> None:
         raise NotImplementedError(  # pragma: no cover
             "implement the `_unsubscribe_instrument_status` coroutine",  # pragma: no cover
         )
 
-    async def _unsubscribe_instrument_close(self, command: UnsubscribeInstrumentClose) -> None:
+    async def _unsubscribe_instrument_close(
+        self, command: UnsubscribeInstrumentClose
+    ) -> None:
         raise NotImplementedError(  # pragma: no cover
             "implement the `_unsubscribe_instrument_close` coroutine",  # pragma: no cover
         )
@@ -1048,7 +1076,9 @@ class LiveMarketDataClient(MarketDataClient):
             "implement the `_request_bars` coroutine",  # pragma: no cover
         )
 
-    async def _request_order_book_snapshot(self, request: RequestOrderBookSnapshot) -> None:
+    async def _request_order_book_snapshot(
+        self, request: RequestOrderBookSnapshot
+    ) -> None:
         raise NotImplementedError(
             "implement the `_request_order_book_snapshot` coroutine",  # pragma: no cover
         )

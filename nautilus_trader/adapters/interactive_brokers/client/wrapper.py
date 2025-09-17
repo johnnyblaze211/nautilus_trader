@@ -54,7 +54,9 @@ from nautilus_trader.common.component import Logger
 
 
 if TYPE_CHECKING:
-    from nautilus_trader.adapters.interactive_brokers.client.client import InteractiveBrokersClient
+    from nautilus_trader.adapters.interactive_brokers.client.client import (
+        InteractiveBrokersClient,
+    )
 
 
 class InteractiveBrokersEWrapper(EWrapper):
@@ -1182,13 +1184,17 @@ class InteractiveBrokersEWrapper(EWrapper):
         """
         self.logAnswer(current_fn_name(), vars())
 
-    def marketRule(self, marketRuleId: int, priceIncrements: ListOfPriceIncrements) -> None:
+    def marketRule(
+        self, marketRuleId: int, priceIncrements: ListOfPriceIncrements
+    ) -> None:
         """
         Return the minimum price increment structure for a specific market rule ID.
         """
         self.logAnswer(current_fn_name(), vars())
 
-    def pnl(self, reqId: int, dailyPnL: float, unrealizedPnL: float, realizedPnL: float) -> None:
+    def pnl(
+        self, reqId: int, dailyPnL: float, unrealizedPnL: float, realizedPnL: float
+    ) -> None:
         """
         Return the daily Profit and Loss (PnL) for the account.
         """
@@ -1208,7 +1214,9 @@ class InteractiveBrokersEWrapper(EWrapper):
         """
         self.logAnswer(current_fn_name(), vars())
 
-    def historicalTicks(self, reqId: int, ticks: ListOfHistoricalTick, done: bool) -> None:
+    def historicalTicks(
+        self, reqId: int, ticks: ListOfHistoricalTick, done: bool
+    ) -> None:
         """
         Return historical tick data when whatToShow is set to MIDPOINT.
         """
@@ -1239,7 +1247,9 @@ class InteractiveBrokersEWrapper(EWrapper):
         )
         self._client.submit_to_msg_handler_queue(task)
 
-    def historicalTicksLast(self, reqId: int, ticks: ListOfHistoricalTickLast, done: bool) -> None:
+    def historicalTicksLast(
+        self, reqId: int, ticks: ListOfHistoricalTickLast, done: bool
+    ) -> None:
         """
         Return historical tick data when whatToShow is set to TRADES.
         """
@@ -1318,7 +1328,9 @@ class InteractiveBrokersEWrapper(EWrapper):
         """
         self.logAnswer(current_fn_name(), vars())
 
-    def completedOrder(self, contract: Contract, order: Order, orderState: OrderState) -> None:
+    def completedOrder(
+        self, contract: Contract, order: Order, orderState: OrderState
+    ) -> None:
         """
         Feed in completed orders.
 

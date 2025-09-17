@@ -16,7 +16,8 @@
 import datetime as dt
 from enum import Enum
 from io import TextIOWrapper
-from typing import Any, BinaryIO
+from typing import Any
+from typing import BinaryIO
 
 import fsspec
 import pandas as pd
@@ -109,7 +110,9 @@ class StreamingFeatherWriter:
             if not self.fs.isdir(self.path):
                 raise FileNotFoundError("Path must be directory or empty")
         else:
-            self.fs.makedirs(self.path, exist_ok=True)  # Create directory if it doesn't exist
+            self.fs.makedirs(
+                self.path, exist_ok=True
+            )  # Create directory if it doesn't exist
 
         self.include_types = include_types
 
@@ -162,7 +165,9 @@ class StreamingFeatherWriter:
                 table_name not in self._next_rotation_times
                 or self._next_rotation_times[table_name] is None
             ):
-                user_rotation_time = pd.Timestamp.combine(now.date(), self.rotation_time)
+                user_rotation_time = pd.Timestamp.combine(
+                    now.date(), self.rotation_time
+                )
                 next_rotation_time = pd.Timestamp(
                     user_rotation_time,
                     tz=self.rotation_timezone,
@@ -196,7 +201,10 @@ class StreamingFeatherWriter:
             return False
         elif self.rotation_mode == RotationMode.SIZE:
             return self._file_sizes.get(table_name, 0) >= self.max_file_size
-        elif self.rotation_mode in (RotationMode.INTERVAL, RotationMode.SCHEDULED_DATES):
+        elif self.rotation_mode in (
+            RotationMode.INTERVAL,
+            RotationMode.SCHEDULED_DATES,
+        ):
             now = self.clock.utc_now()
             next_rotation_time = self._next_rotation_times.get(table_name)
 

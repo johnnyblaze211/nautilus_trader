@@ -56,7 +56,9 @@ class DYDXGetOrderEndpoint(DYDXHttpEndpoint):
         self.http_method = HttpMethod.GET
         self._get_resp_decoder = msgspec.json.Decoder(DYDXOrderResponse)
 
-    async def get(self, order_id: str, params: DYDXGetOrderGetParams) -> DYDXOrderResponse | None:
+    async def get(
+        self, order_id: str, params: DYDXGetOrderGetParams
+    ) -> DYDXOrderResponse | None:
         """
         Call the endpoint to list the instruments.
         """

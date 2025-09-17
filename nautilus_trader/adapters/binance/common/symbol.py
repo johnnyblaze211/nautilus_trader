@@ -61,7 +61,9 @@ class BinanceSymbols(str):
     def __new__(cls, symbols: list[str]) -> BinanceSymbols:  # noqa: PYI034
         PyCondition.not_empty(symbols, "symbols")
 
-        binance_symbols: list[BinanceSymbol] = [BinanceSymbol(symbol) for symbol in symbols]
+        binance_symbols: list[BinanceSymbol] = [
+            BinanceSymbol(symbol) for symbol in symbols
+        ]
         return super().__new__(cls, json.dumps(binance_symbols).replace(" ", ""))
 
     def parse_str_to_list(self) -> list[BinanceSymbol]:

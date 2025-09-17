@@ -122,11 +122,15 @@ class TestHistoricalAggStrategy(Strategy):
             start_historical_bars = utc_now - pd.Timedelta(
                 minutes=self.config.historical_start_delay,
             )
-            end_historical_bars = utc_now - pd.Timedelta(minutes=self.config.historical_end_delay)
+            end_historical_bars = utc_now - pd.Timedelta(
+                minutes=self.config.historical_end_delay
+            )
             self.user_log(f"on_start: {start_historical_bars=}, {end_historical_bars=}")
 
             symbol_id = self.config.symbol_id
-            self.external_bar_type = BarType.from_str(f"{symbol_id}-1-MINUTE-LAST-EXTERNAL")
+            self.external_bar_type = BarType.from_str(
+                f"{symbol_id}-1-MINUTE-LAST-EXTERNAL"
+            )
             self.bar_type_1 = BarType.from_str(
                 f"{symbol_id}-2-MINUTE-LAST-INTERNAL@1-MINUTE-EXTERNAL",
             )
@@ -173,7 +177,9 @@ class TestHistoricalAggStrategy(Strategy):
             )
             self.user_log(f"on_start: {start_historical_bars=}, {end_historical_bars=}")
 
-            self.bar_type_1 = BarType.from_str(f"{self.config.symbol_id}-1-MINUTE-BID-INTERNAL")
+            self.bar_type_1 = BarType.from_str(
+                f"{self.config.symbol_id}-1-MINUTE-BID-INTERNAL"
+            )
             self.bar_type_2 = BarType.from_str(
                 f"{self.config.symbol_id}-2-MINUTE-BID-INTERNAL@1-MINUTE-INTERNAL",
             )
@@ -200,7 +206,9 @@ class TestHistoricalAggStrategy(Strategy):
             )
             self.user_log(f"on_start: {start_historical_bars=}, {end_historical_bars=}")
 
-            self.bar_type_1 = BarType.from_str(f"{self.config.symbol_id}-1-MINUTE-LAST-INTERNAL")
+            self.bar_type_1 = BarType.from_str(
+                f"{self.config.symbol_id}-1-MINUTE-LAST-INTERNAL"
+            )
             self.bar_type_2 = BarType.from_str(
                 f"{self.config.symbol_id}-2-MINUTE-LAST-INTERNAL@1-MINUTE-INTERNAL",
             )
@@ -227,7 +235,9 @@ class TestHistoricalAggStrategy(Strategy):
             # self.user_log(f"{self.composite_sma.value=}, {self.composite_sma.initialized=}")
 
     def on_bar(self, bar):
-        self.user_log(f"bar ts_init = {unix_nanos_to_iso8601(bar.ts_init)}, {bar.ts_init}")
+        self.user_log(
+            f"bar ts_init = {unix_nanos_to_iso8601(bar.ts_init)}, {bar.ts_init}"
+        )
         self.user_log(bar)
 
         # self.user_log(f"{self.external_sma.value=}, {self.external_sma.initialized=}")
@@ -257,8 +267,12 @@ tested_market_data = "bars"  # "bars" | "quotes" | "trades"
 historical_start_delay = 10 if tested_market_data == "bars" else 2
 historical_end_delay = 1 if tested_market_data == "bars" else 0
 
-backtest_start = "2024-07-01T23:55" if tested_market_data == "bars" else "2024-07-02T00:00"
-backtest_end = "2024-07-02T00:10" if tested_market_data == "bars" else "2024-07-02T00:02"
+backtest_start = (
+    "2024-07-01T23:55" if tested_market_data == "bars" else "2024-07-02T00:00"
+)
+backtest_end = (
+    "2024-07-02T00:10" if tested_market_data == "bars" else "2024-07-02T00:02"
+)
 
 strategies = [
     ImportableStrategyConfig(

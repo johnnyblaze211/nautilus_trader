@@ -410,7 +410,9 @@ class TestLiveExecutionReconciliation:
         assert self.cache.orders()[0].status == OrderStatus.FILLED
 
     @pytest.mark.asyncio()
-    async def test_reconcile_state_no_cached_with_partially_filled_order_and_trade(self):
+    async def test_reconcile_state_no_cached_with_partially_filled_order_and_trade(
+        self,
+    ):
         # Arrange
         venue_order_id = VenueOrderId("1")
         order_report = OrderStatusReport(
@@ -463,7 +465,9 @@ class TestLiveExecutionReconciliation:
         assert self.cache.orders()[0].status == OrderStatus.PARTIALLY_FILLED
 
     @pytest.mark.asyncio()
-    async def test_reconcile_state_no_cached_with_partially_filled_order_and_no_trade(self):
+    async def test_reconcile_state_no_cached_with_partially_filled_order_and_no_trade(
+        self,
+    ):
         # Arrange
         venue_order_id = VenueOrderId("1")
         order_report = OrderStatusReport(
@@ -498,7 +502,9 @@ class TestLiveExecutionReconciliation:
         assert self.cache.orders()[0].status == OrderStatus.PARTIALLY_FILLED
 
     @pytest.mark.asyncio()
-    async def test_reconcile_state_no_cached_with_partially_filled_order_and_canceled(self):
+    async def test_reconcile_state_no_cached_with_partially_filled_order_and_canceled(
+        self,
+    ):
         # Arrange
         venue_order_id = VenueOrderId("1")
         order_report = OrderStatusReport(
@@ -662,7 +668,9 @@ class TestLiveExecutionReconciliation:
         assert cached_fill_event.last_px == Price.from_str("1.00000")  # Original price
         # Note: commission is calculated automatically by TestEventStubs, so we just check it exists
         assert cached_fill_event.commission is not None
-        assert cached_fill_event.liquidity_side == LiquiditySide.MAKER  # Original liquidity
+        assert (
+            cached_fill_event.liquidity_side == LiquiditySide.MAKER
+        )  # Original liquidity
 
 
 class TestReconciliationEdgeCases:
@@ -761,14 +769,18 @@ class TestReconciliationEdgeCases:
         assert result is False
 
     @pytest.mark.asyncio()
-    async def test_mass_status_failure_preserves_position_results(self, live_exec_engine):
+    async def test_mass_status_failure_preserves_position_results(
+        self, live_exec_engine
+    ):
         """
         Test that mass status failure is not overwritten by position reconciliation.
         """
         # Complex mocking required
 
     @pytest.mark.asyncio()
-    async def test_position_reconciliation_with_small_differences(self, live_exec_engine):
+    async def test_position_reconciliation_with_small_differences(
+        self, live_exec_engine
+    ):
         """
         Test that small decimal differences are handled via instrument precision.
         """
@@ -872,11 +884,15 @@ class TestReconciliationEdgeCases:
         live_exec_engine._generate_order_filled(order, fill_report, instrument)
 
         # Assert
-        fill_events = [event for event in generated_events if isinstance(event, OrderFilled)]
+        fill_events = [
+            event for event in generated_events if isinstance(event, OrderFilled)
+        ]
         assert len(fill_events) == 1
 
     @pytest.mark.asyncio()
-    async def test_long_position_reconciliation_quantity_mismatch(self, live_exec_engine):
+    async def test_long_position_reconciliation_quantity_mismatch(
+        self, live_exec_engine
+    ):
         """
         Test reconciliation when internal long position quantity differs from external
         report.
@@ -889,7 +905,9 @@ class TestReconciliationEdgeCases:
         live_exec_engine.generate_missing_orders = True
 
         # Create internal long position (100 units)
-        order = TestExecStubs.limit_order(instrument=instrument, order_side=OrderSide.BUY)
+        order = TestExecStubs.limit_order(
+            instrument=instrument, order_side=OrderSide.BUY
+        )
         fill = TestEventStubs.order_filled(
             order,
             instrument=instrument,
@@ -934,7 +952,9 @@ class TestReconciliationEdgeCases:
         assert order_report.order_status == OrderStatus.FILLED
 
     @pytest.mark.asyncio()
-    async def test_short_position_reconciliation_quantity_mismatch(self, live_exec_engine):
+    async def test_short_position_reconciliation_quantity_mismatch(
+        self, live_exec_engine
+    ):
         """
         Test reconciliation when internal short position quantity differs from external
         report.
@@ -947,7 +967,9 @@ class TestReconciliationEdgeCases:
         live_exec_engine.generate_missing_orders = True
 
         # Create internal short position (-100 units)
-        order = TestExecStubs.limit_order(instrument=instrument, order_side=OrderSide.SELL)
+        order = TestExecStubs.limit_order(
+            instrument=instrument, order_side=OrderSide.SELL
+        )
         fill = TestEventStubs.order_filled(
             order,
             instrument=instrument,
@@ -992,7 +1014,9 @@ class TestReconciliationEdgeCases:
         assert order_report.order_status == OrderStatus.FILLED
 
     @pytest.mark.asyncio()
-    async def test_long_position_reconciliation_external_smaller(self, live_exec_engine):
+    async def test_long_position_reconciliation_external_smaller(
+        self, live_exec_engine
+    ):
         """
         Test reconciliation when external long position is smaller than internal
         position.
@@ -1005,7 +1029,9 @@ class TestReconciliationEdgeCases:
         live_exec_engine.generate_missing_orders = True
 
         # Create internal long position (150 units)
-        order = TestExecStubs.limit_order(instrument=instrument, order_side=OrderSide.BUY)
+        order = TestExecStubs.limit_order(
+            instrument=instrument, order_side=OrderSide.BUY
+        )
         fill = TestEventStubs.order_filled(
             order,
             instrument=instrument,
@@ -1050,7 +1076,9 @@ class TestReconciliationEdgeCases:
         assert order_report.order_status == OrderStatus.FILLED
 
     @pytest.mark.asyncio()
-    async def test_short_position_reconciliation_external_smaller(self, live_exec_engine):
+    async def test_short_position_reconciliation_external_smaller(
+        self, live_exec_engine
+    ):
         """
         Test reconciliation when external short position is smaller than internal
         position.
@@ -1063,7 +1091,9 @@ class TestReconciliationEdgeCases:
         live_exec_engine.generate_missing_orders = True
 
         # Create internal short position (-150 units)
-        order = TestExecStubs.limit_order(instrument=instrument, order_side=OrderSide.SELL)
+        order = TestExecStubs.limit_order(
+            instrument=instrument, order_side=OrderSide.SELL
+        )
         fill = TestEventStubs.order_filled(
             order,
             instrument=instrument,
@@ -1108,7 +1138,9 @@ class TestReconciliationEdgeCases:
         assert order_report.order_status == OrderStatus.FILLED
 
     @pytest.mark.asyncio()
-    async def test_position_reconciliation_cross_side_long_to_short(self, live_exec_engine):
+    async def test_position_reconciliation_cross_side_long_to_short(
+        self, live_exec_engine
+    ):
         """
         Test reconciliation when internal long position conflicts with external short
         position.
@@ -1121,7 +1153,9 @@ class TestReconciliationEdgeCases:
         live_exec_engine.generate_missing_orders = True
 
         # Create internal long position (100 units)
-        order = TestExecStubs.limit_order(instrument=instrument, order_side=OrderSide.BUY)
+        order = TestExecStubs.limit_order(
+            instrument=instrument, order_side=OrderSide.BUY
+        )
         fill = TestEventStubs.order_filled(
             order,
             instrument=instrument,
@@ -1162,12 +1196,16 @@ class TestReconciliationEdgeCases:
 
         order_report, _ = reconcile_calls[0]
         assert order_report.order_side == OrderSide.SELL
-        assert order_report.quantity == Quantity.from_int(150)  # 100 to close + 50 to open short
+        assert order_report.quantity == Quantity.from_int(
+            150
+        )  # 100 to close + 50 to open short
         assert order_report.filled_qty == Quantity.from_int(150)
         assert order_report.order_status == OrderStatus.FILLED
 
     @pytest.mark.asyncio()
-    async def test_position_reconciliation_cross_side_short_to_long(self, live_exec_engine):
+    async def test_position_reconciliation_cross_side_short_to_long(
+        self, live_exec_engine
+    ):
         """
         Test reconciliation when internal short position conflicts with external long
         position.
@@ -1180,7 +1218,9 @@ class TestReconciliationEdgeCases:
         live_exec_engine.generate_missing_orders = True
 
         # Create internal short position (-100 units)
-        order = TestExecStubs.limit_order(instrument=instrument, order_side=OrderSide.SELL)
+        order = TestExecStubs.limit_order(
+            instrument=instrument, order_side=OrderSide.SELL
+        )
         fill = TestEventStubs.order_filled(
             order,
             instrument=instrument,
@@ -1220,12 +1260,16 @@ class TestReconciliationEdgeCases:
 
         order_report, _ = reconcile_calls[0]
         assert order_report.order_side == OrderSide.BUY
-        assert order_report.quantity == Quantity.from_int(175)  # 100 to close + 75 to open long
+        assert order_report.quantity == Quantity.from_int(
+            175
+        )  # 100 to close + 75 to open long
         assert order_report.filled_qty == Quantity.from_int(175)
         assert order_report.order_status == OrderStatus.FILLED
 
     @pytest.mark.asyncio()
-    async def test_position_reconciliation_zero_difference_after_rounding(self, live_exec_engine):
+    async def test_position_reconciliation_zero_difference_after_rounding(
+        self, live_exec_engine
+    ):
         """
         Test that zero differences after rounding are handled correctly.
         """
@@ -1237,7 +1281,9 @@ class TestReconciliationEdgeCases:
         live_exec_engine.generate_missing_orders = True
 
         # Create internal long position (100 units)
-        order = TestExecStubs.limit_order(instrument=instrument, order_side=OrderSide.BUY)
+        order = TestExecStubs.limit_order(
+            instrument=instrument, order_side=OrderSide.BUY
+        )
         fill = TestEventStubs.order_filled(
             order,
             instrument=instrument,
@@ -1276,7 +1322,9 @@ class TestReconciliationEdgeCases:
         assert len(reconcile_calls) == 0  # No order should be generated due to rounding
 
     @pytest.mark.asyncio()
-    async def test_inferred_fill_with_positive_quantity_difference(self, live_exec_engine):
+    async def test_inferred_fill_with_positive_quantity_difference(
+        self, live_exec_engine
+    ):
         """
         Test that inferred fill generation works correctly with normal positive quantity
         differences.
@@ -1318,7 +1366,9 @@ class TestReconciliationEdgeCases:
         )
 
         # Act
-        inferred_fill = live_exec_engine._generate_inferred_fill(order, report, instrument)
+        inferred_fill = live_exec_engine._generate_inferred_fill(
+            order, report, instrument
+        )
 
         # Assert
         assert inferred_fill is not None
@@ -1403,7 +1453,9 @@ class TestReconciliationEdgeCases:
         live_exec_engine.generate_missing_orders = True
 
         # Create internal long position (100 units)
-        order = TestExecStubs.limit_order(instrument=instrument, order_side=OrderSide.BUY)
+        order = TestExecStubs.limit_order(
+            instrument=instrument, order_side=OrderSide.BUY
+        )
         fill = TestEventStubs.order_filled(
             order,
             instrument=instrument,
@@ -1500,7 +1552,9 @@ class TestReconciliationEdgeCases:
         # Assert - reconciliation should succeed but no order should be added (filtered out)
         assert result is True
         orders_after = self.cache.orders()
-        assert len(orders_after) == orders_before  # No new orders added due to filtering
+        assert (
+            len(orders_after) == orders_before
+        )  # No new orders added due to filtering
 
     @pytest.mark.asyncio()
     async def test_position_reconciliation_fallback_to_market_order_when_no_price_available(
@@ -1569,7 +1623,9 @@ class TestReconciliationEdgeCases:
 
         # Verify the order was added to cache with INTERNAL-DIFF strategy
         orders = self.cache.orders()
-        internal_diff_orders = [o for o in orders if o.strategy_id.value == "INTERNAL-DIFF"]
+        internal_diff_orders = [
+            o for o in orders if o.strategy_id.value == "INTERNAL-DIFF"
+        ]
         assert len(internal_diff_orders) == 1
 
         generated_order = internal_diff_orders[0]
@@ -1646,14 +1702,18 @@ class TestReconciliationEdgeCases:
 
         # Verify the order was added to cache
         orders = self.cache.orders()
-        internal_diff_orders = [o for o in orders if o.strategy_id.value == "INTERNAL-DIFF"]
+        internal_diff_orders = [
+            o for o in orders if o.strategy_id.value == "INTERNAL-DIFF"
+        ]
         assert len(internal_diff_orders) == 1
 
         generated_order = internal_diff_orders[0]
         assert generated_order.order_type == OrderType.LIMIT
         assert generated_order.side == OrderSide.BUY
         assert generated_order.quantity == Quantity.from_int(100)
-        assert generated_order.price == Price.from_str("1.0001")  # Ask price for BUY order
+        assert generated_order.price == Price.from_str(
+            "1.0001"
+        )  # Ask price for BUY order
         assert generated_order.status == OrderStatus.FILLED
 
 

@@ -16,7 +16,9 @@
 from nautilus_trader.adapters.binance.common.enums import BinanceAccountType
 
 
-def get_http_base_url(account_type: BinanceAccountType, is_testnet: bool, is_us: bool) -> str:
+def get_http_base_url(
+    account_type: BinanceAccountType, is_testnet: bool, is_us: bool
+) -> str:
     # Testnet base URLs
     if is_testnet:
         if account_type.is_spot_or_margin:
@@ -47,7 +49,9 @@ def get_http_base_url(account_type: BinanceAccountType, is_testnet: bool, is_us:
         )
 
 
-def get_ws_base_url(account_type: BinanceAccountType, is_testnet: bool, is_us: bool) -> str:
+def get_ws_base_url(
+    account_type: BinanceAccountType, is_testnet: bool, is_us: bool
+) -> str:
     # Testnet base URLs
     if is_testnet:
         if account_type.is_spot_or_margin:

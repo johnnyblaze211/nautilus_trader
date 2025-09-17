@@ -172,7 +172,9 @@ class TestDYDXDataClientBarPartitioning:
             (2000, 1000, True),  # Multiple chunks needed
         ],
     )
-    def test_partitioning_threshold_boundary_conditions(self, bars_count, max_bars, expected):
+    def test_partitioning_threshold_boundary_conditions(
+        self, bars_count, max_bars, expected
+    ):
         """
         Test partitioning logic at various boundary conditions.
         """
@@ -189,7 +191,9 @@ class TestDYDXDataClientBarPartitioning:
         )
 
         # Act
-        result = self.data_client._should_partition_bars_request(request, max_bars=max_bars)
+        result = self.data_client._should_partition_bars_request(
+            request, max_bars=max_bars
+        )
 
         # Assert
         assert result == expected
@@ -250,7 +254,9 @@ class TestDYDXDataClientBarPartitioning:
             (3000, 3),  # Three chunks: 1000 + 1000 + 1000
         ],
     )
-    async def test_request_chunking_for_different_sizes(self, total_bars, expected_chunks):
+    async def test_request_chunking_for_different_sizes(
+        self, total_bars, expected_chunks
+    ):
         """
         Test that requests are properly chunked based on size.
         """
@@ -268,7 +274,9 @@ class TestDYDXDataClientBarPartitioning:
         # Mock _fetch_candles directly to track calls
         fetch_call_count = 0
 
-        async def mock_fetch_candles(symbol, bar_type, instrument, start, end, request_limit):
+        async def mock_fetch_candles(
+            symbol, bar_type, instrument, start, end, request_limit
+        ):
             nonlocal fetch_call_count
             fetch_call_count += 1
 
@@ -291,7 +299,9 @@ class TestDYDXDataClientBarPartitioning:
             return bars
 
         # Mock the fetch_candles method
-        with patch.object(self.data_client, "_fetch_candles", side_effect=mock_fetch_candles):
+        with patch.object(
+            self.data_client, "_fetch_candles", side_effect=mock_fetch_candles
+        ):
             with patch.object(self.data_client, "_handle_bars_py") as mock_handle:
                 # Act
                 await self.data_client._request_bars(request)
@@ -327,7 +337,9 @@ class TestDYDXDataClientBarPartitioning:
         ]
         # Add one partial bar
         mock_candles.append(
-            self.create_mock_candle(start_time + timedelta(minutes=59), 159.0, is_partial=True),
+            self.create_mock_candle(
+                start_time + timedelta(minutes=59), 159.0, is_partial=True
+            ),
         )
 
         mock_response = DYDXCandlesResponse(candles=mock_candles)
@@ -478,13 +490,17 @@ class TestDYDXDataClientBarPartitioning:
         fetch_call_count = 0
         all_bars_returned = 0
 
-        async def mock_fetch_candles(symbol, bar_type, instrument, start, end, request_limit):
+        async def mock_fetch_candles(
+            symbol, bar_type, instrument, start, end, request_limit
+        ):
             nonlocal fetch_call_count, all_bars_returned
             fetch_call_count += 1
 
             # Calculate how many bars this chunk should return
             if start and end:
-                chunk_minutes = min(int((end - start).total_seconds() / 60), request_limit)
+                chunk_minutes = min(
+                    int((end - start).total_seconds() / 60), request_limit
+                )
             else:
                 chunk_minutes = min(total_bars, request_limit)
 
@@ -517,7 +533,9 @@ class TestDYDXDataClientBarPartitioning:
             return bars
 
         # Mock the _fetch_candles method
-        with patch.object(self.data_client, "_fetch_candles", side_effect=mock_fetch_candles):
+        with patch.object(
+            self.data_client, "_fetch_candles", side_effect=mock_fetch_candles
+        ):
             with patch.object(self.data_client, "_handle_bars_py") as mock_handle:
                 # Act
                 await self.data_client._request_bars(request)
@@ -550,7 +568,8 @@ class TestDYDXDataClientBarPartitioning:
         end_time = datetime(2024, 1, 1, 1, tzinfo=UTC)
 
         mock_candles = [
-            self.create_mock_candle(start_time + timedelta(minutes=i), 100.0 + i) for i in range(60)
+            self.create_mock_candle(start_time + timedelta(minutes=i), 100.0 + i)
+            for i in range(60)
         ]
 
         mock_response = DYDXCandlesResponse(candles=mock_candles)
@@ -637,7 +656,9 @@ class TestDYDXDataClientBarPartitioning:
 
             # Act & Assert
             try:
-                result = self.data_client._should_partition_bars_request(request, max_bars=1000)
+                result = self.data_client._should_partition_bars_request(
+                    request, max_bars=1000
+                )
                 assert result == expected, f"Failed for case: {description}"
             except (TypeError, AttributeError) as e:
                 # For cases where start/end are None, we expect an exception

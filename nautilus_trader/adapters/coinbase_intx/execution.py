@@ -20,10 +20,14 @@ from typing import Any
 
 from nautilus_trader.adapters.coinbase_intx.config import CoinbaseIntxExecClientConfig
 from nautilus_trader.adapters.coinbase_intx.constants import COINBASE_INTX
-from nautilus_trader.adapters.coinbase_intx.constants import COINBASE_INTX_SUPPORTED_ORDER_TYPES
+from nautilus_trader.adapters.coinbase_intx.constants import (
+    COINBASE_INTX_SUPPORTED_ORDER_TYPES,
+)
 from nautilus_trader.adapters.coinbase_intx.constants import COINBASE_INTX_SUPPORTED_TIF
 from nautilus_trader.adapters.coinbase_intx.constants import COINBASE_INTX_VENUE
-from nautilus_trader.adapters.coinbase_intx.providers import CoinbaseIntxInstrumentProvider
+from nautilus_trader.adapters.coinbase_intx.providers import (
+    CoinbaseIntxInstrumentProvider,
+)
 from nautilus_trader.adapters.env import get_env_key
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
@@ -122,7 +126,9 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
         self._config = config
         self._log.info(f"{config.http_timeout_secs=}", LogColor.BLUE)
 
-        self._portfolio_id: str = config.portfolio_id or get_env_key("COINBASE_INTX_PORTFOLIO_ID")
+        self._portfolio_id: str = config.portfolio_id or get_env_key(
+            "COINBASE_INTX_PORTFOLIO_ID"
+        )
         account_id = AccountId(f"{name or COINBASE_INTX}-{self._portfolio_id}")
         self._set_account_id(account_id)
         self.pyo3_account_id = nautilus_pyo3.AccountId(account_id.value)
@@ -203,7 +209,9 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
 
     async def _update_account_state(self) -> None:
         try:
-            pyo3_account_state = await self._http_client.request_account_state(self.pyo3_account_id)
+            pyo3_account_state = await self._http_client.request_account_state(
+                self.pyo3_account_id
+            )
         except ValueError as e:
             self._log.error(str(e))
             return
@@ -227,7 +235,9 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
         for order in open_orders:
             active_symbols.add(nautilus_pyo3.Symbol(order.instrument_id.symbol.value))
         for position in open_positions:
-            active_symbols.add(nautilus_pyo3.Symbol(position.instrument_id.symbol.value))
+            active_symbols.add(
+                nautilus_pyo3.Symbol(position.instrument_id.symbol.value)
+            )
         return active_symbols
 
     async def generate_order_status_reports(
@@ -257,9 +267,11 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
 
         try:
             for symbol in active_symbols:
-                pyo3_order_reports = await self._http_client.request_order_status_reports(
-                    account_id=self.pyo3_account_id,
-                    symbol=symbol,
+                pyo3_order_reports = (
+                    await self._http_client.request_order_status_reports(
+                        account_id=self.pyo3_account_id,
+                        symbol=symbol,
+                    )
                 )
 
                 for pyo3_order_report in pyo3_order_reports:
@@ -307,7 +319,9 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
             return None
 
         try:
-            venue_order_id = nautilus_pyo3.VenueOrderId.from_str(command.venue_order_id.value)
+            venue_order_id = nautilus_pyo3.VenueOrderId.from_str(
+                command.venue_order_id.value
+            )
             pyo3_report = await self._http_client.request_order_status_report(
                 account_id=self.pyo3_account_id,
                 venue_order_id=venue_order_id,
@@ -385,14 +399,18 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
                     self._log.debug(f"Received {report}", LogColor.MAGENTA)
                     reports.append(report)
 
-                open_symbols = {i.symbol.value for i in self._cache.positions_open(self.venue)}
+                open_symbols = {
+                    i.symbol.value for i in self._cache.positions_open(self.venue)
+                }
                 reported_symbols = {r.instrument_id.symbol.value for r in pyo3_reports}
                 remaining_symbols = open_symbols.difference(reported_symbols)
 
                 for symbol in remaining_symbols:
-                    pyo3_report = await self._http_client.request_position_status_report(
-                        account_id=self.pyo3_account_id,
-                        symbol=nautilus_pyo3.Symbol.from_str(symbol),
+                    pyo3_report = (
+                        await self._http_client.request_position_status_report(
+                            account_id=self.pyo3_account_id,
+                            symbol=nautilus_pyo3.Symbol.from_str(symbol),
+                        )
                     )
 
                     report = PositionStatusReport.from_pyo3(pyo3_report)
@@ -429,7 +447,9 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
         try:
             await self._http_client.cancel_order(
                 account_id=self.pyo3_account_id,
-                client_order_id=nautilus_pyo3.ClientOrderId(command.client_order_id.value),
+                client_order_id=nautilus_pyo3.ClientOrderId(
+                    command.client_order_id.value
+                ),
             )
         except Exception as e:
             self.generate_order_cancel_rejected(
@@ -459,7 +479,9 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
                 order_side=pyo3_order_side,
             )
         except Exception as e:
-            orders_open: list[Order] = self._cache.orders_open(instrument_id=command.instrument_id)
+            orders_open: list[Order] = self._cache.orders_open(
+                instrument_id=command.instrument_id
+            )
             for open_order in orders_open:
                 if open_order.is_closed:
                     continue
@@ -529,7 +551,9 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
             elif order.order_type == OrderType.STOP_LIMIT:
                 report = await self._submit_stop_limit_order(order)
             else:
-                self._log.error(f"Submitting {order.type_string()} orders not currently supported")
+                self._log.error(
+                    f"Submitting {order.type_string()} orders not currently supported"
+                )
                 return  # Do not generate accepted event
 
             self.generate_order_accepted(
@@ -625,7 +649,9 @@ class CoinbaseIntxExecutionClient(LiveExecutionClient):
         )
 
     def _is_external_order(self, client_order_id: ClientOrderId) -> bool:
-        return not client_order_id or not self._cache.strategy_id_for_order(client_order_id)
+        return not client_order_id or not self._cache.strategy_id_for_order(
+            client_order_id
+        )
 
     def _handle_msg(self, msg: Any) -> None:  # noqa: C901 (too complex)
         # Note: These FIX execution reports are using a default precision of 8 for now,

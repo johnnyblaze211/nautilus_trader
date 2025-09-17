@@ -22,7 +22,9 @@ import msgspec
 from nautilus_trader.adapters.bybit.common.enums import BybitEndpointType
 from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 from nautilus_trader.adapters.bybit.endpoints.endpoint import BybitHttpEndpoint
-from nautilus_trader.adapters.bybit.schemas.account.set_leverage import BybitSetLeverageResponse
+from nautilus_trader.adapters.bybit.schemas.account.set_leverage import (
+    BybitSetLeverageResponse,
+)
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 
@@ -52,7 +54,9 @@ class BybitSetLeverageEndpoint(BybitHttpEndpoint):
         )
         self._resp_decoder = msgspec.json.Decoder(BybitSetLeverageResponse)
 
-    async def post(self, params: BybitSetLeveragePostParams) -> BybitSetLeverageResponse:
+    async def post(
+        self, params: BybitSetLeveragePostParams
+    ) -> BybitSetLeverageResponse:
         raw = await self._method(self.http_method, params)
         try:
             return self._resp_decoder.decode(raw)

@@ -18,7 +18,9 @@ import msgspec
 from nautilus_trader.adapters.binance.common.enums import BinanceAccountType
 from nautilus_trader.adapters.binance.common.enums import BinanceSecurityType
 from nautilus_trader.adapters.binance.common.symbol import BinanceSymbol
-from nautilus_trader.adapters.binance.futures.schemas.wallet import BinanceFuturesCommissionRate
+from nautilus_trader.adapters.binance.futures.schemas.wallet import (
+    BinanceFuturesCommissionRate,
+)
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
 from nautilus_trader.adapters.binance.http.endpoint import BinanceHttpEndpoint
 from nautilus_trader.common.component import LiveClock

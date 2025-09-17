@@ -290,7 +290,9 @@ def account(account_state, cache):
 # TO BE IMPLEMENTED IN ADAPTER conftest.py
 @pytest.fixture()
 def venue() -> Venue:
-    raise NotImplementedError("`venue` needs to be implemented in adapter `conftest.py`")
+    raise NotImplementedError(
+        "`venue` needs to be implemented in adapter `conftest.py`"
+    )
 
 
 @pytest.fixture()
@@ -302,19 +304,27 @@ def instrument_provider():
 
 @pytest.fixture()
 def data_client():
-    raise NotImplementedError("`data_client` needs to be implemented in adapter `conftest.py`")
+    raise NotImplementedError(
+        "`data_client` needs to be implemented in adapter `conftest.py`"
+    )
 
 
 @pytest.fixture()
 def exec_client():
-    raise NotImplementedError("`exec_client` needs to be implemented in adapter `conftest.py`")
+    raise NotImplementedError(
+        "`exec_client` needs to be implemented in adapter `conftest.py`"
+    )
 
 
 @pytest.fixture()
 def instrument():
-    raise NotImplementedError("`instrument` needs to be implemented in adapter `conftest.py`")
+    raise NotImplementedError(
+        "`instrument` needs to be implemented in adapter `conftest.py`"
+    )
 
 
 @pytest.fixture()
 def account_state() -> AccountState:
-    raise NotImplementedError("`account_state` needs to be implemented in adapter `conftest.py`")
+    raise NotImplementedError(
+        "`account_state` needs to be implemented in adapter `conftest.py`"
+    )

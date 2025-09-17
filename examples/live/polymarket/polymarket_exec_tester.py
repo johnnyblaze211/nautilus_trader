@@ -21,7 +21,9 @@ from nautilus_trader.adapters.polymarket import PolymarketDataClientConfig
 from nautilus_trader.adapters.polymarket import PolymarketExecClientConfig
 from nautilus_trader.adapters.polymarket import PolymarketLiveDataClientFactory
 from nautilus_trader.adapters.polymarket import PolymarketLiveExecClientFactory
-from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_instrument_id
+from nautilus_trader.adapters.polymarket.common.symbol import (
+    get_polymarket_instrument_id,
+)
 from nautilus_trader.config import InstrumentProviderConfig
 from nautilus_trader.config import LiveExecEngineConfig
 from nautilus_trader.config import LoggingConfig
@@ -52,7 +54,9 @@ from nautilus_trader.test_kit.strategies.tester_exec import ExecTesterConfig
 # 81104637750588840860328515305303028259865221573278091453716127842023614249200
 # Link: https://polymarket.com/event/fed-rate-hike-in-2025
 condition_id = "0x4319532e181605cb15b1bd677759a3bc7f7394b2fdf145195b700eeaedfd5221"
-token_id = "60487116984468020978247225474488676749601001829886755968952521846780452448915"
+token_id = (
+    "60487116984468020978247225474488676749601001829886755968952521846780452448915"
+)
 
 instrument_id = get_polymarket_instrument_id(condition_id, token_id)
 
@@ -75,7 +79,9 @@ config_node = TradingNodeConfig(
     ),
     exec_engine=LiveExecEngineConfig(
         reconciliation=True,
-        reconciliation_instrument_ids=[instrument_id],  # Only reconcile these instruments
+        reconciliation_instrument_ids=[
+            instrument_id
+        ],  # Only reconcile these instruments
         open_check_interval_secs=5.0,
         open_check_open_only=True,
         # own_books_audit_interval_secs=2.0,

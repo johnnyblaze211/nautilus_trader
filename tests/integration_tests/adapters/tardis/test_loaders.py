@@ -31,8 +31,12 @@ from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.identifiers import TradeId
 from nautilus_trader.model.objects import Price
 from nautilus_trader.model.objects import Quantity
-from nautilus_trader.test_kit.providers import ensure_data_exists_tardis_binance_snapshot5
-from nautilus_trader.test_kit.providers import ensure_data_exists_tardis_binance_snapshot25
+from nautilus_trader.test_kit.providers import (
+    ensure_data_exists_tardis_binance_snapshot5,
+)
+from nautilus_trader.test_kit.providers import (
+    ensure_data_exists_tardis_binance_snapshot25,
+)
 from nautilus_trader.test_kit.providers import ensure_data_exists_tardis_bitmex_trades
 from nautilus_trader.test_kit.providers import ensure_data_exists_tardis_deribit_book_l2
 from nautilus_trader.test_kit.providers import ensure_data_exists_tardis_huobi_quotes
@@ -89,7 +93,9 @@ def test_tardis_load_deltas(
 ):
     # Arrange
     filepath = ensure_data_exists_tardis_deribit_book_l2()
-    instrument_id = InstrumentId.from_str("BTC-PERPETUAL.DERIBIT")  # Override instrument in data
+    instrument_id = InstrumentId.from_str(
+        "BTC-PERPETUAL.DERIBIT"
+    )  # Override instrument in data
     loader = TardisCSVDataLoader(
         price_precision=price_precision,
         size_precision=size_precision,
@@ -171,7 +177,9 @@ def test_tardis_load_depth10_from_snapshot25(
 ):
     # Arrange
     filepath = ensure_data_exists_tardis_binance_snapshot25()
-    instrument_id = InstrumentId.from_str("BTCUSDT-PERP.BINANCE")  # Override instrument in data
+    instrument_id = InstrumentId.from_str(
+        "BTCUSDT-PERP.BINANCE"
+    )  # Override instrument in data
     loader = TardisCSVDataLoader(
         price_precision=price_precision,
         size_precision=size_precision,
@@ -375,8 +383,14 @@ binance-futures,BTCUSDT,1640995205000000,1640995205100000,false,bid,49998.5,1.0"
 
             # Verify delta properties
             for delta in chunk:
-                assert delta.instrument_id == InstrumentId.from_str("BTCUSDT-PERP.BINANCE")
-                assert delta.action in [BookAction.ADD, BookAction.UPDATE, BookAction.DELETE]
+                assert delta.instrument_id == InstrumentId.from_str(
+                    "BTCUSDT-PERP.BINANCE"
+                )
+                assert delta.action in [
+                    BookAction.ADD,
+                    BookAction.UPDATE,
+                    BookAction.DELETE,
+                ]
                 assert delta.order.side in [OrderSide.BUY, OrderSide.SELL]
                 assert delta.order.price is not None
                 assert delta.order.size is not None
@@ -413,7 +427,9 @@ binance-futures,BTCUSDT,1640995205000000,1640995205100000,false,bid,49998.5,1.0"
         assert len(chunks_large[0]) == 4
         assert len(chunks_large[1]) == 2
 
-        print(f"Streaming test: {chunk_count} chunks processed, {total_deltas} total deltas")
+        print(
+            f"Streaming test: {chunk_count} chunks processed, {total_deltas} total deltas"
+        )
     finally:
         os.unlink(temp_file)
 
@@ -423,7 +439,9 @@ def test_tardis_stream_deltas_memory_efficient():
     Test that streaming is memory efficient compared to loading all at once.
     """
     # Create larger synthetic dataset
-    csv_rows = ["exchange,symbol,timestamp,local_timestamp,is_snapshot,side,price,amount"]
+    csv_rows = [
+        "exchange,symbol,timestamp,local_timestamp,is_snapshot,side,price,amount"
+    ]
 
     # Generate 1000 records
     for i in range(1000):
@@ -463,12 +481,16 @@ def test_tardis_stream_deltas_memory_efficient():
             memory_increase = current_memory - initial_memory
 
             # Should not use excessive memory even with 1000 records
-            assert memory_increase < 100, f"Memory usage too high: {memory_increase:.2f} MB"
+            assert (
+                memory_increase < 100
+            ), f"Memory usage too high: {memory_increase:.2f} MB"
 
         assert total_processed == 1000
         assert chunk_count == 20  # 1000 / 50 = 20 chunks
 
-        print(f"Memory efficiency test: {total_processed} records in {chunk_count} chunks")
+        print(
+            f"Memory efficiency test: {total_processed} records in {chunk_count} chunks"
+        )
     finally:
         os.unlink(temp_file)
 
@@ -678,7 +700,9 @@ def _generate_quotes_csv(num_records):
     """
     Generate synthetic CSV data for quotes.
     """
-    rows = ["exchange,symbol,timestamp,local_timestamp,bid_price,bid_size,ask_price,ask_size"]
+    rows = [
+        "exchange,symbol,timestamp,local_timestamp,bid_price,bid_size,ask_price,ask_size"
+    ]
     for i in range(num_records):
         timestamp = 1588291201099000 + i * 1000
         local_timestamp = timestamp + 100000
@@ -761,7 +785,9 @@ def _generate_depth10_snapshot5_csv(num_records):
             bid_data.extend([f"{bid_price:.2f}", f"{bid_amount:.3f}"])
             ask_data.extend([f"{ask_price:.2f}", f"{ask_amount:.3f}"])
 
-        row = f"binance,BTCUSDT,{timestamp},{local_timestamp}," + ",".join(bid_data + ask_data)
+        row = f"binance,BTCUSDT,{timestamp},{local_timestamp}," + ",".join(
+            bid_data + ask_data
+        )
         rows.append(row)
 
     return "\n".join(rows)
@@ -1252,7 +1278,9 @@ binance,BTCUSDT,1640995211000000,1640995211100000,false,ask,50006.0,3.8"""
         assert len(all_limited_deltas) == 7
         assert all_limited_deltas[0].order.price == Price.from_str("50000.0")
         assert all_limited_deltas[1].order.price == Price.from_str("50001.0")
-        assert all_limited_deltas[6].order.price == Price.from_str("49997.0")  # 7th record
+        assert all_limited_deltas[6].order.price == Price.from_str(
+            "49997.0"
+        )  # 7th record
 
     finally:
         os.unlink(temp_file)
@@ -1341,14 +1369,18 @@ binance,BTCUSDT,1640995207000000,1640995207100000,false,ask,50004.0,3.5"""
         loader = TardisCSVDataLoader()
 
         # Test streaming batched deltas with chunk size 3 and limit 5
-        all_chunks = list(loader.stream_batched_deltas(temp_file, chunk_size=3, limit=5))
+        all_chunks = list(
+            loader.stream_batched_deltas(temp_file, chunk_size=3, limit=5)
+        )
 
         # Should get chunks based on the limit in the Rust implementation
         # This test verifies the parameter is accepted and passed through
         assert len(all_chunks) >= 1  # Should get at least one chunk
 
         # Test without limit
-        all_chunks_no_limit = list(loader.stream_batched_deltas(temp_file, chunk_size=3))
+        all_chunks_no_limit = list(
+            loader.stream_batched_deltas(temp_file, chunk_size=3)
+        )
         total_no_limit = sum(len(chunk) for chunk in all_chunks_no_limit)
 
         # Should process all 8 records when no limit
@@ -1511,7 +1543,9 @@ def test_tardis_stream_funding_rates_with_limit():
         loader = TardisCSVDataLoader()
 
         # Test streaming with limit of 5 records, chunk size 3
-        limited_chunks = list(loader.stream_funding_rates(temp_file, chunk_size=3, limit=5))
+        limited_chunks = list(
+            loader.stream_funding_rates(temp_file, chunk_size=3, limit=5)
+        )
         total_limited = sum(len(chunk) for chunk in limited_chunks)
 
         # Should only process 5 records due to limit
@@ -1586,7 +1620,9 @@ def test_tardis_stream_funding_rates():
 
             # Verify funding rate properties
             for funding_rate in chunk:
-                assert funding_rate.instrument_id == InstrumentId.from_str("XBTUSD.BITMEX")
+                assert funding_rate.instrument_id == InstrumentId.from_str(
+                    "XBTUSD.BITMEX"
+                )
                 assert funding_rate.rate is not None
                 assert funding_rate.ts_event is not None
                 assert funding_rate.ts_init is not None
@@ -1618,7 +1654,9 @@ def test_tardis_stream_funding_rates_memory_efficient():
 
     # Generate 100 records
     for i in range(100):
-        timestamp = 1583020803145000 + i * 60000000  # 60 second intervals (microseconds)
+        timestamp = (
+            1583020803145000 + i * 60000000
+        )  # 60 second intervals (microseconds)
         local_timestamp = timestamp + 162000  # ~162ms delay
         funding_rate = 0.0001 + (i % 50) * 0.00001
         predicted_funding_rate = funding_rate + 0.00002
@@ -1658,7 +1696,9 @@ def test_tardis_stream_funding_rates_memory_efficient():
             memory_increase = current_memory - initial_memory
 
             # Should not use excessive memory even with 100 records
-            assert memory_increase < 100, f"Memory usage too high: {memory_increase:.2f} MB"
+            assert (
+                memory_increase < 100
+            ), f"Memory usage too high: {memory_increase:.2f} MB"
 
         assert total_processed == 100
         assert chunk_count == 10  # 100 / 10 = 10 chunks

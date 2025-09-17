@@ -239,7 +239,9 @@ class DataTester(Actor):
     def setup_book_pyo3(self, instrument_id: InstrumentId) -> None:
         book_type: nautilus_pyo3.BookType = nautilus_pyo3.BookType.L2_MBP
         pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(instrument_id.value)
-        self._books[pyo3_instrument_id] = nautilus_pyo3.OrderBook(pyo3_instrument_id, book_type)
+        self._books[pyo3_instrument_id] = nautilus_pyo3.OrderBook(
+            pyo3_instrument_id, book_type
+        )
 
     def on_stop(self) -> None:  # noqa: C901 (too complex)
         """

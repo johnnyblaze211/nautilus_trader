@@ -40,7 +40,9 @@ class BarAggregationStrategy(Strategy):
     A simple strategy that tracks bar aggregation from 1-minute to 5-minute bars.
     """
 
-    def __init__(self, bar_type_1min_external: BarType, bar_type_5min_composite_internal: BarType):
+    def __init__(
+        self, bar_type_1min_external: BarType, bar_type_5min_composite_internal: BarType
+    ):
         super().__init__()
 
         # Traded instrument
@@ -155,8 +157,12 @@ def test_time_bar_aggregation():
     # ASSERTS
 
     # Verify we received the expected number of bars
-    assert len(strategy.received_1min_bars) == 60, "Should receive 60x 1-minute bars (in 1 hour)"
-    assert len(strategy.received_5min_bars) == 12, "Should receive 12x 5-minute bars (in 1 hour)"
+    assert (
+        len(strategy.received_1min_bars) == 60
+    ), "Should receive 60x 1-minute bars (in 1 hour)"
+    assert (
+        len(strategy.received_5min_bars) == 12
+    ), "Should receive 12x 5-minute bars (in 1 hour)"
 
     # Verify the 5-minute bars are 100% correctly aggregated
     for i in range(len(strategy.received_5min_bars)):

@@ -53,7 +53,9 @@ async def run() -> None:
     ).resolve()
 
     if not config_filepath.is_file():
-        raise FileNotFoundError(f"Unable to locate example_config.json at {config_filepath}")
+        raise FileNotFoundError(
+            f"Unable to locate example_config.json at {config_filepath}"
+        )
 
     await nautilus_pyo3.run_tardis_machine_replay(str(config_filepath))
 

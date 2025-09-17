@@ -52,7 +52,9 @@ def fetch_instruments(
     end: pd.Timestamp | None = None,
     active: bool | None = None,
 ) -> list[Instrument]:
-    assert not (venues and instrument_ids), "Only one of venues or instrument_ids can be set"
+    assert not (
+        venues and instrument_ids
+    ), "Only one of venues or instrument_ids can be set"
     assert venues or instrument_ids, "Either venues or instrument_ids must be set"
 
     if instrument_ids:
@@ -83,7 +85,9 @@ def fetch_instruments(
         tardis_exchanges = set()
         for instrument_id in instrument_ids:
             venue_str = instrument_id.venue.value.upper().replace("-", "_")
-            tardis_exchanges.update(nautilus_pyo3.tardis_exchange_from_venue_str(venue_str))
+            tardis_exchanges.update(
+                nautilus_pyo3.tardis_exchange_from_venue_str(venue_str)
+            )
         filters["venues"] = frozenset(tardis_exchanges)
 
     config = InstrumentProviderConfig(

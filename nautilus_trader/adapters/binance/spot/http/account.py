@@ -555,10 +555,18 @@ class BinanceSpotAccountHttpAPI(BinanceAccountHttpAPI):
             )
 
         # Create endpoints
-        self._endpoint_spot_open_orders = BinanceSpotOpenOrdersHttp(client, self.base_endpoint)
-        self._endpoint_spot_order_oco = BinanceSpotOrderOcoHttp(client, self.base_endpoint)
-        self._endpoint_spot_order_list = BinanceSpotOrderListHttp(client, self.base_endpoint)
-        self._endpoint_spot_all_order_list = BinanceSpotAllOrderListHttp(client, self.base_endpoint)
+        self._endpoint_spot_open_orders = BinanceSpotOpenOrdersHttp(
+            client, self.base_endpoint
+        )
+        self._endpoint_spot_order_oco = BinanceSpotOrderOcoHttp(
+            client, self.base_endpoint
+        )
+        self._endpoint_spot_order_list = BinanceSpotOrderListHttp(
+            client, self.base_endpoint
+        )
+        self._endpoint_spot_all_order_list = BinanceSpotAllOrderListHttp(
+            client, self.base_endpoint
+        )
         self._endpoint_spot_open_order_list = BinanceSpotOpenOrderListHttp(
             client,
             self.base_endpoint,

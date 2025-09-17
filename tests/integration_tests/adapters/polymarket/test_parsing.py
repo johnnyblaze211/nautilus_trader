@@ -76,7 +76,9 @@ def test_parse_order_book_snapshots() -> None:
     instrument = TestInstrumentProvider.binary_option()
 
     # Act
-    snapshot = ws_message.parse_to_snapshot(instrument=instrument, ts_init=1728799418260000001)
+    snapshot = ws_message.parse_to_snapshot(
+        instrument=instrument, ts_init=1728799418260000001
+    )
 
     # Assert
     assert isinstance(snapshot, OrderBookDeltas)
@@ -362,7 +364,9 @@ def test_parse_book_snapshot_to_quote_empty_bids() -> None:
     instrument = TestInstrumentProvider.binary_option()
 
     # Act
-    quote = book_snapshot.parse_to_quote(instrument=instrument, ts_init=1728799418260000001)
+    quote = book_snapshot.parse_to_quote(
+        instrument=instrument, ts_init=1728799418260000001
+    )
 
     # Assert
     assert quote.bid_price == instrument.make_price(0.001)  # POLYMARKET_MIN_PRICE
@@ -389,7 +393,9 @@ def test_parse_book_snapshot_to_quote_empty_asks() -> None:
     instrument = TestInstrumentProvider.binary_option()
 
     # Act
-    quote = book_snapshot.parse_to_quote(instrument=instrument, ts_init=1728799418260000001)
+    quote = book_snapshot.parse_to_quote(
+        instrument=instrument, ts_init=1728799418260000001
+    )
 
     # Assert
     assert quote.bid_price == instrument.make_price(0.50)
@@ -413,7 +419,9 @@ def test_parse_book_snapshot_to_quote_both_empty() -> None:
     instrument = TestInstrumentProvider.binary_option()
 
     # Act
-    quote = book_snapshot.parse_to_quote(instrument=instrument, ts_init=1728799418260000001)
+    quote = book_snapshot.parse_to_quote(
+        instrument=instrument, ts_init=1728799418260000001
+    )
 
     # Assert
     assert quote.bid_price == instrument.make_price(POLYMARKET_MIN_PRICE)

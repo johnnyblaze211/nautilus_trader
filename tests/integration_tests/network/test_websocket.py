@@ -25,7 +25,9 @@ from nautilus_trader.core.nautilus_pyo3 import WebSocketConfig
 from nautilus_trader.test_kit.functions import eventually
 
 
-pytestmark = pytest.mark.skipif(sys.platform != "linux", reason="Run socket tests on Linux only")
+pytestmark = pytest.mark.skipif(
+    sys.platform != "linux", reason="Run socket tests on Linux only"
+)
 
 
 def _server_url(server: TestServer) -> str:
@@ -115,7 +117,9 @@ async def test_exponential_backoff(websocket_server):
     await eventually(lambda: len([msg for msg in store if msg == b"connected"]) == 2)
 
     # Assert
-    assert len([msg for msg in store if msg == b"connected"]) == 2  # Initial + 1 reconnect
+    assert (
+        len([msg for msg in store if msg == b"connected"]) == 2
+    )  # Initial + 1 reconnect
     await client.disconnect()
 
 

@@ -19,7 +19,9 @@ from abc import ABC
 from abc import abstractmethod
 from collections.abc import Callable
 from decimal import Decimal
-from typing import Annotated, Any, NamedTuple
+from typing import Annotated
+from typing import Any
+from typing import NamedTuple
 
 import msgspec
 from ibapi.client import EClient
@@ -133,10 +135,14 @@ class Base(ABC):
         """
         if req_id in self._req_id_to_name:
             existing = self.get(req_id=req_id)
-            raise KeyError(f"Duplicate entry for {req_id=} not allowed, existing entry: {existing}")
+            raise KeyError(
+                f"Duplicate entry for {req_id=} not allowed, existing entry: {existing}"
+            )
         if name in self._req_id_to_name.values():
             existing = self.get(name=name)
-            raise KeyError(f"Duplicate entry for {name=} not allowed, existing entry: {existing}")
+            raise KeyError(
+                f"Duplicate entry for {name=} not allowed, existing entry: {existing}"
+            )
 
     def add_req_id(
         self,
@@ -292,7 +298,9 @@ class Subscriptions(Base):
 
         return self.get(req_id=req_id)
 
-    def remove(self, req_id: int | None = None, name: str | tuple | None = None) -> None:
+    def remove(
+        self, req_id: int | None = None, name: str | tuple | None = None
+    ) -> None:
         """
         Remove a subscription identified by either its request ID or name. If the
         subscription is identified by name, the corresponding request ID is first
@@ -423,7 +431,9 @@ class Requests(Base):
 
         return self.get(req_id=req_id)
 
-    def remove(self, req_id: int | None = None, name: str | tuple | None = None) -> None:
+    def remove(
+        self, req_id: int | None = None, name: str | tuple | None = None
+    ) -> None:
         """
         Remove a data request identified by either its request ID or name. This method
         removes the data request details from the internal storage. If the data request
@@ -499,9 +509,7 @@ class BaseMixin:
     _port: int
     _client_id: int
     _requests: Requests
-    _instrument_provider: (
-        Any  # InteractiveBrokersInstrumentProvider | None - Will be set by data/execution client
-    )
+    _instrument_provider: Any  # InteractiveBrokersInstrumentProvider | None - Will be set by data/execution client
     _subscriptions: Subscriptions
     _event_subscriptions: dict[str, Callable]
     _eclient: EClient

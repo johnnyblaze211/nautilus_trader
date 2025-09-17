@@ -555,7 +555,9 @@ class TestCashAccount:
             [True, Money(-25.00, USD)],  # Negative commission = credit
         ],
     )
-    def test_calculate_commission_for_inverse_maker_crypto(self, use_quote_for_inverse, expected):
+    def test_calculate_commission_for_inverse_maker_crypto(
+        self, use_quote_for_inverse, expected
+    ):
         # Arrange
         account = TestExecStubs.cash_account()
         instrument = TestInstrumentProvider.xbtusd_bitmex()

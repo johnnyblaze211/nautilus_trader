@@ -169,7 +169,9 @@ async def test_function_exception(actor_executor: ActorExecutor) -> None:
 
 
 @pytest.mark.asyncio
-async def test_run_in_executor_multiple_functions(actor_executor: ActorExecutor) -> None:
+async def test_run_in_executor_multiple_functions(
+    actor_executor: ActorExecutor,
+) -> None:
     # Arrange
     def func(x):
         return x + 1

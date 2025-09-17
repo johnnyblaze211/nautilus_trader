@@ -75,7 +75,9 @@ def test_catalog_query_filtered(
     trades = catalog_betfair.trade_ticks(start=1576875378384999936)
     assert len(trades) == 121
 
-    trades = catalog_betfair.trade_ticks(start=datetime.datetime(2019, 12, 20, 20, 56, 18))
+    trades = catalog_betfair.trade_ticks(
+        start=datetime.datetime(2019, 12, 20, 20, 56, 18)
+    )
     assert len(trades) == 121
 
     deltas = catalog_betfair.order_book_deltas()
@@ -154,7 +156,9 @@ def test_catalog_instrument_ids_correctly_unmapped(catalog: ParquetDataCatalog) 
 def test_catalog_with_databento_instruments(catalog: ParquetDataCatalog) -> None:
     # Arrange
     loader = DatabentoDataLoader()
-    path = TEST_DATA_DIR / "databento" / "temp" / "glbx-mdp3-20241020.definition.dbn.zst"
+    path = (
+        TEST_DATA_DIR / "databento" / "temp" / "glbx-mdp3-20241020.definition.dbn.zst"
+    )
     instruments = loader.from_dbn_file(path, as_legacy_cython=True)
     catalog.write_data(instruments)
 
@@ -201,8 +205,12 @@ def test_catalog_custom_data(catalog: ParquetDataCatalog) -> None:
     catalog.write_data(data)
 
     # Act
-    data_usd = catalog.custom_data(cls=NewsEventData, filter_expr=ds.field("currency") == "USD")
-    data_chf = catalog.custom_data(cls=NewsEventData, filter_expr=ds.field("currency") == "CHF")
+    data_usd = catalog.custom_data(
+        cls=NewsEventData, filter_expr=ds.field("currency") == "USD"
+    )
+    data_chf = catalog.custom_data(
+        cls=NewsEventData, filter_expr=ds.field("currency") == "CHF"
+    )
 
     # Assert
     assert data_usd is not None
@@ -365,7 +373,9 @@ def test_catalog_persists_equity(
     catalog.write_data([instrument, quote_tick])
 
     # Assert
-    instrument_from_catalog = catalog.instruments(instrument_ids=[instrument.id.value])[0]
+    instrument_from_catalog = catalog.instruments(instrument_ids=[instrument.id.value])[
+        0
+    ]
     quotes_from_catalog = catalog.quote_ticks(instrument_ids=[instrument.id.value])
     assert instrument_from_catalog == instrument
     assert len(quotes_from_catalog) == 1
@@ -568,12 +578,16 @@ class TestConsolidateDataByPeriod:
         """
         return "ETH/USDT.BINANCE"
 
-    def _get_realistic_timestamps(self, count: int, interval_hours: int = 1) -> list[int]:
+    def _get_realistic_timestamps(
+        self, count: int, interval_hours: int = 1
+    ) -> list[int]:
         """
         Generate realistic timestamps starting from 2024-01-01.
         """
         base_time = dt_to_unix_nanos(pd.Timestamp("2024-01-01 12:00:00", tz="UTC"))
-        return [base_time + (i * interval_hours * 3600_000_000_000) for i in range(count)]
+        return [
+            base_time + (i * interval_hours * 3600_000_000_000) for i in range(count)
+        ]
 
     def test_consolidate_basic_functionality(self):
         """
@@ -608,7 +622,9 @@ class TestConsolidateDataByPeriod:
         initial_count = len(initial_intervals)
 
         # Verify data was written correctly
-        assert initial_count > 0, f"No data was written. Initial intervals: {initial_intervals}"
+        assert (
+            initial_count > 0
+        ), f"No data was written. Initial intervals: {initial_intervals}"
 
         # Act - consolidate by 1-hour periods
         self.catalog.consolidate_data_by_period(
@@ -747,7 +763,9 @@ class TestConsolidateDataByPeriod:
 
         # Check split queries and consolidation queries
         # Split queries are those that preserve data outside the consolidation range
-        split_queries = [q for q in queries if q["query_start"] in [1000, request_end.value + 1]]
+        split_queries = [
+            q for q in queries if q["query_start"] in [1000, request_end.value + 1]
+        ]
         consolidation_queries = [
             q for q in queries if q["query_start"] not in [1000, request_end.value + 1]
         ]
@@ -756,7 +774,9 @@ class TestConsolidateDataByPeriod:
         assert len(consolidation_queries) == 1, "Should have 1 consolidation query"
 
         # Verify split before query
-        split_before = next((q for q in split_queries if q["query_start"] == 1000), None)
+        split_before = next(
+            (q for q in split_queries if q["query_start"] == 1000), None
+        )
         assert split_before is not None, "Should have split before query"
         assert split_before["query_end"] == request_start.value - 1
         assert split_before["use_period_boundaries"] is False
@@ -988,7 +1008,9 @@ class TestConsolidateDataByPeriod:
         initial_file_count = len(initial_intervals)
 
         # Note: With realistic timestamps, we might get 1 file initially, which is fine
-        assert initial_file_count >= 1, f"Should have at least 1 file, got {initial_file_count}"
+        assert (
+            initial_file_count >= 1
+        ), f"Should have at least 1 file, got {initial_file_count}"
 
         # Act - consolidate by 1-day periods
         self.catalog.consolidate_data_by_period(
@@ -1061,8 +1083,12 @@ class TestConsolidateDataByPeriod:
         retrieved_sorted = sorted(all_bars, key=lambda x: x.ts_init)
 
         # Verify each bar's timestamp is exactly preserved
-        for i, (original, retrieved) in enumerate(zip(original_sorted, retrieved_sorted)):
-            assert original.ts_init == retrieved.ts_init, f"Timestamp mismatch at index {i}"
+        for i, (original, retrieved) in enumerate(
+            zip(original_sorted, retrieved_sorted)
+        ):
+            assert (
+                original.ts_init == retrieved.ts_init
+            ), f"Timestamp mismatch at index {i}"
 
     def test_consolidate_mixed_data_types_integration(self):
         """
@@ -1137,7 +1163,9 @@ class TestConsolidateDataByPeriod:
         Test consolidation with edge cases and boundary conditions.
         """
         # Test case 1: Single data point
-        single_timestamp = [dt_to_unix_nanos(pd.Timestamp("2024-01-01 12:00:00", tz="UTC"))]
+        single_timestamp = [
+            dt_to_unix_nanos(pd.Timestamp("2024-01-01 12:00:00", tz="UTC"))
+        ]
         single_bar = self._create_test_bars(single_timestamp)
         self.catalog.write_data(single_bar)
 
@@ -1225,7 +1253,9 @@ def test_extract_data_cls_and_identifier_from_path(catalog: ParquetDataCatalog) 
     test_directory = leaf_dirs[0]
 
     # Act
-    data_cls, identifier = catalog._extract_data_cls_and_identifier_from_path(test_directory)
+    data_cls, identifier = catalog._extract_data_cls_and_identifier_from_path(
+        test_directory
+    )
 
     # Assert
     assert data_cls is not None
@@ -1260,7 +1290,9 @@ def test_delete_data_range_complete_file_deletion(catalog: ParquetDataCatalog) -
     assert len(remaining_data) == 0
 
 
-def test_delete_data_range_partial_file_overlap_start(catalog: ParquetDataCatalog) -> None:
+def test_delete_data_range_partial_file_overlap_start(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test deleting data that partially overlaps with a file from the start.
     """
@@ -1287,7 +1319,9 @@ def test_delete_data_range_partial_file_overlap_start(catalog: ParquetDataCatalo
     assert remaining_data[1].ts_init == 3_000_000_000
 
 
-def test_delete_data_range_partial_file_overlap_end(catalog: ParquetDataCatalog) -> None:
+def test_delete_data_range_partial_file_overlap_end(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test deleting data that partially overlaps with a file from the end.
     """
@@ -1314,7 +1348,9 @@ def test_delete_data_range_partial_file_overlap_end(catalog: ParquetDataCatalog)
     assert remaining_data[1].ts_init == 2_000_000_000
 
 
-def test_delete_data_range_partial_file_overlap_middle(catalog: ParquetDataCatalog) -> None:
+def test_delete_data_range_partial_file_overlap_middle(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test deleting data that partially overlaps with a file in the middle.
     """
@@ -1498,7 +1534,9 @@ def test_delete_data_range_all_identifiers(catalog: ParquetDataCatalog) -> None:
     """
     # Arrange - create data for multiple instruments
     eur_usd_quote = TestDataStubs.quote_tick(ts_init=1_000_000_000)
-    gbp_usd_quote = TestDataStubs.quote_ticks_usdjpy()[0]  # Use USD/JPY as second instrument
+    gbp_usd_quote = TestDataStubs.quote_ticks_usdjpy()[
+        0
+    ]  # Use USD/JPY as second instrument
 
     catalog.write_data([eur_usd_quote])
     catalog.write_data([gbp_usd_quote])
@@ -1601,7 +1639,9 @@ def test_delete_catalog_range_complete_deletion(catalog: ParquetDataCatalog) -> 
     # Arrange - create data for multiple data types and instruments
     quotes = [TestDataStubs.quote_tick(ts_init=1_000_000_000)]
     trades = [TestDataStubs.trade_tick(ts_init=2_000_000_000)]
-    gbp_quotes = [TestDataStubs.quote_ticks_usdjpy()[0]]  # Use USD/JPY as second instrument
+    gbp_quotes = [
+        TestDataStubs.quote_ticks_usdjpy()[0]
+    ]  # Use USD/JPY as second instrument
 
     catalog.write_data(quotes)
     catalog.write_data(trades)
@@ -1662,7 +1702,9 @@ def test_delete_data_range_cross_file_split(catalog: ParquetDataCatalog) -> None
 
     # Verify initial state - should have 3 files and 10 quotes
     initial_intervals = catalog.get_intervals(QuoteTick, "AUD/USD.SIM")
-    assert len(initial_intervals) == 3, f"Expected 3 files, got {len(initial_intervals)}"
+    assert (
+        len(initial_intervals) == 3
+    ), f"Expected 3 files, got {len(initial_intervals)}"
 
     initial_quotes = catalog.quote_ticks()
     assert len(initial_quotes) == 10, f"Expected 10 quotes, got {len(initial_quotes)}"
@@ -1693,7 +1735,9 @@ def test_delete_data_range_cross_file_split(catalog: ParquetDataCatalog) -> None
 
     # Verify the remaining file covers the correct range (should end just before deletion start)
     expected_start = 1_000_000_000
-    expected_end = 4_000_000_000 - 1  # Just before deletion range starts (one nanosecond before)
+    expected_end = (
+        4_000_000_000 - 1
+    )  # Just before deletion range starts (one nanosecond before)
     assert (
         final_intervals[0][0] == expected_start
     ), f"Expected start {expected_start}, got {final_intervals[0][0]}"
@@ -1716,7 +1760,9 @@ def test_delete_data_range_cross_file_split(catalog: ParquetDataCatalog) -> None
     ), f"Query result should be {expected_remaining}, got {queried_timestamps}"
 
 
-def test_delete_data_range_cross_file_split_keep_end(catalog: ParquetDataCatalog) -> None:
+def test_delete_data_range_cross_file_split_keep_end(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test deleting data from the beginning and keeping the end across multiple files.
 
@@ -1757,7 +1803,9 @@ def test_delete_data_range_cross_file_split_keep_end(catalog: ParquetDataCatalog
 
     # Verify initial state
     initial_intervals = catalog.get_intervals(QuoteTick, "AUD/USD.SIM")
-    assert len(initial_intervals) == 3, f"Expected 3 files, got {len(initial_intervals)}"
+    assert (
+        len(initial_intervals) == 3
+    ), f"Expected 3 files, got {len(initial_intervals)}"
 
     initial_quotes = catalog.quote_ticks()
     assert len(initial_quotes) == 10, f"Expected 10 quotes, got {len(initial_quotes)}"
@@ -1982,7 +2030,9 @@ def test_delete_catalog_range_boundary_conditions(catalog: ParquetDataCatalog) -
     )
 
 
-def test_delete_data_range_nanosecond_precision_boundaries(catalog: ParquetDataCatalog) -> None:
+def test_delete_data_range_nanosecond_precision_boundaries(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test deleting data with nanosecond precision boundaries to verify exact [a-1, b+1]
     logic.
@@ -2014,7 +2064,9 @@ def test_delete_data_range_nanosecond_precision_boundaries(catalog: ParquetDataC
     assert timestamps == [1_000_000_000, 1_000_000_004]
 
 
-def test_delete_data_range_single_file_double_split(catalog: ParquetDataCatalog) -> None:
+def test_delete_data_range_single_file_double_split(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test deleting from a single file that requires both split_before and split_after
     operations.
@@ -2048,7 +2100,9 @@ def test_delete_data_range_single_file_double_split(catalog: ParquetDataCatalog)
     assert timestamps == [1_000_000_000, 2_000_000_000, 4_000_000_000, 5_000_000_000]
 
 
-def test_delete_data_range_complex_multi_file_scenario(catalog: ParquetDataCatalog) -> None:
+def test_delete_data_range_complex_multi_file_scenario(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test complex deletion scenario across multiple files with various split operations.
     """
@@ -2105,7 +2159,9 @@ def test_delete_data_range_complex_multi_file_scenario(catalog: ParquetDataCatal
     assert len(intervals) == 2
 
 
-def test_delete_data_range_zero_timestamp_edge_case(catalog: ParquetDataCatalog) -> None:
+def test_delete_data_range_zero_timestamp_edge_case(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test deletion with timestamp 0 to verify saturating arithmetic behavior.
     """
@@ -2134,7 +2190,9 @@ def test_delete_data_range_zero_timestamp_edge_case(catalog: ParquetDataCatalog)
     assert timestamps == [2, 3]
 
 
-def test_backend_session_table_naming_multiple_instruments(catalog: ParquetDataCatalog) -> None:
+def test_backend_session_table_naming_multiple_instruments(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test that backend_session creates identifier-dependent table names for multiple
     instruments.
@@ -2196,7 +2254,9 @@ def test_backend_session_table_naming_multiple_instruments(catalog: ParquetDataC
     assert instrument2.id.value in instrument_ids
 
 
-def test_backend_session_table_naming_special_characters(catalog: ParquetDataCatalog) -> None:
+def test_backend_session_table_naming_special_characters(
+    catalog: ParquetDataCatalog,
+) -> None:
     """
     Test that backend_session handles special characters in identifiers correctly.
 
@@ -2206,7 +2266,9 @@ def test_backend_session_table_naming_special_characters(catalog: ParquetDataCat
     """
     # Arrange - Create quote ticks for instruments with special characters
     eurusd_instrument = TestInstrumentProvider.default_fx_ccy("EUR/USD", Venue("SIM"))
-    btcusd_instrument = TestInstrumentProvider.default_fx_ccy("BTC-USD", Venue("COINBASE"))
+    btcusd_instrument = TestInstrumentProvider.default_fx_ccy(
+        "BTC-USD", Venue("COINBASE")
+    )
 
     quotes_eurusd = [
         TestDataStubs.quote_tick(

@@ -37,12 +37,24 @@ from nautilus_trader.adapters.bybit.common.enums import BybitTriggerType
 from nautilus_trader.adapters.bybit.common.enums import BybitWsOrderRequestMsgOP
 from nautilus_trader.adapters.bybit.common.parsing import parse_bybit_delta
 from nautilus_trader.adapters.bybit.common.parsing import parse_str_to_raw
-from nautilus_trader.adapters.bybit.endpoints.trade.amend_order import BybitAmendOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_amend_order import BybitBatchAmendOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import BybitBatchCancelOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import BybitBatchPlaceOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.cancel_order import BybitCancelOrderPostParams
-from nautilus_trader.adapters.bybit.endpoints.trade.place_order import BybitPlaceOrderPostParams
+from nautilus_trader.adapters.bybit.endpoints.trade.amend_order import (
+    BybitAmendOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_amend_order import (
+    BybitBatchAmendOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_cancel_order import (
+    BybitBatchCancelOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.batch_place_order import (
+    BybitBatchPlaceOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.cancel_order import (
+    BybitCancelOrderPostParams,
+)
+from nautilus_trader.adapters.bybit.endpoints.trade.place_order import (
+    BybitPlaceOrderPostParams,
+)
 from nautilus_trader.adapters.bybit.schemas.order import BybitAmendOrder
 from nautilus_trader.adapters.bybit.schemas.order import BybitBatchAmendOrderExtInfo
 from nautilus_trader.adapters.bybit.schemas.order import BybitBatchAmendOrderResult
@@ -525,7 +537,9 @@ class BybitWsTrade(msgspec.Struct):
             instrument_id=instrument_id,
             price=Price(float(self.p), price_precision),
             size=Quantity(float(self.v), size_precision),
-            aggressor_side=AggressorSide.SELLER if self.S == "Sell" else AggressorSide.BUYER,
+            aggressor_side=(
+                AggressorSide.SELLER if self.S == "Sell" else AggressorSide.BUYER
+            ),
             trade_id=TradeId(str(self.i)),
             ts_event=millis_to_nanos(self.T),
             ts_init=ts_init,
@@ -662,7 +676,10 @@ class BybitWsAccountOrder(msgspec.Struct):
         trigger_price = Price.from_str(self.triggerPrice) if self.triggerPrice else None
         trigger_type = enum_parser.parse_bybit_trigger_type(self.triggerBy)
 
-        if order_type in (OrderType.TRAILING_STOP_MARKET, OrderType.TRAILING_STOP_LIMIT):
+        if order_type in (
+            OrderType.TRAILING_STOP_MARKET,
+            OrderType.TRAILING_STOP_LIMIT,
+        ):
             assert trigger_price is not None  # Type checking
             last_price = Decimal(self.lastPriceOnCreated)
             trailing_offset = abs(trigger_price.as_decimal() - last_price)
@@ -679,7 +696,9 @@ class BybitWsAccountOrder(msgspec.Struct):
             order_side=enum_parser.parse_bybit_order_side(self.side),
             order_type=order_type,
             time_in_force=enum_parser.parse_bybit_time_in_force(self.timeInForce),
-            order_status=enum_parser.parse_bybit_order_status(order_type, self.orderStatus),
+            order_status=enum_parser.parse_bybit_order_status(
+                order_type, self.orderStatus
+            ),
             price=Price.from_str(self.price) if self.price else None,
             trigger_price=trigger_price,
             trigger_type=trigger_type,

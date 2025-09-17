@@ -77,7 +77,9 @@ def test_config_id() -> None:
     config = DatabaseConfig()
 
     # Act, Assert
-    assert config.id == "c3fad60cbcd4eb9d9f19081f6f342f04a77f1328e9487f11696f9abc119ff0e1"
+    assert (
+        config.id == "c3fad60cbcd4eb9d9f19081f6f342f04a77f1328e9487f11696f9abc119ff0e1"
+    )
 
 
 def test_fully_qualified_name() -> None:
@@ -85,7 +87,9 @@ def test_fully_qualified_name() -> None:
     config = DatabaseConfig()
 
     # Act, Assert
-    assert config.fully_qualified_name() == "nautilus_trader.common.config:DatabaseConfig"
+    assert (
+        config.fully_qualified_name() == "nautilus_trader.common.config:DatabaseConfig"
+    )
 
 
 @pytest.mark.parametrize(
@@ -132,7 +136,9 @@ def test_json() -> None:
 
 def test_json_primitives() -> None:
     # Arrange
-    config = InstrumentProviderConfig(load_ids=frozenset([InstrumentId.from_str("ESH4.GLBX")]))
+    config = InstrumentProviderConfig(
+        load_ids=frozenset([InstrumentId.from_str("ESH4.GLBX")])
+    )
 
     # Act, Assert
     assert config.json_primitives() == {

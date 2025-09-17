@@ -17,7 +17,9 @@ from nautilus_trader.adapters.polymarket.common.constants import POLYMARKET_VENU
 from nautilus_trader.model.identifiers import InstrumentId
 
 
-def get_polymarket_instrument_id(condition_id: str, token_id: str | int) -> InstrumentId:
+def get_polymarket_instrument_id(
+    condition_id: str, token_id: str | int
+) -> InstrumentId:
     return InstrumentId.from_str(f"{condition_id}-{token_id}.{POLYMARKET_VENUE}")
 
 

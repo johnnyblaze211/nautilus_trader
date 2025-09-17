@@ -99,7 +99,9 @@ class TestArrowSerializer:
 
         self.serializer = ArrowSerializer
 
-        self.catalog = ParquetDataCatalog(path=str(tmp_path / "catalog"), fs_protocol="file")
+        self.catalog = ParquetDataCatalog(
+            path=str(tmp_path / "catalog"), fs_protocol="file"
+        )
         self.order_factory = OrderFactory(
             trader_id=TraderId("T-001"),
             strategy_id=StrategyId("S-001"),
@@ -127,10 +129,14 @@ class TestArrowSerializer:
         )
 
         self.order_pending_cancel = copy.copy(self.order_accepted)
-        self.order_pending_cancel.apply(TestEventStubs.order_pending_cancel(self.order_accepted))
+        self.order_pending_cancel.apply(
+            TestEventStubs.order_pending_cancel(self.order_accepted)
+        )
 
         self.order_cancelled = copy.copy(self.order_pending_cancel)
-        self.order_cancelled.apply(TestEventStubs.order_canceled(self.order_pending_cancel))
+        self.order_cancelled.apply(
+            TestEventStubs.order_canceled(self.order_pending_cancel)
+        )
 
     def _test_serialization(self, obj: Any) -> bool:
         data_cls = type(obj)
@@ -175,7 +181,9 @@ class TestArrowSerializer:
 
         # Act
         serialized = ArrowSerializer.serialize(delta)
-        deserialized = ArrowSerializer.deserialize(data_cls=OrderBookDelta, batch=serialized)
+        deserialized = ArrowSerializer.deserialize(
+            data_cls=OrderBookDelta, batch=serialized
+        )
 
         # Assert
         OrderBookDeltas(
@@ -230,7 +238,9 @@ class TestArrowSerializer:
 
         # Act
         serialized = ArrowSerializer.serialize(deltas)
-        deserialized = ArrowSerializer.deserialize(data_cls=OrderBookDeltas, batch=serialized)
+        deserialized = ArrowSerializer.deserialize(
+            data_cls=OrderBookDeltas, batch=serialized
+        )
 
         self.catalog.write_data(deserialized)
 
@@ -298,7 +308,9 @@ class TestArrowSerializer:
 
         # Act
         serialized = ArrowSerializer.serialize(deltas)
-        deserialized = ArrowSerializer.deserialize(data_cls=OrderBookDeltas, batch=serialized)
+        deserialized = ArrowSerializer.deserialize(
+            data_cls=OrderBookDeltas, batch=serialized
+        )
 
         # Assert
         # assert deserialized == deltas.deltas # TODO - rust vs python types
@@ -354,7 +366,9 @@ class TestArrowSerializer:
 
         # Act
         serialized = ArrowSerializer.serialize(event)
-        [deserialized] = ArrowSerializer.deserialize(data_cls=TradingStateChanged, batch=serialized)
+        [deserialized] = ArrowSerializer.deserialize(
+            data_cls=TradingStateChanged, batch=serialized
+        )
 
         # Assert
         assert deserialized == event
@@ -371,7 +385,9 @@ class TestArrowSerializer:
     def test_serialize_and_deserialize_account_state_events(self, event):
         # Arrange, Act
         serialized = ArrowSerializer.serialize(event, data_cls=AccountState)
-        [deserialized] = ArrowSerializer.deserialize(data_cls=AccountState, batch=serialized)
+        [deserialized] = ArrowSerializer.deserialize(
+            data_cls=AccountState, batch=serialized
+        )
 
         # Assert
         assert deserialized == event
@@ -437,7 +453,9 @@ class TestArrowSerializer:
             TestEventStubs.position_changed,
         ],
     )
-    def test_serialize_and_deserialize_position_events_open_changed(self, position_func):
+    def test_serialize_and_deserialize_position_events_open_changed(
+        self, position_func
+    ):
         instrument = TestInstrumentProvider.default_fx_ccy("GBPUSD")
 
         order3 = self.order_factory.market(
@@ -885,7 +903,9 @@ class TestArrowSerializer:
 
         # Act
         serialized = self.serializer.serialize(event)
-        deserialized = self.serializer.deserialize(OrderModifyRejected, batch=serialized)
+        deserialized = self.serializer.deserialize(
+            OrderModifyRejected, batch=serialized
+        )
 
         # Assert
         assert deserialized == [event]
@@ -907,7 +927,9 @@ class TestArrowSerializer:
 
         # Act
         serialized = self.serializer.serialize(event)
-        deserialized = self.serializer.deserialize(OrderCancelRejected, batch=serialized)
+        deserialized = self.serializer.deserialize(
+            OrderCancelRejected, batch=serialized
+        )
 
         # Assert
         assert deserialized == [event]
@@ -1095,7 +1117,9 @@ class TestArrowSerializer:
     def test_serialize_and_deserialize_instruments(self, instrument):
         serialized = ArrowSerializer.serialize(instrument)
         assert serialized
-        deserialized = ArrowSerializer.deserialize(data_cls=type(instrument), batch=serialized)
+        deserialized = ArrowSerializer.deserialize(
+            data_cls=type(instrument), batch=serialized
+        )
 
         # Assert
         assert deserialized == [instrument]

@@ -170,7 +170,9 @@ class TestExecutionEngineLegFills:
         # Arrange
         leg_fill = self.create_leg_fill(
             instrument_id=self.call_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"
+            ),
             venue_order_id=VenueOrderId("213-LEG-0"),
             trade_id=TradeId("0000e1a7.6882c67b.03.01-0"),
             side=OrderSide.BUY,
@@ -198,7 +200,9 @@ class TestExecutionEngineLegFills:
         # Arrange - Create initial position
         initial_fill = self.create_leg_fill(
             instrument_id=self.put_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 P6440"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 P6440"
+            ),
             venue_order_id=VenueOrderId("213-LEG-1"),
             trade_id=TradeId("0000e1a7.6882c67b.02.01-1"),
             side=OrderSide.BUY,
@@ -211,7 +215,9 @@ class TestExecutionEngineLegFills:
         # Act - Add to existing position
         additional_fill = self.create_leg_fill(
             instrument_id=self.put_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-2-LEG-E1AQ5 P6440"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-2-LEG-E1AQ5 P6440"
+            ),
             venue_order_id=VenueOrderId("214-LEG-1"),
             trade_id=TradeId("0000e1a7.6882c67b.04.01-1"),
             side=OrderSide.BUY,
@@ -259,7 +265,9 @@ class TestExecutionEngineLegFills:
         # Arrange
         leg_fill = self.create_leg_fill(
             instrument_id=self.call_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"
+            ),
             venue_order_id=VenueOrderId("213-LEG-0"),
             trade_id=TradeId("0000e1a7.6882c67b.03.01-0"),
             side=OrderSide.BUY,
@@ -285,7 +293,9 @@ class TestExecutionEngineLegFills:
         # Arrange - Create leg fills for 1x2 ratio spread (3 spread units)
         call_leg_fill = self.create_leg_fill(
             instrument_id=self.call_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"
+            ),
             venue_order_id=VenueOrderId("213-LEG-0"),
             trade_id=TradeId("0000e1a7.6882c67b.03.01-0"),
             side=OrderSide.BUY,
@@ -295,7 +305,9 @@ class TestExecutionEngineLegFills:
 
         put_leg_fill = self.create_leg_fill(
             instrument_id=self.put_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 P6440"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 P6440"
+            ),
             venue_order_id=VenueOrderId("213-LEG-1"),
             trade_id=TradeId("0000e1a7.6882c67b.02.01-1"),
             side=OrderSide.BUY,
@@ -312,8 +324,12 @@ class TestExecutionEngineLegFills:
         assert len(positions) == 2
 
         # Find positions by instrument
-        call_position = next(p for p in positions if p.instrument_id == self.call_option.id)
-        put_position = next(p for p in positions if p.instrument_id == self.put_option.id)
+        call_position = next(
+            p for p in positions if p.instrument_id == self.call_option.id
+        )
+        put_position = next(
+            p for p in positions if p.instrument_id == self.put_option.id
+        )
 
         # Verify call position
         assert call_position.quantity == Quantity.from_int(3)

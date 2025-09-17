@@ -40,7 +40,9 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------
 
     engine_config = BacktestEngineConfig(
-        trader_id=TraderId("BACKTEST-SIGNALS-001"),  # Unique identifier for this backtest
+        trader_id=TraderId(
+            "BACKTEST-SIGNALS-001"
+        ),  # Unique identifier for this backtest
         logging=LoggingConfig(log_level="INFO"),
     )
     engine = BacktestEngine(config=engine_config)

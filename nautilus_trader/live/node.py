@@ -222,7 +222,9 @@ class TradingNode:
         """
         self._stream_processors.append(callback)
 
-    def add_data_client_factory(self, name: str, factory: type[LiveDataClientFactory]) -> None:
+    def add_data_client_factory(
+        self, name: str, factory: type[LiveDataClientFactory]
+    ) -> None:
         """
         Add the given data client factory to the node.
 
@@ -243,7 +245,9 @@ class TradingNode:
         """
         self._builder.add_data_client_factory(name, factory)
 
-    def add_exec_client_factory(self, name: str, factory: type[LiveExecClientFactory]) -> None:
+    def add_exec_client_factory(
+        self, name: str, factory: type[LiveExecClientFactory]
+    ) -> None:
         """
         Add the given execution client factory to the node.
 
@@ -361,8 +365,12 @@ class TradingNode:
 
             if self._config.message_bus and self._config.message_bus.external_streams:
                 streams = self._config.message_bus.external_streams
-                self.kernel.logger.info("Starting task: external message streaming", LogColor.BLUE)
-                self.kernel.logger.info(f"Listening to streams: {streams}", LogColor.BLUE)
+                self.kernel.logger.info(
+                    "Starting task: external message streaming", LogColor.BLUE
+                )
+                self.kernel.logger.info(
+                    f"Listening to streams: {streams}", LogColor.BLUE
+                )
                 self._task_streaming = asyncio.ensure_future(
                     self.kernel.msgbus_database.stream(self.publish_bus_message),
                 )
@@ -457,7 +465,9 @@ class TradingNode:
                     self.kernel.logger.info("Closing event loop")
                     loop.close()
             else:
-                self.kernel.logger.info("Event loop already closed (normal with asyncio.run)")
+                self.kernel.logger.info(
+                    "Event loop already closed (normal with asyncio.run)"
+                )
         except (asyncio.CancelledError, RuntimeError) as e:
             self.kernel.logger.exception("Error on dispose", e)
         finally:

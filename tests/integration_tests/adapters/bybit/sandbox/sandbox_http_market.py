@@ -21,17 +21,25 @@ from nautilus_trader.adapters.bybit.common.enums import BybitKlineInterval
 from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 
 # fmt: off
-from nautilus_trader.adapters.bybit.endpoints.market.instruments_info import BybitInstrumentsInfoEndpoint
-from nautilus_trader.adapters.bybit.endpoints.market.instruments_info import BybitInstrumentsInfoGetParams
+from nautilus_trader.adapters.bybit.endpoints.market.instruments_info import (
+    BybitInstrumentsInfoEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.market.instruments_info import (
+    BybitInstrumentsInfoGetParams,
+)
 
 # fmt: on
 from nautilus_trader.adapters.bybit.endpoints.market.klines import BybitKlinesEndpoint
 from nautilus_trader.adapters.bybit.endpoints.market.klines import BybitKlinesGetParams
-from nautilus_trader.adapters.bybit.endpoints.market.server_time import BybitServerTimeEndpoint
+from nautilus_trader.adapters.bybit.endpoints.market.server_time import (
+    BybitServerTimeEndpoint,
+)
 from nautilus_trader.adapters.bybit.factories import get_bybit_http_client
 from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
 from nautilus_trader.common.component import LiveClock
-from tests.integration_tests.adapters.bybit.utils.save_struct_to_file import save_struct_to_file
+from tests.integration_tests.adapters.bybit.utils.save_struct_to_file import (
+    save_struct_to_file,
+)
 
 
 force_create = True if "FORCE_CREATE" in os.environ else False
@@ -68,9 +76,13 @@ async def test_sandbox_get_instruments(client: BybitHttpClient) -> None:
         BybitInstrumentsInfoGetParams(category=BybitProductType.SPOT),
     )
     result_list_spot = [
-        item for item in instruments_spot.result.list if item.symbol in ["BTCUSDT", "ETHUSDT"]
+        item
+        for item in instruments_spot.result.list
+        if item.symbol in ["BTCUSDT", "ETHUSDT"]
     ]
-    save_struct_to_file(base_path + "spot/" + "instruments.json", result_list_spot, force_create)
+    save_struct_to_file(
+        base_path + "spot/" + "instruments.json", result_list_spot, force_create
+    )
 
     # --- Linear ---
     instruments_linear_endpoint = BybitInstrumentsInfoEndpoint(
@@ -81,7 +93,9 @@ async def test_sandbox_get_instruments(client: BybitHttpClient) -> None:
         BybitInstrumentsInfoGetParams(category=BybitProductType.LINEAR),
     )
     result_list_linear = [
-        item for item in instruments_linear.result.list if item.symbol in ["BTCUSDT", "ETHUSDT"]
+        item
+        for item in instruments_linear.result.list
+        if item.symbol in ["BTCUSDT", "ETHUSDT"]
     ]
     save_struct_to_file(
         base_path + "linear/" + "instruments.json",
@@ -125,5 +139,9 @@ async def test_sandbox_get_klines(client: BybitHttpClient) -> None:
             limit=3,
         ),
     )
-    save_struct_to_file(base_path + "spot/" + "klines_btc.json", btc_spot_klines, force_create)
-    save_struct_to_file(base_path + "linear/" + "klines_btc.json", btc_futures_klines, force_create)
+    save_struct_to_file(
+        base_path + "spot/" + "klines_btc.json", btc_spot_klines, force_create
+    )
+    save_struct_to_file(
+        base_path + "linear/" + "klines_btc.json", btc_futures_klines, force_create
+    )

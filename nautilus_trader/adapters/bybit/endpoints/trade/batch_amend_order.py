@@ -68,7 +68,9 @@ class BybitBatchAmendOrderEndpoint(BybitHttpEndpoint):
         )
         self._resp_decoder = msgspec.json.Decoder(BybitBatchAmendOrderResponse)
 
-    async def post(self, params: BybitBatchAmendOrderPostParams) -> BybitBatchAmendOrderResponse:
+    async def post(
+        self, params: BybitBatchAmendOrderPostParams
+    ) -> BybitBatchAmendOrderResponse:
         method_type = HttpMethod.POST
         raw = await self._method(method_type, params)
         try:

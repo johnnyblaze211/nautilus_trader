@@ -32,7 +32,9 @@ from nautilus_trader.adapters.betfair.constants import BETFAIR_VENUE
 from nautilus_trader.adapters.betfair.factories import BetfairLiveDataClientFactory
 from nautilus_trader.adapters.betfair.factories import BetfairLiveExecClientFactory
 from nautilus_trader.adapters.betfair.factories import get_cached_betfair_client
-from nautilus_trader.adapters.betfair.factories import get_cached_betfair_instrument_provider
+from nautilus_trader.adapters.betfair.factories import (
+    get_cached_betfair_instrument_provider,
+)
 from nautilus_trader.adapters.betfair.parsing.core import BetfairParser
 from nautilus_trader.adapters.betfair.providers import BetfairInstrumentProvider
 from nautilus_trader.adapters.betfair.providers import BetfairInstrumentProviderConfig

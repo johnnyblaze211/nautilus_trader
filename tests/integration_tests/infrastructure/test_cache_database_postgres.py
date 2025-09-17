@@ -187,7 +187,9 @@ class TestCachePostgresAdapter:
         self.database.add_instrument(betting)
 
         # Allow MPSC thread to insert
-        await eventually(lambda: self.database.load_instrument(betting.id), timeout=_TEST_TIMEOUT)
+        await eventually(
+            lambda: self.database.load_instrument(betting.id), timeout=_TEST_TIMEOUT
+        )
 
         # Assert
         assert betting == self.database.load_instrument(betting.id)
@@ -293,7 +295,9 @@ class TestCachePostgresAdapter:
         self.database.add_currency(_AUDUSD_SIM.quote_currency)
 
         # Check that we have added target currencies, because of foreign key constraints
-        await eventually(lambda: len(self.database.load_currencies()) >= 2, timeout=_TEST_TIMEOUT)
+        await eventually(
+            lambda: len(self.database.load_currencies()) >= 2, timeout=_TEST_TIMEOUT
+        )
 
         currencies = self.database.load_currencies()
         assert list(currencies.keys()) == ["AUD", "USD"]
@@ -360,7 +364,9 @@ class TestCachePostgresAdapter:
         self.database.add_currency(appl_equity.quote_currency)
 
         # Check that we have added target currencies, because of foreign key constraints
-        await eventually(lambda: len(self.database.load_currencies()) >= 1, timeout=_TEST_TIMEOUT)
+        await eventually(
+            lambda: len(self.database.load_currencies()) >= 1, timeout=_TEST_TIMEOUT
+        )
 
         currencies = self.database.load_currencies()
         assert list(currencies.keys()) == ["USD"]
@@ -386,7 +392,9 @@ class TestCachePostgresAdapter:
         self.database.add_currency(es_futures.quote_currency)
 
         # Check that we have added target currencies, because of foreign key constraints
-        await eventually(lambda: len(self.database.load_currencies()) >= 1, timeout=_TEST_TIMEOUT)
+        await eventually(
+            lambda: len(self.database.load_currencies()) >= 1, timeout=_TEST_TIMEOUT
+        )
 
         currencies = self.database.load_currencies()
         assert list(currencies.keys()) == ["USD"]
@@ -640,7 +648,9 @@ class TestCachePostgresAdapter:
         self.database.add_account(account)
 
         # Allow MPSC thread to insert
-        await eventually(lambda: self.database.load_account(account.id), timeout=_TEST_TIMEOUT)
+        await eventually(
+            lambda: self.database.load_account(account.id), timeout=_TEST_TIMEOUT
+        )
 
         assert self.database.load_account(account.id) == account
         # apply modified account event
@@ -683,7 +693,9 @@ class TestCachePostgresAdapter:
         self.database.add_account(account)
 
         # Allow MPSC thread to insert
-        await eventually(lambda: self.database.load_account(account.id), timeout=_TEST_TIMEOUT)
+        await eventually(
+            lambda: self.database.load_account(account.id), timeout=_TEST_TIMEOUT
+        )
 
         # Act
         self.database.update_account(account)

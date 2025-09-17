@@ -63,7 +63,12 @@ def should_retry(error: BaseException) -> bool:
 
     if isinstance(
         error,
-        AioRpcError | DYDXError | HttpError | HttpTimeoutError | WebSocketClientError | DecodeError,
+        AioRpcError
+        | DYDXError
+        | HttpError
+        | HttpTimeoutError
+        | WebSocketClientError
+        | DecodeError,
     ):
         return True
 

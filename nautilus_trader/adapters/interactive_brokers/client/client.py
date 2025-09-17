@@ -32,17 +32,31 @@ from ibapi.execution import Execution
 from ibapi.utils import current_fn_name
 
 # fmt: off
-from nautilus_trader.adapters.interactive_brokers.client.account import InteractiveBrokersClientAccountMixin
+from nautilus_trader.adapters.interactive_brokers.client.account import (
+    InteractiveBrokersClientAccountMixin,
+)
 from nautilus_trader.adapters.interactive_brokers.client.common import AccountOrderRef
 from nautilus_trader.adapters.interactive_brokers.client.common import Request
 from nautilus_trader.adapters.interactive_brokers.client.common import Requests
 from nautilus_trader.adapters.interactive_brokers.client.common import Subscriptions
-from nautilus_trader.adapters.interactive_brokers.client.connection import InteractiveBrokersClientConnectionMixin
-from nautilus_trader.adapters.interactive_brokers.client.contract import InteractiveBrokersClientContractMixin
-from nautilus_trader.adapters.interactive_brokers.client.error import InteractiveBrokersClientErrorMixin
-from nautilus_trader.adapters.interactive_brokers.client.market_data import InteractiveBrokersClientMarketDataMixin
-from nautilus_trader.adapters.interactive_brokers.client.order import InteractiveBrokersClientOrderMixin
-from nautilus_trader.adapters.interactive_brokers.client.wrapper import InteractiveBrokersEWrapper
+from nautilus_trader.adapters.interactive_brokers.client.connection import (
+    InteractiveBrokersClientConnectionMixin,
+)
+from nautilus_trader.adapters.interactive_brokers.client.contract import (
+    InteractiveBrokersClientContractMixin,
+)
+from nautilus_trader.adapters.interactive_brokers.client.error import (
+    InteractiveBrokersClientErrorMixin,
+)
+from nautilus_trader.adapters.interactive_brokers.client.market_data import (
+    InteractiveBrokersClientMarketDataMixin,
+)
+from nautilus_trader.adapters.interactive_brokers.client.order import (
+    InteractiveBrokersClientOrderMixin,
+)
+from nautilus_trader.adapters.interactive_brokers.client.wrapper import (
+    InteractiveBrokersEWrapper,
+)
 from nautilus_trader.adapters.interactive_brokers.common import IB_VENUE
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import Component
@@ -135,8 +149,12 @@ class InteractiveBrokersClient(
 
         # ConnectionMixin
         self._connection_attempts: int = 0
-        self._max_connection_attempts: int = int(os.getenv("IB_MAX_CONNECTION_ATTEMPTS", 0))
-        self._indefinite_reconnect: bool = False if self._max_connection_attempts else True
+        self._max_connection_attempts: int = int(
+            os.getenv("IB_MAX_CONNECTION_ATTEMPTS", 0)
+        )
+        self._indefinite_reconnect: bool = (
+            False if self._max_connection_attempts else True
+        )
         self._reconnect_delay: int = 5  # seconds
 
         # MarketDataMixin
@@ -184,7 +202,9 @@ class InteractiveBrokersClient(
                     not self._indefinite_reconnect
                     and self._connection_attempts > self._max_connection_attempts
                 ):
-                    self._log.error("Max connection attempts reached, connection failed")
+                    self._log.error(
+                        "Max connection attempts reached, connection failed"
+                    )
                     self._stop()
                     break
 
@@ -205,7 +225,9 @@ class InteractiveBrokersClient(
                 self._start_connection_watchdog()
 
                 self._is_client_ready.set()
-                self._log.debug("`_is_client_ready` set by `_start_async`", LogColor.BLUE)
+                self._log.debug(
+                    "`_is_client_ready` set by `_start_async`", LogColor.BLUE
+                )
                 self._connection_attempts = 0
 
             except TimeoutError:
@@ -327,8 +349,12 @@ class InteractiveBrokersClient(
         Cancel and restart all subscriptions.
         """
         subscriptions = self._subscriptions.get_all()
-        subscription_names = ", ".join([str(subscription.name) for subscription in subscriptions])
-        self._log.info(f"Resubscribing to {len(subscriptions)} subscriptions: {subscription_names}")
+        subscription_names = ", ".join(
+            [str(subscription.name) for subscription in subscriptions]
+        )
+        self._log.info(
+            f"Resubscribing to {len(subscriptions)} subscriptions: {subscription_names}"
+        )
 
         for subscription in self._subscriptions.get_all():
             self._log.info(f"Resubscribing to {subscription.name} subscription...")
@@ -370,7 +396,10 @@ class InteractiveBrokersClient(
             while True:
                 await asyncio.sleep(1)
 
-                if not self._is_ib_connected.is_set() or not self._eclient.isConnected():
+                if (
+                    not self._is_ib_connected.is_set()
+                    or not self._eclient.isConnected()
+                ):
                     self._log.error("Connection watchdog detects connection lost")
                     await self._handle_disconnection()
         except asyncio.CancelledError:
@@ -384,7 +413,9 @@ class InteractiveBrokersClient(
             self._degrade()
 
         if self._is_ib_connected.is_set():
-            self._log.debug("`_is_ib_connected` unset by `_handle_disconnection`", LogColor.BLUE)
+            self._log.debug(
+                "`_is_ib_connected` unset by `_handle_disconnection`", LogColor.BLUE
+            )
             self._is_ib_connected.clear()
 
         await asyncio.sleep(5)
@@ -584,14 +615,18 @@ class InteractiveBrokersClient(
 
                     if msg:
                         # Place msg in the internal queue for processing
-                        self._loop.call_soon_threadsafe(self._internal_msg_queue.put_nowait, msg)
+                        self._loop.call_soon_threadsafe(
+                            self._internal_msg_queue.put_nowait, msg
+                        )
                     else:
                         self._log.debug("More incoming packets are needed")
                         break
         except asyncio.CancelledError:
             self._log.debug("Client TWS incoming message reader was cancelled")
         except Exception as e:
-            self._log.exception("Unhandled exception in Client TWS incoming message reader", e)
+            self._log.exception(
+                "Unhandled exception in Client TWS incoming message reader", e
+            )
         finally:
             if self._is_ib_connected.is_set() and not self.is_disposed:
                 self._log.debug(
@@ -711,7 +746,9 @@ class InteractiveBrokersClient(
 
         """
         self._log.debug(f"Submitting task to message handler queue: {task}")
-        asyncio.run_coroutine_threadsafe(self._msg_handler_task_queue.put(task), self._loop)
+        asyncio.run_coroutine_threadsafe(
+            self._msg_handler_task_queue.put(task), self._loop
+        )
 
     def _next_req_id(self) -> int:
         """
@@ -734,7 +771,9 @@ class InteractiveBrokersClient(
         Override the logging for ibapi EClient.sendMsg.
         """
         full_msg = comm.make_msg(msg)
-        self._log.debug(f"TWS API request sent: function={current_fn_name(1)} msg={full_msg}")
+        self._log.debug(
+            f"TWS API request sent: function={current_fn_name(1)} msg={full_msg}"
+        )
         self._eclient.conn.sendMsg(full_msg)
 
     def logRequest(self, fnName, fnParams):

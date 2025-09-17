@@ -47,19 +47,25 @@ class TestExecStubs:
     @staticmethod
     def cash_account(account_id: AccountId | None = None) -> CashAccount:
         return AccountFactory.create(
-            TestEventStubs.cash_account_state(account_id=account_id or TestIdStubs.account_id()),
+            TestEventStubs.cash_account_state(
+                account_id=account_id or TestIdStubs.account_id()
+            ),
         )
 
     @staticmethod
     def margin_account(account_id: AccountId | None = None) -> MarginAccount:
         return AccountFactory.create(
-            TestEventStubs.margin_account_state(account_id=account_id or TestIdStubs.account_id()),
+            TestEventStubs.margin_account_state(
+                account_id=account_id or TestIdStubs.account_id()
+            ),
         )
 
     @staticmethod
     def betting_account(account_id: AccountId | None = None) -> BettingAccount:
         return AccountFactory.create(
-            TestEventStubs.betting_account_state(account_id=account_id or TestIdStubs.account_id()),
+            TestEventStubs.betting_account_state(
+                account_id=account_id or TestIdStubs.account_id()
+            ),
         )
 
     @staticmethod
@@ -154,7 +160,9 @@ class TestExecStubs:
             parent_order_id=entry_order.client_order_id,
             tags=None,
         )
-        return OrderList(order_list_id or TestIdStubs.order_list_id(), [entry_order, sl_order])
+        return OrderList(
+            order_list_id or TestIdStubs.order_list_id(), [entry_order, sl_order]
+        )
 
     @staticmethod
     def market_order(
@@ -192,7 +200,9 @@ class TestExecStubs:
         **order_kwargs,
     ) -> Order:
         instrument = instrument or _AUDUSD_SIM
-        order = order or TestExecStubs.limit_order(instrument=instrument, **order_kwargs)
+        order = order or TestExecStubs.limit_order(
+            instrument=instrument, **order_kwargs
+        )
         submitted = TestEventStubs.order_submitted(order=order)
         assert order
         order.apply(submitted)
@@ -207,7 +217,9 @@ class TestExecStubs:
         **order_kwargs,
     ) -> Order:
         instrument = instrument or _AUDUSD_SIM
-        order = order or TestExecStubs.limit_order(instrument=instrument, **order_kwargs)
+        order = order or TestExecStubs.limit_order(
+            instrument=instrument, **order_kwargs
+        )
         submitted = TestExecStubs.make_submitted_order(order)
         accepted = TestEventStubs.order_accepted(
             order=submitted,

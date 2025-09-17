@@ -17,9 +17,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from nautilus_trader.adapters.bybit.endpoints.user.query_api import BybitQueryApiEndpoint
-from nautilus_trader.adapters.bybit.endpoints.user.update_sub_api import BybitUpdateSubApiEndpoint
-from nautilus_trader.adapters.bybit.endpoints.user.update_sub_api import BybitUpdateSubApiPostParams
+from nautilus_trader.adapters.bybit.endpoints.user.query_api import (
+    BybitQueryApiEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.user.update_sub_api import (
+    BybitUpdateSubApiEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.user.update_sub_api import (
+    BybitUpdateSubApiPostParams,
+)
 from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
 from nautilus_trader.core.correctness import PyCondition
 
@@ -27,7 +33,9 @@ from nautilus_trader.core.correctness import PyCondition
 if TYPE_CHECKING:
     from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
     from nautilus_trader.adapters.bybit.schemas.user.query_api import BybitApiInfo
-    from nautilus_trader.adapters.bybit.schemas.user.update_sub_api import BybitUpdateSubApiResult
+    from nautilus_trader.adapters.bybit.schemas.user.update_sub_api import (
+        BybitUpdateSubApiResult,
+    )
     from nautilus_trader.common.component import LiveClock
 
 
@@ -43,7 +51,9 @@ class BybitUserHttpAPI:
         self.base_endpoint = "/v5"
 
         self._endpoint_query_api = BybitQueryApiEndpoint(client, self.base_endpoint)
-        self._endpoint_update_sub_api = BybitUpdateSubApiEndpoint(client, self.base_endpoint)
+        self._endpoint_update_sub_api = BybitUpdateSubApiEndpoint(
+            client, self.base_endpoint
+        )
 
     async def query_api(self) -> BybitApiInfo:
         response = await self._endpoint_query_api.get()

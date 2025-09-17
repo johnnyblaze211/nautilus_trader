@@ -48,8 +48,14 @@ class TestBinanceHttpParsing:
         assert result.instrument_id == ETHUSDT.id
         assert len(result.deltas) == 21
         assert result.deltas[1].order.price == Price.from_str("60650.00")  # <-- Top bid
-        assert result.deltas[1].order.size == Quantity.from_str("0.00213")  # <-- Top bid
-        assert result.deltas[11].order.price == Price.from_str("60650.01")  # <-- Top ask
-        assert result.deltas[11].order.size == Quantity.from_str("0.61982")  # <-- Top ask
+        assert result.deltas[1].order.size == Quantity.from_str(
+            "0.00213"
+        )  # <-- Top bid
+        assert result.deltas[11].order.price == Price.from_str(
+            "60650.01"
+        )  # <-- Top ask
+        assert result.deltas[11].order.size == Quantity.from_str(
+            "0.61982"
+        )  # <-- Top ask
         assert result.sequence == 14527958487
         assert result.ts_init == 2

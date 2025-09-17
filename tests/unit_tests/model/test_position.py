@@ -678,7 +678,10 @@ class TestPosition:
         assert position.ts_opened == 0
         assert position.avg_px_open == Decimal("1.0")
         assert position.event_count == 3
-        assert position.client_order_ids == [order1.client_order_id, order2.client_order_id]
+        assert position.client_order_ids == [
+            order1.client_order_id,
+            order2.client_order_id,
+        ]
         assert position.ts_closed == 0
         assert position.avg_px_close == 1.00002
         assert not position.is_long
@@ -689,7 +692,10 @@ class TestPosition:
         assert position.unrealized_pnl(last) == Money(0, USD)
         assert position.total_pnl(last) == Money(-8.000, USD)
         assert position.commissions() == [Money(6.00, USD)]
-        assert repr(position) == "Position(FLAT AUD/USD.SIM, id=P-19700101-000000-000-001-1)"
+        assert (
+            repr(position)
+            == "Position(FLAT AUD/USD.SIM, id=P-19700101-000000-000-001-1)"
+        )
 
     def test_position_filled_with_no_change(self) -> None:
         # Arrange
@@ -732,7 +738,10 @@ class TestPosition:
         assert position.ts_opened == 0
         assert position.avg_px_open == Decimal("1.0")
         assert position.event_count == 2
-        assert position.client_order_ids == [order1.client_order_id, order2.client_order_id]
+        assert position.client_order_ids == [
+            order1.client_order_id,
+            order2.client_order_id,
+        ]
         assert position.trade_ids == [
             TradeId("E-19700101-000000-000-001-1"),
             TradeId("E-19700101-000000-000-001-2"),
@@ -748,7 +757,10 @@ class TestPosition:
         assert position.unrealized_pnl(last) == Money(0, USD)
         assert position.total_pnl(last) == Money(-4.00, USD)
         assert position.commissions() == [Money(4.00, USD)]
-        assert repr(position) == "Position(FLAT AUD/USD.SIM, id=P-19700101-000000-000-001-1)"
+        assert (
+            repr(position)
+            == "Position(FLAT AUD/USD.SIM, id=P-19700101-000000-000-001-1)"
+        )
 
     def test_position_long_with_multiple_filled_orders(self) -> None:
         # Arrange
@@ -1166,8 +1178,12 @@ class TestPosition:
         # Assert
         assert pnl == Money(120.00000000, USDT)
         assert position.realized_pnl == Money(-126.00000000, USDT)
-        assert position.unrealized_pnl(Price.from_str("10510.00")) == Money(120.00000000, USDT)
-        assert position.total_pnl(Price.from_str("10510.00")) == Money(-6.00000000, USDT)
+        assert position.unrealized_pnl(Price.from_str("10510.00")) == Money(
+            120.00000000, USDT
+        )
+        assert position.total_pnl(Price.from_str("10510.00")) == Money(
+            -6.00000000, USDT
+        )
         assert position.commissions() == [Money(126.00000000, USDT)]
 
     def test_calculate_pnl_for_long_position_loss(self) -> None:
@@ -1198,8 +1214,12 @@ class TestPosition:
         # Assert
         assert pnl == Money(-195.00000000, USDT)
         assert position.realized_pnl == Money(-126.00000000, USDT)
-        assert position.unrealized_pnl(Price.from_str("10480.50")) == Money(-234.00000000, USDT)
-        assert position.total_pnl(Price.from_str("10480.50")) == Money(-360.00000000, USDT)
+        assert position.unrealized_pnl(Price.from_str("10480.50")) == Money(
+            -234.00000000, USDT
+        )
+        assert position.total_pnl(Price.from_str("10480.50")) == Money(
+            -360.00000000, USDT
+        )
         assert position.commissions() == [Money(126.00000000, USDT)]
 
     def test_calculate_pnl_for_short_position_winning(self) -> None:
@@ -1229,10 +1249,14 @@ class TestPosition:
 
         # Assert
         assert pnl == Money(1116.50000000, USDT)
-        assert position.unrealized_pnl(Price.from_str("10390.00")) == Money(1116.50000000, USDT)
+        assert position.unrealized_pnl(Price.from_str("10390.00")) == Money(
+            1116.50000000, USDT
+        )
         assert position.realized_pnl == Money(-106.57500000, USDT)
         assert position.commissions() == [Money(106.57500000, USDT)]
-        assert position.notional_value(Price.from_str("10390.00")) == Money(105458.50000000, USDT)
+        assert position.notional_value(Price.from_str("10390.00")) == Money(
+            105458.50000000, USDT
+        )
 
     def test_calculate_pnl_for_short_position_loss(self) -> None:
         # Arrange
@@ -1261,10 +1285,14 @@ class TestPosition:
 
         # Assert
         assert pnl == Money(-1705.00000000, USDT)
-        assert position.unrealized_pnl(Price.from_str("10670.50")) == Money(-1705.00000000, USDT)
+        assert position.unrealized_pnl(Price.from_str("10670.50")) == Money(
+            -1705.00000000, USDT
+        )
         assert position.realized_pnl == Money(-105.00000000, USDT)
         assert position.commissions() == [Money(105.00000000, USDT)]
-        assert position.notional_value(Price.from_str("10670.50")) == Money(106705.00000000, USDT)
+        assert position.notional_value(Price.from_str("10670.50")) == Money(
+            106705.00000000, USDT
+        )
 
     def test_calculate_pnl_for_inverse1(self) -> None:
         # Arrange
@@ -1293,9 +1321,13 @@ class TestPosition:
 
         # Assert
         assert pnl == Money(-0.90909091, BTC)
-        assert position.unrealized_pnl(Price.from_str("11000.00")) == Money(-0.90909091, BTC)
+        assert position.unrealized_pnl(Price.from_str("11000.00")) == Money(
+            -0.90909091, BTC
+        )
         assert position.realized_pnl == Money(-0.00750000, BTC)
-        assert position.notional_value(Price.from_str("11000.00")) == Money(9.09090909, BTC)
+        assert position.notional_value(Price.from_str("11000.00")) == Money(
+            9.09090909, BTC
+        )
 
     def test_calculate_pnl_for_inverse2(self) -> None:
         # Arrange
@@ -1316,8 +1348,12 @@ class TestPosition:
         position = Position(instrument=ETHUSD_BITMEX, fill=fill)
 
         # Act, Assert
-        assert position.unrealized_pnl(Price.from_str("370.00")) == Money(4.27745208, ETH)
-        assert position.notional_value(Price.from_str("370.00")) == Money(270.27027027, ETH)
+        assert position.unrealized_pnl(Price.from_str("370.00")) == Money(
+            4.27745208, ETH
+        )
+        assert position.notional_value(Price.from_str("370.00")) == Money(
+            270.27027027, ETH
+        )
 
     @pytest.mark.parametrize(
         (
@@ -1818,7 +1854,9 @@ class TestPosition:
 
         # Assert
         assert position.is_closed
-        assert position.duration_ns == 3_599_000_000_000  # 1 hour - 1 second in nanoseconds
+        assert (
+            position.duration_ns == 3_599_000_000_000
+        )  # 1 hour - 1 second in nanoseconds
         assert position.ts_opened == 1_000_000_000
         assert position.ts_closed == 3_600_000_000_000
 
@@ -1904,7 +1942,9 @@ class TestPosition:
 
         # Assert
         # Weighted average: (50k * 1.0 + 30k * 1.001 + 20k * 1.002) / 100k
-        expected_avg = (50_000 * 1.00000 + 30_000 * 1.00100 + 20_000 * 1.00200) / 100_000
+        expected_avg = (
+            50_000 * 1.00000 + 30_000 * 1.00100 + 20_000 * 1.00200
+        ) / 100_000
         assert position is not None
         assert position.avg_px_open == pytest.approx(expected_avg, rel=1e-9)
         assert position.quantity == Quantity.from_int(100_000)
@@ -2118,13 +2158,22 @@ class TestPosition:
         # Assert
         # Check that IDs are deduplicated where appropriate
         assert len(position.client_order_ids) == 3  # All unique client order IDs
-        assert len(position.venue_order_ids) == 2  # Should be deduplicated: V-001, V-002
+        assert (
+            len(position.venue_order_ids) == 2
+        )  # Should be deduplicated: V-001, V-002
         assert len(position.trade_ids) == 3  # All unique: T-001, T-002, T-003
 
         # Check sorting (if applicable - need to verify if sorting is guaranteed)
         # The lists should be in chronological order of fills
-        assert position.venue_order_ids == [VenueOrderId("V-001"), VenueOrderId("V-002")]
-        assert position.trade_ids == [TradeId("T-001"), TradeId("T-002"), TradeId("T-003")]
+        assert position.venue_order_ids == [
+            VenueOrderId("V-001"),
+            VenueOrderId("V-002"),
+        ]
+        assert position.trade_ids == [
+            TradeId("T-001"),
+            TradeId("T-002"),
+            TradeId("T-003"),
+        ]
 
     def test_position_equality_and_hash_semantics(self) -> None:
         """

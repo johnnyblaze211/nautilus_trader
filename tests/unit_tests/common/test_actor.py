@@ -724,7 +724,9 @@ class TestActor:
             actor.fault()
         assert actor.state == ComponentState.FAULTING
 
-    def test_handle_quote_tick_when_user_code_raises_exception_logs_and_reraises(self) -> None:
+    def test_handle_quote_tick_when_user_code_raises_exception_logs_and_reraises(
+        self,
+    ) -> None:
         # Arrange
         actor = KaboomActor()
         actor.register_base(
@@ -743,7 +745,9 @@ class TestActor:
         with pytest.raises(RuntimeError):
             actor.handle_quote_tick(tick)
 
-    def test_handle_trade_tick_when_user_code_raises_exception_logs_and_reraises(self) -> None:
+    def test_handle_trade_tick_when_user_code_raises_exception_logs_and_reraises(
+        self,
+    ) -> None:
         # Arrange
         actor = KaboomActor()
         actor.register_base(
@@ -781,7 +785,9 @@ class TestActor:
         with pytest.raises(RuntimeError):
             actor.handle_bar(bar)
 
-    def test_handle_data_when_user_code_raises_exception_logs_and_reraises(self) -> None:
+    def test_handle_data_when_user_code_raises_exception_logs_and_reraises(
+        self,
+    ) -> None:
         # Arrange
         actor = KaboomActor()
         actor.register_base(
@@ -806,7 +812,9 @@ class TestActor:
                 ),
             )
 
-    def test_handle_event_when_user_code_raises_exception_logs_and_reraises(self) -> None:
+    def test_handle_event_when_user_code_raises_exception_logs_and_reraises(
+        self,
+    ) -> None:
         # Arrange
         actor = KaboomActor()
         actor.register_base(
@@ -994,7 +1002,9 @@ class TestActor:
         with pytest.raises(RuntimeError):
             actor.handle_instrument(AUDUSD_SIM)
 
-    def test_handle_instrument_when_not_running_does_not_send_to_on_instrument(self) -> None:
+    def test_handle_instrument_when_not_running_does_not_send_to_on_instrument(
+        self,
+    ) -> None:
         # Arrange
         actor = MockActor()
         actor.register_base(
@@ -1049,7 +1059,9 @@ class TestActor:
         assert actor.calls == ["on_start", "on_instrument"]
         assert actor.store[0] == AUDUSD_SIM
 
-    def test_handle_instruments_when_not_running_does_not_send_to_on_instrument(self) -> None:
+    def test_handle_instruments_when_not_running_does_not_send_to_on_instrument(
+        self,
+    ) -> None:
         # Arrange
         actor = MockActor()
         actor.register_base(
@@ -1066,7 +1078,9 @@ class TestActor:
         assert actor.calls == []
         assert actor.store == []
 
-    def test_handle_ticker_when_not_running_does_not_send_to_on_quote_tick(self) -> None:
+    def test_handle_ticker_when_not_running_does_not_send_to_on_quote_tick(
+        self,
+    ) -> None:
         # Arrange
         actor = MockActor()
         actor.register_base(
@@ -1085,7 +1099,9 @@ class TestActor:
         assert actor.calls == []
         assert actor.store == []
 
-    def test_handle_quote_tick_when_not_running_does_not_send_to_on_quote_tick(self) -> None:
+    def test_handle_quote_tick_when_not_running_does_not_send_to_on_quote_tick(
+        self,
+    ) -> None:
         # Arrange
         actor = MockActor()
         actor.register_base(
@@ -1125,7 +1141,9 @@ class TestActor:
         assert actor.calls == ["on_start", "on_quote_tick"]
         assert actor.store[0] == tick
 
-    def test_handle_trade_tick_when_not_running_does_not_send_to_on_trade_tick(self) -> None:
+    def test_handle_trade_tick_when_not_running_does_not_send_to_on_trade_tick(
+        self,
+    ) -> None:
         # Arrange
         actor = MockActor()
         actor.register_base(
@@ -1652,7 +1670,9 @@ class TestActor:
         )
 
         # Act
-        actor.subscribe_order_book_depth(AUDUSD_SIM.id, book_type=BookType.L2_MBP, depth=10)
+        actor.subscribe_order_book_depth(
+            AUDUSD_SIM.id, book_type=BookType.L2_MBP, depth=10
+        )
 
         # Assert
         assert self.data_engine.command_count == 1
@@ -1667,7 +1687,9 @@ class TestActor:
             clock=self.clock,
         )
 
-        actor.subscribe_order_book_depth(AUDUSD_SIM.id, book_type=BookType.L2_MBP, depth=10)
+        actor.subscribe_order_book_depth(
+            AUDUSD_SIM.id, book_type=BookType.L2_MBP, depth=10
+        )
 
         # Act
         actor.unsubscribe_order_book_depth(AUDUSD_SIM.id)
@@ -1987,7 +2009,9 @@ class TestActor:
         actor.publish_signal(name="Test", value=5.0, ts_event=0)
 
         # Assert
-        assert catalog.fs.exists(f"{catalog.path}/custom_signal_test_1704067205000000000.feather")
+        assert catalog.fs.exists(
+            f"{catalog.path}/custom_signal_test_1704067205000000000.feather"
+        )
 
     def test_subscribe_bars(self) -> None:
         # Arrange
@@ -2124,7 +2148,9 @@ class TestActor:
         # Act
         start_time = self.clock.utc_now() - timedelta(hours=1)
         end_time = self.clock.utc_now()
-        request_id = actor.request_quote_ticks(AUDUSD_SIM.id, start=start_time, end=end_time)
+        request_id = actor.request_quote_ticks(
+            AUDUSD_SIM.id, start=start_time, end=end_time
+        )
 
         # Assert
         self.assert_successful_request(actor, request_id, "request_quote_ticks")
@@ -2183,7 +2209,9 @@ class TestActor:
         # Act
         start_time = self.clock.utc_now() - timedelta(hours=1)
         end_time = self.clock.utc_now()
-        request_id = actor.request_trade_ticks(AUDUSD_SIM.id, start=start_time, end=end_time)
+        request_id = actor.request_trade_ticks(
+            AUDUSD_SIM.id, start=start_time, end=end_time
+        )
 
         # Assert
         self.assert_successful_request(actor, request_id, "request_trade_ticks")
@@ -2364,7 +2392,9 @@ class TestActor:
         (
             "request_data",
             {
-                "data_type": DataType(NewsEvent, {"type": "NEWS_WIRE", "topic": "Earthquake"}),
+                "data_type": DataType(
+                    NewsEvent, {"type": "NEWS_WIRE", "topic": "Earthquake"}
+                ),
                 "client_id": ClientId("SIM"),
             },
         ),
@@ -2375,7 +2405,9 @@ class TestActor:
     ]
 
     # Derived from combining the above two lists
-    REQUEST_METHODS_ALL = REQUEST_METHODS_INSTRUMENT + REQUEST_METHODS_WITHOUT_NONE_START_HANDLING
+    REQUEST_METHODS_ALL = (
+        REQUEST_METHODS_INSTRUMENT + REQUEST_METHODS_WITHOUT_NONE_START_HANDLING
+    )
 
     @pytest.mark.parametrize("method_name,args", REQUEST_METHODS_INSTRUMENT)
     def test_none_start_and_end_replaced_with_current_time(self, method_name, args):
@@ -2446,7 +2478,9 @@ class TestActor:
         "request_method_name,method_args",
         REQUEST_METHODS_WITHOUT_NONE_START_HANDLING,
     )
-    def test_start_parameter_none_causes_failure(self, request_method_name, method_args):
+    def test_start_parameter_none_causes_failure(
+        self, request_method_name, method_args
+    ):
         """
         Test that None start parameter causes failure for non-instrument request
         methods.
@@ -2467,7 +2501,9 @@ class TestActor:
             request_method(**method_args, start=None, end=end_time)
 
     @pytest.mark.parametrize("request_method_name,method_args", REQUEST_METHODS_ALL)
-    def test_start_parameter_future_time_causes_failure(self, request_method_name, method_args):
+    def test_start_parameter_future_time_causes_failure(
+        self, request_method_name, method_args
+    ):
         """
         Test that future start times cause failure for all request methods.
         """
@@ -2510,7 +2546,9 @@ class TestActor:
         self.assert_successful_request(actor, request_id, request_method_name)
 
     @pytest.mark.parametrize("request_method_name,method_args", REQUEST_METHODS_ALL)
-    def test_end_parameter_future_time_causes_failure(self, request_method_name, method_args):
+    def test_end_parameter_future_time_causes_failure(
+        self, request_method_name, method_args
+    ):
         """
         Test that future end times cause failure for all request methods.
         """

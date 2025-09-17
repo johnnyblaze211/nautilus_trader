@@ -546,7 +546,9 @@ class TestStrategy:
         assert len(strategy.registered_indicators) == 1
         assert ema in strategy.registered_indicators
 
-    def test_handle_quote_tick_updates_indicator_registered_for_quote_ticks(self) -> None:
+    def test_handle_quote_tick_updates_indicator_registered_for_quote_ticks(
+        self,
+    ) -> None:
         # Arrange
         strategy = Strategy()
         strategy.register(
@@ -589,7 +591,9 @@ class TestStrategy:
         # Assert
         assert ema.count == 0
 
-    def test_handle_quote_ticks_updates_indicator_registered_for_quote_ticks(self) -> None:
+    def test_handle_quote_ticks_updates_indicator_registered_for_quote_ticks(
+        self,
+    ) -> None:
         # Arrange
         strategy = Strategy()
         strategy.register(
@@ -611,7 +615,9 @@ class TestStrategy:
         # Assert
         assert ema.count == 1
 
-    def test_handle_trade_tick_updates_indicator_registered_for_trade_ticks(self) -> None:
+    def test_handle_trade_tick_updates_indicator_registered_for_trade_ticks(
+        self,
+    ) -> None:
         # Arrange
         strategy = Strategy()
         strategy.register(
@@ -634,7 +640,9 @@ class TestStrategy:
         # Assert
         assert ema.count == 2
 
-    def test_handle_trade_ticks_updates_indicator_registered_for_trade_ticks(self) -> None:
+    def test_handle_trade_ticks_updates_indicator_registered_for_trade_ticks(
+        self,
+    ) -> None:
         # Arrange
         strategy = Strategy()
         strategy.register(
@@ -860,7 +868,9 @@ class TestStrategy:
         self.exchange.process(0)
 
         strategy.clock.cancel_timers()  # <-- Simulate restart
-        self.clock.set_time(dt_to_unix_nanos(order1.expire_time + pd.Timedelta(minutes=1)))
+        self.clock.set_time(
+            dt_to_unix_nanos(order1.expire_time + pd.Timedelta(minutes=1))
+        )
 
         # Act
         strategy.start()
@@ -961,7 +971,9 @@ class TestStrategy:
         assert strategy.clock.timer_count == 1
         assert strategy.clock.timer_names == ["GTD-EXPIRY:O-19700101-000000-000-None-1"]
 
-    def test_submit_order_with_managed_gtd_when_immediately_filled_cancels_timer(self) -> None:
+    def test_submit_order_with_managed_gtd_when_immediately_filled_cancels_timer(
+        self,
+    ) -> None:
         # Arrange
         config = StrategyConfig(manage_gtd_expiry=True)
         strategy = Strategy(config)
@@ -1174,7 +1186,9 @@ class TestStrategy:
         assert strategy.clock.timer_count == 1
         assert strategy.clock.timer_names == ["GTD-EXPIRY:O-19700101-000000-000-None-1"]
 
-    def test_submit_order_list_with_managed_gtd_when_immediately_filled_cancels_timer(self) -> None:
+    def test_submit_order_list_with_managed_gtd_when_immediately_filled_cancels_timer(
+        self,
+    ) -> None:
         # Arrange
         config = StrategyConfig(manage_gtd_expiry=True)
         strategy = Strategy(config)
@@ -1265,7 +1279,9 @@ class TestStrategy:
         # Assert
         assert order in strategy.cache.orders()
         assert strategy.cache.orders()[0].status == OrderStatus.CANCELED
-        assert order.client_order_id == strategy.cache.orders_closed()[0].client_order_id
+        assert (
+            order.client_order_id == strategy.cache.orders_closed()[0].client_order_id
+        )
         assert order not in strategy.cache.orders_open()
         assert strategy.cache.order_exists(order.client_order_id)
         assert not strategy.cache.is_order_open(order.client_order_id)
@@ -1851,7 +1867,9 @@ class TestStrategy:
 
         self.exec_engine.process(TestEventStubs.order_filled(entry_order, _USDJPY_SIM))
         self.exec_engine.process(
-            TestEventStubs.order_filled(sl_order, _USDJPY_SIM, venue_order_id=VenueOrderId("2")),
+            TestEventStubs.order_filled(
+                sl_order, _USDJPY_SIM, venue_order_id=VenueOrderId("2")
+            ),
         )
         self.exchange.process(0)
 
@@ -1906,7 +1924,9 @@ class TestStrategy:
 
         self.exec_engine.process(TestEventStubs.order_filled(entry_order, _USDJPY_SIM))
         self.exec_engine.process(
-            TestEventStubs.order_filled(tp_order, _USDJPY_SIM, venue_order_id=VenueOrderId("2")),
+            TestEventStubs.order_filled(
+                tp_order, _USDJPY_SIM, venue_order_id=VenueOrderId("2")
+            ),
         )
         self.exchange.process(0)
 

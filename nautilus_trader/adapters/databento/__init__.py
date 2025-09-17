@@ -30,8 +30,12 @@ from nautilus_trader.adapters.databento.constants import ALL_SYMBOLS
 from nautilus_trader.adapters.databento.constants import DATABENTO
 from nautilus_trader.adapters.databento.constants import DATABENTO_CLIENT_ID
 from nautilus_trader.adapters.databento.factories import DatabentoLiveDataClientFactory
-from nautilus_trader.adapters.databento.factories import get_cached_databento_http_client
-from nautilus_trader.adapters.databento.factories import get_cached_databento_instrument_provider
+from nautilus_trader.adapters.databento.factories import (
+    get_cached_databento_http_client,
+)
+from nautilus_trader.adapters.databento.factories import (
+    get_cached_databento_instrument_provider,
+)
 from nautilus_trader.adapters.databento.loaders import DatabentoDataLoader
 from nautilus_trader.adapters.databento.providers import DatabentoInstrumentProvider
 from nautilus_trader.core.nautilus_pyo3 import DatabentoImbalance

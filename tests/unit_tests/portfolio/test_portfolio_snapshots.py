@@ -58,7 +58,9 @@ def test_portfolio_calculates_realized_pnl_with_position_snapshots(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -147,7 +149,9 @@ def test_portfolio_reset_clears_all_state(
         account_type=AccountType.MARGIN,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -202,7 +206,9 @@ def test_netting_oms_position_lifecycle_with_snapshots(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -307,7 +313,9 @@ def test_pnl_aggregation_multiple_position_cycles(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -437,9 +445,15 @@ def test_pnl_aggregation_multiple_position_cycles(
     snapshots = cache.position_snapshots()
 
     # Assert - each cycle's PnL is independent
-    assert cycle_pnls[0] == Money(16.80, USD)  # Cycle 1: 20 pips on 100k - 3.20 commission
-    assert cycle_pnls[1] == Money(-19.80, USD)  # Cycle 2: -15 pips on 150k - 4.80 commission
-    assert cycle_pnls[2] == Money(13.60, USD)  # Cycle 3: 10 pips on 200k - 6.40 commission
+    assert cycle_pnls[0] == Money(
+        16.80, USD
+    )  # Cycle 1: 20 pips on 100k - 3.20 commission
+    assert cycle_pnls[1] == Money(
+        -19.80, USD
+    )  # Cycle 2: -15 pips on 150k - 4.80 commission
+    assert cycle_pnls[2] == Money(
+        13.60, USD
+    )  # Cycle 3: 10 pips on 200k - 6.40 commission
 
     # Verify snapshots preserve each cycle
     assert len(snapshots) == 2  # First 2 cycles are snapshotted
@@ -494,7 +508,9 @@ def test_incremental_caching_avoids_redundant_unpickling(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -619,7 +635,9 @@ def test_cache_rebuild_on_purge(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -750,7 +768,9 @@ def test_multiple_instruments_cached_independently(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -839,7 +859,9 @@ def test_multiple_instruments_cached_independently(
     # Verify initial PnLs are calculated correctly
     assert aud_pnl_before.as_decimal() > 0  # Should have positive PnL
     assert gbp_pnl_before.as_decimal() > 0  # Should have positive PnL
-    assert aud_pnl_before != gbp_pnl_before  # Should be different for different instruments
+    assert (
+        aud_pnl_before != gbp_pnl_before
+    )  # Should be different for different instruments
 
     # Add one more AUD snapshot
     position_id_new = PositionId("AUD-NEW")
@@ -910,7 +932,9 @@ def test_no_snapshots_returns_zero_pnl(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -950,7 +974,9 @@ def test_incremental_processing_with_active_position(
         account_type=AccountType.CASH,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))],
+        balances=[
+            AccountBalance(Money(1_000_000, USD), Money(0, USD), Money(1_000_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),

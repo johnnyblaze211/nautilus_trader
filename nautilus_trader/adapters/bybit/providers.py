@@ -106,9 +106,11 @@ class BybitInstrumentProvider(InstrumentProvider):
             # For options, use base_coin filter if provided
             if product_type == BybitProductType.OPTION and base_coin:
                 self._log.info(f"Loading {base_coin} options only...")
-                instrument_infos[product_type] = await self._http_market.fetch_all_instruments(
-                    product_type,
-                    base_coin=base_coin,
+                instrument_infos[product_type] = (
+                    await self._http_market.fetch_all_instruments(
+                        product_type,
+                        base_coin=base_coin,
+                    )
                 )
                 # Scope fee-rate to the base coin to reduce payload
                 fee_rates[product_type] = await self._http_account.fetch_fee_rate(
@@ -116,8 +118,10 @@ class BybitInstrumentProvider(InstrumentProvider):
                     base_coin=base_coin,
                 )
             else:
-                instrument_infos[product_type] = await self._http_market.fetch_all_instruments(
-                    product_type,
+                instrument_infos[product_type] = (
+                    await self._http_market.fetch_all_instruments(
+                        product_type,
+                    )
                 )
                 fee_rates[product_type] = await self._http_account.fetch_fee_rate(
                     product_type,
@@ -158,7 +162,9 @@ class BybitInstrumentProvider(InstrumentProvider):
 
         # Check all instrument IDs valid for Bybit
         for instrument_id in instrument_ids:
-            PyCondition.equal(instrument_id.venue, BYBIT_VENUE, "instrument_id.venue", "BYBIT")
+            PyCondition.equal(
+                instrument_id.venue, BYBIT_VENUE, "instrument_id.venue", "BYBIT"
+            )
 
         # Group instruments by product type
         instruments_by_type: dict[BybitProductType, list[InstrumentId]] = {}
@@ -175,7 +181,9 @@ class BybitInstrumentProvider(InstrumentProvider):
 
         for product_type in instruments_by_type.keys():
             if product_type in self._product_types:
-                fee_rates[product_type] = await self._http_account.fetch_fee_rate(product_type)
+                fee_rates[product_type] = await self._http_account.fetch_fee_rate(
+                    product_type
+                )
 
         for instrument_id in instrument_ids:
             bybit_symbol = BybitSymbol(instrument_id.symbol.value)
@@ -191,12 +199,20 @@ class BybitInstrumentProvider(InstrumentProvider):
 
             if product_type == BybitProductType.OPTION:
                 target_fee_rate = next(
-                    (item for item in fee_rate_list if item.baseCoin == instrument.baseCoin),
+                    (
+                        item
+                        for item in fee_rate_list
+                        if item.baseCoin == instrument.baseCoin
+                    ),
                     None,
                 )
             else:
                 target_fee_rate = next(
-                    (item for item in fee_rate_list if item.symbol == instrument.symbol),
+                    (
+                        item
+                        for item in fee_rate_list
+                        if item.symbol == instrument.symbol
+                    ),
                     None,
                 )
 
@@ -207,7 +223,9 @@ class BybitInstrumentProvider(InstrumentProvider):
                     f"Unable to find fee rate for instrument {instrument}",
                 )
 
-    async def load_async(self, instrument_id: InstrumentId, filters: dict | None = None) -> None:
+    async def load_async(
+        self, instrument_id: InstrumentId, filters: dict | None = None
+    ) -> None:
         PyCondition.not_none(instrument_id, "instrument_id")
         await self.load_ids_async([instrument_id], filters)
 

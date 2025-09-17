@@ -680,7 +680,9 @@ class TestTickBarAggregator:
         # Set up data
         wrangler = QuoteTickDataWrangler(instrument)
         provider = TestDataProvider()
-        ticks = wrangler.process(provider.read_csv_ticks("truefx/audusd-ticks.csv")[:1000])
+        ticks = wrangler.process(
+            provider.read_csv_ticks("truefx/audusd-ticks.csv")[:1000]
+        )
 
         # Act
         for tick in ticks:
@@ -709,7 +711,9 @@ class TestTickBarAggregator:
 
         wrangler = TradeTickDataWrangler(instrument=ETHUSDT_BINANCE)
         provider = TestDataProvider()
-        ticks = wrangler.process(provider.read_csv_ticks("binance/ethusdt-trades.csv")[:10000])
+        ticks = wrangler.process(
+            provider.read_csv_ticks("binance/ethusdt-trades.csv")[:10000]
+        )
 
         # Act
         for tick in ticks:
@@ -1249,7 +1253,9 @@ class TestVolumeBarAggregator:
 
         wrangler = TradeTickDataWrangler(instrument=ETHUSDT_BINANCE)
         provider = TestDataProvider()
-        ticks = wrangler.process(provider.read_csv_ticks("binance/ethusdt-trades.csv")[:10000])
+        ticks = wrangler.process(
+            provider.read_csv_ticks("binance/ethusdt-trades.csv")[:10000]
+        )
 
         # Act
         for tick in ticks:
@@ -1524,7 +1530,10 @@ class TestTestValueBarAggregator:
         assert handler[1].close == Price.from_str("20.00000")
         assert handler[1].volume == Quantity.from_str("5000.00")
         expected = Decimal("40000.11")
-        assert aggregator.get_cumulative_value().quantize(expected, ROUND_HALF_EVEN) == expected
+        assert (
+            aggregator.get_cumulative_value().quantize(expected, ROUND_HALF_EVEN)
+            == expected
+        )
 
     def test_handle_bar_when_value_beyond_threshold_sends_bars_to_handler(self):
         # Arrange
@@ -1590,7 +1599,9 @@ class TestTestValueBarAggregator:
         assert handler[1].volume == Quantity.from_str("5000.00")
         expected = Decimal("40001.11")
         assert (
-            aggregator.get_cumulative_value().quantize(expected, rounding=ROUND_HALF_EVEN)
+            aggregator.get_cumulative_value().quantize(
+                expected, rounding=ROUND_HALF_EVEN
+            )
             == expected
         )
 
@@ -1640,7 +1651,9 @@ class TestTestValueBarAggregator:
 
         wrangler = TradeTickDataWrangler(instrument=ETHUSDT_BINANCE)
         provider = TestDataProvider()
-        ticks = wrangler.process(provider.read_csv_ticks("binance/ethusdt-trades.csv")[:1000])
+        ticks = wrangler.process(
+            provider.read_csv_ticks("binance/ethusdt-trades.csv")[:1000]
+        )
 
         # Act
         for tick in ticks:
@@ -2054,7 +2067,9 @@ class TestTimeBarAggregator:
         # Assert
         assert len(events) == 0
         assert initial_next_close == 180_000_000_001
-        assert aggregator.next_close_ns == 180_000_000_001  # TODO: This didn't increment?
+        assert (
+            aggregator.next_close_ns == 180_000_000_001
+        )  # TODO: This didn't increment?
 
     def test_skip_first_non_full_bar_when_starting_on_bar_boundary(self):
         """
@@ -2147,7 +2162,9 @@ class TestTimeBarAggregator:
         bar_type = BarType(instrument_id, bar_spec, AggregationSource.INTERNAL)
 
         # Base boundary at 2024-12-01 00:00:00; start +100µs after boundary
-        base_boundary_ns = dt_to_unix_nanos(pd.Timestamp("2024-12-01 00:00:00", tz="UTC"))
+        base_boundary_ns = dt_to_unix_nanos(
+            pd.Timestamp("2024-12-01 00:00:00", tz="UTC")
+        )
         clock.set_time(base_boundary_ns + 100_000)  # +100µs (within 1ms tolerance)
 
         aggregator = TimeBarAggregator(
@@ -2291,9 +2308,13 @@ class TestTimeBarAggregator:
         assert bar.volume == Quantity.from_int(3)
         assert bar.ts_init == pd.Timestamp("1970-01-01 00:33:30.000010").value
         assert initial_next_close == pd.Timestamp("1970-01-01 00:33:30.000010").value
-        assert aggregator.next_close_ns == pd.Timestamp("1970-01-01 00:36:30.000010").value
+        assert (
+            aggregator.next_close_ns == pd.Timestamp("1970-01-01 00:36:30.000010").value
+        )
 
-    def test_update_timer_with_test_clock_sends_single_monthly_bar_to_handler_with_bars(self):
+    def test_update_timer_with_test_clock_sends_single_monthly_bar_to_handler_with_bars(
+        self,
+    ):
         # Arrange
         clock = TestClock()
         clock.set_time(pd.Timestamp("2024-3-23").value)
@@ -2368,7 +2389,9 @@ class TestTimeBarAggregator:
         assert bar.volume == Quantity.from_int(3)
         assert bar.ts_init == pd.Timestamp("2024-4-1").value
 
-    def test_update_timer_with_test_clock_sends_single_weekly_bar_to_handler_with_bars(self):
+    def test_update_timer_with_test_clock_sends_single_weekly_bar_to_handler_with_bars(
+        self,
+    ):
         # Arrange
         clock = TestClock()
         clock.set_time(pd.Timestamp("2024-3-20").value)
@@ -2958,8 +2981,12 @@ class TestSpreadQuoteAggregator:
         assert -10.5 <= spread_quote.ask_price.as_double() <= -10.0
 
         # Verify sizes are reasonable (should be minimum of component sizes)
-        assert spread_quote.bid_size.as_double() <= 113  # Should be <= min component size
-        assert spread_quote.ask_size.as_double() <= 62  # Should be <= min component size
+        assert (
+            spread_quote.bid_size.as_double() <= 113
+        )  # Should be <= min component size
+        assert (
+            spread_quote.ask_size.as_double() <= 62
+        )  # Should be <= min component size
 
     def test_spread_quote_generation_with_multiple_time_updates(self):
         """
@@ -3030,12 +3057,16 @@ class TestSpreadQuoteAggregator:
         self.cache.add_quote_tick(option1_quote_updated)
         self.cache.add_quote_tick(option2_quote_updated)
 
-        events2 = self.clock.advance_time(1_500_000_000)  # Another 1.5 seconds (total 3 seconds)
+        events2 = self.clock.advance_time(
+            1_500_000_000
+        )  # Another 1.5 seconds (total 3 seconds)
         for event in events2:
             event.handle()
         second_quote_count = len(self.handler)
 
-        events3 = self.clock.advance_time(1_500_000_000)  # Another 1.5 seconds (total 4.5 seconds)
+        events3 = self.clock.advance_time(
+            1_500_000_000
+        )  # Another 1.5 seconds (total 4.5 seconds)
         for event in events3:
             event.handle()
         third_quote_count = len(self.handler)
@@ -3112,13 +3143,19 @@ class TestSpreadQuoteAggregator:
         # spread_vega = abs((vega * ratio).sum()) = abs(2.206 * 1 + 2.136 * -1) = 0.07
         # bid_ask_spread = spread_vega * vega_multiplier = 0.07 * 0.287 = 0.02
 
-        spread_bid_ask = spread_quote.ask_price.as_double() - spread_quote.bid_price.as_double()
-        assert 0.01 <= spread_bid_ask <= 0.5  # Should be much smaller than component spreads
+        spread_bid_ask = (
+            spread_quote.ask_price.as_double() - spread_quote.bid_price.as_double()
+        )
+        assert (
+            0.01 <= spread_bid_ask <= 0.5
+        )  # Should be much smaller than component spreads
 
         # Verify the spread quote is reasonable
         # For a put spread (long higher strike, short lower strike), the spread value is negative
         assert spread_quote.bid_price.as_double() < 0  # Spread should be negative
-        assert spread_quote.ask_price.as_double() > spread_quote.bid_price.as_double()  # Ask > Bid
+        assert (
+            spread_quote.ask_price.as_double() > spread_quote.bid_price.as_double()
+        )  # Ask > Bid
 
     def test_spread_quote_with_missing_greeks_data(self):
         """
@@ -3250,7 +3287,9 @@ class TestSpreadQuoteAggregator:
         assert spread_quote.bid_price < spread_quote.ask_price
 
         # The ratio spread should have a much more negative value than 1x1 spread
-        spread_mid = (spread_quote.bid_price.as_double() + spread_quote.ask_price.as_double()) / 2
+        spread_mid = (
+            spread_quote.bid_price.as_double() + spread_quote.ask_price.as_double()
+        ) / 2
         assert spread_mid < -100  # Should be significantly negative due to 1x2 ratio
 
     def test_spread_quote_aggregator_timer_behavior(self):
@@ -3293,7 +3332,9 @@ class TestSpreadQuoteAggregator:
         self.cache.add_quote_tick(option2_quote)
 
         # Act - advance time in smaller increments to test timer behavior
-        events1 = self.clock.advance_time(1_000_000_000)  # 1 second - should not trigger
+        events1 = self.clock.advance_time(
+            1_000_000_000
+        )  # 1 second - should not trigger
         for event in events1:
             event.handle()
         quotes_after_1s = len(self.handler)

@@ -57,7 +57,9 @@ from nautilus_trader.adapters.dydx.schemas.ws import DYDXWsFillSubaccountMessage
 from nautilus_trader.adapters.dydx.schemas.ws import DYDXWsMarketChannelData
 from nautilus_trader.adapters.dydx.schemas.ws import DYDXWsMarketSubscribedData
 from nautilus_trader.adapters.dydx.schemas.ws import DYDXWsMessageGeneral
-from nautilus_trader.adapters.dydx.schemas.ws import DYDXWsOrderSubaccountMessageContents
+from nautilus_trader.adapters.dydx.schemas.ws import (
+    DYDXWsOrderSubaccountMessageContents,
+)
 from nautilus_trader.adapters.dydx.schemas.ws import DYDXWsSubaccountsChannelData
 from nautilus_trader.adapters.dydx.schemas.ws import DYDXWsSubaccountsSubscribed
 from nautilus_trader.adapters.dydx.websocket.client import DYDXWebsocketClient
@@ -155,7 +157,9 @@ class ClientOrderIdHelper:
             if value is not None:
                 result = int.from_bytes(value, byteorder="big")
             else:
-                self._log.error(f"ClientOrderId integer not found in cache for {client_order_id!r}")
+                self._log.error(
+                    f"ClientOrderId integer not found in cache for {client_order_id!r}"
+                )
 
         return result
 
@@ -168,7 +172,9 @@ class ClientOrderIdHelper:
         if value is not None:
             return ClientOrderId(value.decode("utf-8"))
         else:
-            self._log.error(f"ClientOrderId not found in cache for integer {client_order_id_int}")
+            self._log.error(
+                f"ClientOrderId not found in cache for integer {client_order_id_int}"
+            )
 
         return ClientOrderId(str(client_order_id_int))
 
@@ -278,9 +284,13 @@ class DYDXExecutionClient(LiveExecutionClient):
         self._decoder_ws_block_height_subscribed = msgspec.json.Decoder(
             DYDXWsBlockHeightSubscribedData,
         )
-        self._decoder_ws_block_height_channel = msgspec.json.Decoder(DYDXWsBlockHeightChannelData)
+        self._decoder_ws_block_height_channel = msgspec.json.Decoder(
+            DYDXWsBlockHeightChannelData
+        )
         self._decoder_ws_instruments = msgspec.json.Decoder(DYDXWsMarketChannelData)
-        self._decoder_ws_instruments_subscribed = msgspec.json.Decoder(DYDXWsMarketSubscribedData)
+        self._decoder_ws_instruments_subscribed = msgspec.json.Decoder(
+            DYDXWsMarketSubscribedData
+        )
 
         # Hot caches
         self._order_builders: dict[InstrumentId, OrderBuilder] = {}
@@ -328,7 +338,9 @@ class DYDXExecutionClient(LiveExecutionClient):
         await self._set_leverage()
 
     async def _set_leverage(self) -> None:
-        timeout = self._clock.utc_now() + pd.Timedelta(seconds=self._connect_account_timeout_secs)
+        timeout = self._clock.utc_now() + pd.Timedelta(
+            seconds=self._connect_account_timeout_secs
+        )
         account = self.get_account()
 
         while account is None and self._clock.utc_now() < timeout:
@@ -393,8 +405,10 @@ class DYDXExecutionClient(LiveExecutionClient):
 
             if dydx_orders is not None:
                 for dydx_order in dydx_orders:
-                    current_client_order_id = self._client_order_id_generator.get_client_order_id(
-                        int(dydx_order.clientId),
+                    current_client_order_id = (
+                        self._client_order_id_generator.get_client_order_id(
+                            int(dydx_order.clientId),
+                        )
                     )
 
                     if current_client_order_id == client_order_id:
@@ -627,7 +641,9 @@ class DYDXExecutionClient(LiveExecutionClient):
                 client_order_id = None
 
                 if dydx_fill.orderId is not None:
-                    client_order_id = self._cache.client_order_id(VenueOrderId(dydx_fill.orderId))
+                    client_order_id = self._cache.client_order_id(
+                        VenueOrderId(dydx_fill.orderId)
+                    )
                 else:
                     self._log.warning(
                         "Venue order ID not set by venue. Unable to retrieve ClientOrderId",
@@ -686,7 +702,9 @@ class DYDXExecutionClient(LiveExecutionClient):
         if dydx_positions is not None:
             if command.instrument_id:
                 for dydx_position in dydx_positions.positions:
-                    current_instrument_id = DYDXSymbol(dydx_position.market).to_instrument_id()
+                    current_instrument_id = DYDXSymbol(
+                        dydx_position.market
+                    ).to_instrument_id()
 
                     if current_instrument_id == command.instrument_id:
                         instrument = self._cache.instrument(current_instrument_id)
@@ -720,7 +738,9 @@ class DYDXExecutionClient(LiveExecutionClient):
                     reports = [report]
             else:
                 for dydx_position in dydx_positions.positions:
-                    current_instrument_id = DYDXSymbol(dydx_position.market).to_instrument_id()
+                    current_instrument_id = DYDXSymbol(
+                        dydx_position.market
+                    ).to_instrument_id()
 
                     instrument = self._cache.instrument(current_instrument_id)
 
@@ -760,7 +780,9 @@ class DYDXExecutionClient(LiveExecutionClient):
                 elif ws_message_channel == "v4_markets":
                     self._handle_markets(raw)
                 else:
-                    self._log.error(f"Unknown message `{ws_message_type}`: {raw.decode()}")
+                    self._log.error(
+                        f"Unknown message `{ws_message_type}`: {raw.decode()}"
+                    )
             elif ws_message_type == "subscribed":
                 if ws_message_channel == "v4_block_height":
                     self._handle_block_height_subscribed(raw)
@@ -769,7 +791,9 @@ class DYDXExecutionClient(LiveExecutionClient):
                 elif ws_message_channel == "v4_markets":
                     self._handle_markets_subscribed(raw)
                 else:
-                    self._log.error(f"Unknown message `{ws_message_type}`: {raw.decode()}")
+                    self._log.error(
+                        f"Unknown message `{ws_message_type}`: {raw.decode()}"
+                    )
             elif ws_message_type == "unsubscribed":
                 self._log.info(
                     f"Unsubscribed from channel {ws_message_channel} for {ws_message.id}",
@@ -783,8 +807,10 @@ class DYDXExecutionClient(LiveExecutionClient):
 
     def _handle_block_height_subscribed(self, raw: bytes) -> None:
         try:
-            msg: DYDXWsBlockHeightSubscribedData = self._decoder_ws_block_height_subscribed.decode(
-                raw,
+            msg: DYDXWsBlockHeightSubscribedData = (
+                self._decoder_ws_block_height_subscribed.decode(
+                    raw,
+                )
             )
             self._block_height = int(msg.contents.height)
 
@@ -796,8 +822,10 @@ class DYDXExecutionClient(LiveExecutionClient):
 
     def _handle_block_height_channel_data(self, raw: bytes) -> None:
         try:
-            msg: DYDXWsBlockHeightChannelData = self._decoder_ws_block_height_channel.decode(
-                raw,
+            msg: DYDXWsBlockHeightChannelData = (
+                self._decoder_ws_block_height_channel.decode(
+                    raw,
+                )
             )
             self._block_height = int(msg.contents.blockHeight)
 
@@ -814,31 +842,43 @@ class DYDXExecutionClient(LiveExecutionClient):
             if msg.contents.oraclePrices is not None:
                 for symbol, oracle_price_market in msg.contents.oraclePrices.items():
                     instrument_id = DYDXSymbol(symbol).to_instrument_id()
-                    self._oracle_prices[instrument_id] = Decimal(oracle_price_market.oraclePrice)
+                    self._oracle_prices[instrument_id] = Decimal(
+                        oracle_price_market.oraclePrice
+                    )
 
         except Exception as e:
             self._log.exception(f"Failed to parse market data: {raw.decode()}", e)
 
     def _handle_markets_subscribed(self, raw: bytes) -> None:
         try:
-            msg: DYDXWsMarketSubscribedData = self._decoder_ws_instruments_subscribed.decode(raw)
+            msg: DYDXWsMarketSubscribedData = (
+                self._decoder_ws_instruments_subscribed.decode(raw)
+            )
 
             for symbol, oracle_price_market in msg.contents.markets.items():
                 if oracle_price_market.oraclePrice is not None:
                     instrument_id = DYDXSymbol(symbol).to_instrument_id()
-                    self._oracle_prices[instrument_id] = Decimal(oracle_price_market.oraclePrice)
+                    self._oracle_prices[instrument_id] = Decimal(
+                        oracle_price_market.oraclePrice
+                    )
 
         except Exception as e:
-            self._log.exception(f"Failed to parse market channel data: {raw.decode()}", e)
+            self._log.exception(
+                f"Failed to parse market channel data: {raw.decode()}", e
+            )
 
     def _handle_subaccounts_subscribed(self, raw: bytes) -> None:
         try:
-            msg: DYDXWsSubaccountsSubscribed = self._decoder_ws_msg_subaccounts_subscribed.decode(
-                raw,
+            msg: DYDXWsSubaccountsSubscribed = (
+                self._decoder_ws_msg_subaccounts_subscribed.decode(
+                    raw,
+                )
             )
 
             if msg.contents.subaccount is None:
-                self._log.error(f"Subaccount {self._wallet_address}/{self._subaccount} not found")
+                self._log.error(
+                    f"Subaccount {self._wallet_address}/{self._subaccount} not found"
+                )
                 return
 
             account_balances = msg.contents.parse_to_account_balances()
@@ -846,7 +886,9 @@ class DYDXExecutionClient(LiveExecutionClient):
             maintenance_margins: defaultdict[Currency, Decimal] = defaultdict(Decimal)
             instruments = self._instrument_provider.get_all()
 
-            for perpetual_position in msg.contents.subaccount.openPerpetualPositions.values():
+            for (
+                perpetual_position
+            ) in msg.contents.subaccount.openPerpetualPositions.values():
                 instrument_id = DYDXSymbol(perpetual_position.market).to_instrument_id()
                 instrument = self._cache.instrument(instrument_id)
 
@@ -897,7 +939,9 @@ class DYDXExecutionClient(LiveExecutionClient):
 
     def _handle_subaccounts_channel_data(self, raw: bytes) -> None:
         try:
-            msg: DYDXWsSubaccountsChannelData = self._decoder_ws_msg_subaccounts_channel.decode(raw)
+            msg: DYDXWsSubaccountsChannelData = (
+                self._decoder_ws_msg_subaccounts_channel.decode(raw)
+            )
 
             if msg.contents.fills is not None:
                 for fill_msg in msg.contents.fills:
@@ -928,7 +972,9 @@ class DYDXExecutionClient(LiveExecutionClient):
         instrument = self._cache.instrument(instrument_id)
 
         if instrument is None:
-            self._log.error(f"Cannot handle order event: instrument {instrument_id} not found")
+            self._log.error(
+                f"Cannot handle order event: instrument {instrument_id} not found"
+            )
             return
 
         report = order_msg.parse_to_order_status_report(
@@ -954,7 +1000,9 @@ class DYDXExecutionClient(LiveExecutionClient):
         order = self._cache.order(report.client_order_id)
 
         if order is None:
-            self._log.error(f"Cannot handle order event: order {report.client_order_id} not found")
+            self._log.error(
+                f"Cannot handle order event: order {report.client_order_id} not found"
+            )
             return
 
         if order_msg.status in (
@@ -977,7 +1025,10 @@ class DYDXExecutionClient(LiveExecutionClient):
                 venue_order_id=report.venue_order_id,
                 ts_event=report.ts_last,
             )
-        elif order_msg.status in (DYDXOrderStatus.FILLED, DYDXOrderStatus.BEST_EFFORT_CANCELED):
+        elif order_msg.status in (
+            DYDXOrderStatus.FILLED,
+            DYDXOrderStatus.BEST_EFFORT_CANCELED,
+        ):
             # Skip order filled message and best effort canceled message. The _handle_fill_message generates
             # a fill report.
             # Best effort canceled is not a terminal state. Hence, we keep the state at accepted.
@@ -986,7 +1037,9 @@ class DYDXExecutionClient(LiveExecutionClient):
             message = f"Unknown order status `{order_msg.status}`"
             self._log.error(message)
 
-    def _handle_fill_message(self, fill_msg: DYDXWsFillSubaccountMessageContents) -> None:
+    def _handle_fill_message(
+        self, fill_msg: DYDXWsFillSubaccountMessageContents
+    ) -> None:
         instrument_id = DYDXSymbol(fill_msg.ticker).to_instrument_id()
         instrument = self._cache.instrument(instrument_id)
 
@@ -1036,7 +1089,9 @@ class DYDXExecutionClient(LiveExecutionClient):
                 last_px=Price(Decimal(fill_msg.price), instrument.price_precision),
                 quote_currency=instrument.quote_currency,
                 commission=commission,
-                liquidity_side=self._enum_parser.parse_dydx_liquidity_side(fill_msg.liquidity),
+                liquidity_side=self._enum_parser.parse_dydx_liquidity_side(
+                    fill_msg.liquidity
+                ),
                 ts_event=dt_to_unix_nanos(fill_msg.createdAt),
             )
 
@@ -1051,7 +1106,9 @@ class DYDXExecutionClient(LiveExecutionClient):
                 atomic_resolution=instrument.info["atomicResolution"],
                 step_base_quantums=instrument.info["stepBaseQuantums"],
                 subticks_per_tick=instrument.info["subticksPerTick"],
-                quantum_conversion_exponent=instrument.info["quantumConversionExponent"],
+                quantum_conversion_exponent=instrument.info[
+                    "quantumConversionExponent"
+                ],
                 clob_pair_id=int(instrument.info["clobPairId"]),
             )
             self._order_builders[instrument.id] = order_builder
@@ -1067,7 +1124,9 @@ class DYDXExecutionClient(LiveExecutionClient):
         if order.tags is not None:
             for order_tag in order.tags:
                 if order_tag.startswith("DYDXOrderTags:"):
-                    result = DYDXOrderTags.parse(order_tag.replace("DYDXOrderTags:", ""))
+                    result = DYDXOrderTags.parse(
+                        order_tag.replace("DYDXOrderTags:", "")
+                    )
 
         return result
 
@@ -1083,7 +1142,9 @@ class DYDXExecutionClient(LiveExecutionClient):
         number is sometimes incorrect resulting in rejected orders or rejected cancels.
 
         """
-        self._log.debug(f"Submit {len(command.order_list.orders)} orders", LogColor.CYAN)
+        self._log.debug(
+            f"Submit {len(command.order_list.orders)} orders", LogColor.CYAN
+        )
 
         for order in command.order_list.orders:
             await self._submit_order_single(order=order)
@@ -1099,7 +1160,9 @@ class DYDXExecutionClient(LiveExecutionClient):
         instrument = self._cache.instrument(order.instrument_id)
 
         if instrument is None:
-            rejection_reason = f"Cannot submit order: no instrument for {order.instrument_id}"
+            rejection_reason = (
+                f"Cannot submit order: no instrument for {order.instrument_id}"
+            )
             self._log.error(rejection_reason)
 
             self.generate_order_rejected(
@@ -1121,8 +1184,10 @@ class DYDXExecutionClient(LiveExecutionClient):
 
         order_builder = self._get_order_builder(instrument)
 
-        client_order_id_int = self._client_order_id_generator.generate_client_order_id_int(
-            client_order_id=order.client_order_id,
+        client_order_id_int = (
+            self._client_order_id_generator.generate_client_order_id_int(
+                client_order_id=order.client_order_id,
+            )
         )
 
         dydx_order_tags = self._parse_order_tags(order=order)
@@ -1131,8 +1196,13 @@ class DYDXExecutionClient(LiveExecutionClient):
         good_til_block: int | None = None
         execution = OrderExecution.DEFAULT
 
-        if dydx_order_tags.is_short_term_order is False and order.order_type == OrderType.MARKET:
-            rejection_reason = "Cannot submit order: long term market order not supported by dYdX"
+        if (
+            dydx_order_tags.is_short_term_order is False
+            and order.order_type == OrderType.MARKET
+        ):
+            rejection_reason = (
+                "Cannot submit order: long term market order not supported by dYdX"
+            )
             self.generate_order_rejected(
                 strategy_id=order.strategy_id,
                 instrument_id=order.instrument_id,
@@ -1148,14 +1218,18 @@ class DYDXExecutionClient(LiveExecutionClient):
         else:
             order_flags = OrderFlags.LONG_TERM
             good_til_date_secs = (
-                int(nanos_to_secs(order.expire_time_ns)) if order.expire_time_ns else None
+                int(nanos_to_secs(order.expire_time_ns))
+                if order.expire_time_ns
+                else None
             )
 
         if order.order_type in [OrderType.STOP_LIMIT, OrderType.STOP_MARKET]:
             order_flags = OrderFlags.CONDITIONAL
             good_til_block = None
             good_til_date_secs = (
-                int(nanos_to_secs(order.expire_time_ns)) if order.expire_time_ns else None
+                int(nanos_to_secs(order.expire_time_ns))
+                if order.expire_time_ns
+                else None
             )
 
             if order.order_type == OrderType.STOP_MARKET:
@@ -1216,9 +1290,7 @@ class DYDXExecutionClient(LiveExecutionClient):
             )
             trigger_price = order.trigger_price.as_double()
         else:
-            rejection_reason = (
-                f"Cannot submit order: order type `{order.order_type}` not (yet) supported"
-            )
+            rejection_reason = f"Cannot submit order: order type `{order.order_type}` not (yet) supported"
             self.generate_order_rejected(
                 strategy_id=order.strategy_id,
                 instrument_id=order.instrument_id,
@@ -1290,7 +1362,9 @@ class DYDXExecutionClient(LiveExecutionClient):
 
     async def _batch_cancel_orders(self, command: BatchCancelOrders) -> None:
         # Check open orders for the strategy
-        open_orders_strategy: list[Order] = self._cache.orders_open(strategy_id=command.strategy_id)
+        open_orders_strategy: list[Order] = self._cache.orders_open(
+            strategy_id=command.strategy_id
+        )
         open_orders = {order.client_order_id: order for order in open_orders_strategy}
 
         # Filter orders that are actually open
@@ -1353,7 +1427,9 @@ class DYDXExecutionClient(LiveExecutionClient):
                 client_order_id=order.client_order_id,
             )
 
-    async def _cancel_short_term_orders(self, orders: list[Order]) -> None:  # noqa: C901
+    async def _cancel_short_term_orders(
+        self, orders: list[Order]
+    ) -> None:  # noqa: C901
         """
         Cancel multiple short order terms at once.
         """
@@ -1377,8 +1453,10 @@ class DYDXExecutionClient(LiveExecutionClient):
             client_ids = []
 
             for order in current_orders:
-                client_order_id_int = self._client_order_id_generator.get_client_order_id_int(
-                    client_order_id=order.client_order_id,
+                client_order_id_int = (
+                    self._client_order_id_generator.get_client_order_id_int(
+                        client_order_id=order.client_order_id,
+                    )
                 )
 
                 if client_order_id_int is None:
@@ -1415,7 +1493,9 @@ class DYDXExecutionClient(LiveExecutionClient):
                     good_til_block=self._block_height + 10,
                 )
                 if not retry_manager.result:
-                    self._log.error(f"Failed to cancel batch of orders: {retry_manager.message}")
+                    self._log.error(
+                        f"Failed to cancel batch of orders: {retry_manager.message}"
+                    )
 
                     for order in orders:
                         self.generate_order_cancel_rejected(
@@ -1473,13 +1553,17 @@ class DYDXExecutionClient(LiveExecutionClient):
         if dydx_order_tags.is_short_term_order is False:
             order_flags = OrderFlags.LONG_TERM
             good_til_date_secs = (
-                int(nanos_to_secs(order.expire_time_ns)) if order.expire_time_ns else None
+                int(nanos_to_secs(order.expire_time_ns))
+                if order.expire_time_ns
+                else None
             )
 
         if order.order_type in [OrderType.STOP_LIMIT, OrderType.STOP_MARKET]:
             order_flags = OrderFlags.CONDITIONAL
             good_til_date_secs = (
-                int(nanos_to_secs(order.expire_time_ns)) if order.expire_time_ns else None
+                int(nanos_to_secs(order.expire_time_ns))
+                if order.expire_time_ns
+                else None
             )
 
         order_id = order_builder.create_order_id(
@@ -1502,7 +1586,9 @@ class DYDXExecutionClient(LiveExecutionClient):
         good_til_date_secs: int | None,
     ) -> None:
         if self._wallet is None:
-            reason = f"Cannot cancel order {order.client_order_id!r}: no wallet available"
+            reason = (
+                f"Cannot cancel order {order.client_order_id!r}: no wallet available"
+            )
             self._log.error(reason)
             self.generate_order_cancel_rejected(
                 strategy_id=order.strategy_id,

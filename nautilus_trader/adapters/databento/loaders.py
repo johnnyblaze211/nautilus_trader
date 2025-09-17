@@ -59,13 +59,17 @@ class DatabentoDataLoader:
         self,
         venue_dataset_map: dict[str, str] | None = None,
     ) -> None:
-        self._pyo3_loader: nautilus_pyo3.DatabentoDataLoader = nautilus_pyo3.DatabentoDataLoader(
-            str(PUBLISHERS_FILEPATH),
+        self._pyo3_loader: nautilus_pyo3.DatabentoDataLoader = (
+            nautilus_pyo3.DatabentoDataLoader(
+                str(PUBLISHERS_FILEPATH),
+            )
         )
 
         if venue_dataset_map:
             for venue, dataset in venue_dataset_map.items():
-                self._pyo3_loader.set_dataset_for_venue(dataset, nautilus_pyo3.Venue(venue))
+                self._pyo3_loader.set_dataset_for_venue(
+                    dataset, nautilus_pyo3.Venue(venue)
+                )
 
     def load_publishers(self, path: PathLike[str] | str) -> None:
         """
@@ -109,7 +113,9 @@ class DatabentoDataLoader:
             If `venue` is not in the map of publishers.
 
         """
-        dataset = self._pyo3_loader.get_dataset_for_venue(nautilus_pyo3.Venue(venue.value))
+        dataset = self._pyo3_loader.get_dataset_for_venue(
+            nautilus_pyo3.Venue(venue.value)
+        )
 
         if dataset is None:
             raise ValueError(f"No Databento dataset for venue '{venue}'")
@@ -181,11 +187,15 @@ class DatabentoDataLoader:
         schema = self._pyo3_loader.schema_for_file(str(path))
 
         if schema is None:
-            raise RuntimeError("Loading files with mixed schemas not currently supported")
+            raise RuntimeError(
+                "Loading files with mixed schemas not currently supported"
+            )
 
         match schema:
             case DatabentoSchema.DEFINITION.value:
-                data = self._pyo3_loader.load_instruments(str(path), use_exchange_as_venue)
+                data = self._pyo3_loader.load_instruments(
+                    str(path), use_exchange_as_venue
+                )
 
                 if as_legacy_cython:
                     data = instruments_from_pyo3(data)
@@ -272,7 +282,9 @@ class DatabentoDataLoader:
 
                     return data
                 else:
-                    return self._pyo3_loader.load_order_book_depth10(str(path), pyo3_instrument_id)
+                    return self._pyo3_loader.load_order_book_depth10(
+                        str(path), pyo3_instrument_id
+                    )
             case DatabentoSchema.TRADES.value:
                 if as_legacy_cython:
                     capsule = self._pyo3_loader.load_trades_as_pycapsule(

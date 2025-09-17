@@ -96,7 +96,9 @@ def get_cached_betfair_instrument_provider(
     BetfairInstrumentProvider
 
     """
-    Logger("BetfairFactory").debug("Creating new instance of `BetfairInstrumentProvider`")
+    Logger("BetfairFactory").debug(
+        "Creating new instance of `BetfairInstrumentProvider`"
+    )
 
     return BetfairInstrumentProvider(
         client=client,

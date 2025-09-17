@@ -21,7 +21,9 @@ import msgspec
 
 from nautilus_trader.adapters.bybit.common.enums import BybitEndpointType
 from nautilus_trader.adapters.bybit.endpoints.endpoint import BybitHttpEndpoint
-from nautilus_trader.adapters.bybit.schemas.account.balance import BybitWalletBalanceResponse
+from nautilus_trader.adapters.bybit.schemas.account.balance import (
+    BybitWalletBalanceResponse,
+)
 from nautilus_trader.core.nautilus_pyo3 import HttpMethod
 
 
@@ -49,7 +51,9 @@ class BybitWalletBalanceEndpoint(BybitHttpEndpoint):
         )
         self._get_resp_decoder = msgspec.json.Decoder(BybitWalletBalanceResponse)
 
-    async def get(self, params: BybitWalletBalanceGetParams) -> BybitWalletBalanceResponse:
+    async def get(
+        self, params: BybitWalletBalanceGetParams
+    ) -> BybitWalletBalanceResponse:
         raw = await self._method(self.http_method, params)
         try:
             return self._get_resp_decoder.decode(raw)

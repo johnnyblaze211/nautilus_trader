@@ -130,7 +130,9 @@ class TestCacheDatabaseAdapter:
         self.database = CacheDatabaseAdapter(
             trader_id=self.trader_id,
             instance_id=UUID4(),
-            serializer=MsgSpecSerializer(encoding=msgspec.msgpack, timestamps_as_str=True),
+            serializer=MsgSpecSerializer(
+                encoding=msgspec.msgpack, timestamps_as_str=True
+            ),
             config=CacheConfig(database=DatabaseConfig()),
         )
 
@@ -590,7 +592,9 @@ class TestCacheDatabaseAdapter:
         assert result == {_AUDUSD_SIM.id: _AUDUSD_SIM}
 
     @pytest.mark.asyncio
-    async def test_load_synthetic_when_no_synethic_instrument_in_database_returns_none(self):
+    async def test_load_synthetic_when_no_synethic_instrument_in_database_returns_none(
+        self,
+    ):
         # Arrange
         synthetic = TestInstrumentProvider.synthetic_instrument()
 
@@ -601,7 +605,9 @@ class TestCacheDatabaseAdapter:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_load_synthetic_when_synthetic_instrument_in_database_returns_expected(self):
+    async def test_load_synthetic_when_synthetic_instrument_in_database_returns_expected(
+        self,
+    ):
         # Arrange
         synthetic = TestInstrumentProvider.synthetic_instrument()
         self.database.add_synthetic(synthetic)
@@ -722,7 +728,9 @@ class TestCacheDatabaseAdapter:
         assert result == order
 
     @pytest.mark.asyncio
-    async def test_load_order_when_transformed_to_market_order_in_database_returns_order(self):
+    async def test_load_order_when_transformed_to_market_order_in_database_returns_order(
+        self,
+    ):
         # Arrange
         order = self.strategy.order_factory.limit(
             _AUDUSD_SIM.id,
@@ -746,7 +754,9 @@ class TestCacheDatabaseAdapter:
         assert result.order_type == OrderType.MARKET
 
     @pytest.mark.asyncio
-    async def test_load_order_when_transformed_to_limit_order_in_database_returns_order(self):
+    async def test_load_order_when_transformed_to_limit_order_in_database_returns_order(
+        self,
+    ):
         # Arrange
         order = self.strategy.order_factory.limit_if_touched(
             _AUDUSD_SIM.id,
@@ -1093,7 +1103,9 @@ class TestRedisCacheDatabaseIntegrity:
         self.database = CacheDatabaseAdapter(
             trader_id=self.trader_id,
             instance_id=UUID4(),
-            serializer=MsgSpecSerializer(encoding=msgspec.msgpack, timestamps_as_str=True),
+            serializer=MsgSpecSerializer(
+                encoding=msgspec.msgpack, timestamps_as_str=True
+            ),
             config=CacheConfig(database=DatabaseConfig()),
         )
 

@@ -79,7 +79,9 @@ class TestSignalSerialization:
         SignalClass = generate_signal_class(signal_name, value_type)
         ts_event = 1_000_000_000
         ts_init = 1_000_000_001
-        original_signal = SignalClass(value=test_value, ts_event=ts_event, ts_init=ts_init)
+        original_signal = SignalClass(
+            value=test_value, ts_event=ts_event, ts_init=ts_init
+        )
 
         # Act - serialize to dict
         signal_dict = SignalClass.to_dict_c(original_signal)

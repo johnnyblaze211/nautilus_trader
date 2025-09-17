@@ -26,8 +26,12 @@ from nautilus_trader.config import InstrumentProviderConfig
 from nautilus_trader.config import LiveExecEngineConfig
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.config import TradingNodeConfig
-from nautilus_trader.examples.strategies.volatility_market_maker import VolatilityMarketMaker
-from nautilus_trader.examples.strategies.volatility_market_maker import VolatilityMarketMakerConfig
+from nautilus_trader.examples.strategies.volatility_market_maker import (
+    VolatilityMarketMaker,
+)
+from nautilus_trader.examples.strategies.volatility_market_maker import (
+    VolatilityMarketMakerConfig,
+)
 from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.data import BarType
 from nautilus_trader.model.identifiers import ClientId
@@ -154,7 +158,9 @@ futures_symbol = "ETHUSDT-PERP"
 strat_config_futures = VolatilityMarketMakerConfig(
     instrument_id=InstrumentId.from_str(f"{futures_symbol}.BINANCE_FUTURES"),
     external_order_claims=[InstrumentId.from_str(f"{futures_symbol}.BINANCE_FUTURES")],
-    bar_type=BarType.from_str(f"{futures_symbol}.BINANCE_FUTURES-1-MINUTE-LAST-EXTERNAL"),
+    bar_type=BarType.from_str(
+        f"{futures_symbol}.BINANCE_FUTURES-1-MINUTE-LAST-EXTERNAL"
+    ),
     atr_period=20,
     atr_multiple=6.0,
     trade_size=Decimal("0.010"),

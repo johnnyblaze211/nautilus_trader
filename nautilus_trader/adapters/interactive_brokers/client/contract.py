@@ -35,7 +35,9 @@ class InteractiveBrokersClientContractMixin(BaseMixin):
 
     """
 
-    async def get_contract_details(self, contract: IBContract) -> list[IBContractDetails] | None:
+    async def get_contract_details(
+        self, contract: IBContract
+    ) -> list[IBContractDetails] | None:
         """
         Request details for a specific contract.
 
@@ -135,7 +137,9 @@ class InteractiveBrokersClientContractMixin(BaseMixin):
                     self._eclient.reqSecDefOptParams,
                     reqId=req_id,
                     underlyingSymbol=underlying.symbol,
-                    futFopExchange=underlying.exchange if underlying.secType == "FUT" else "",
+                    futFopExchange=(
+                        underlying.exchange if underlying.secType == "FUT" else ""
+                    ),
                     underlyingSecType=underlying.secType,
                     underlyingConId=underlying.conId,
                 ),
@@ -194,7 +198,9 @@ class InteractiveBrokersClientContractMixin(BaseMixin):
         if request := self._requests.get(req_id=req_id):
             request.result.append((exchange, expirations))
 
-    async def process_security_definition_option_parameter_end(self, *, req_id: int) -> None:
+    async def process_security_definition_option_parameter_end(
+        self, *, req_id: int
+    ) -> None:
         """
         Call when all callbacks to securityDefinitionOptionParameter are complete.
         """
@@ -211,6 +217,8 @@ class InteractiveBrokersClientContractMixin(BaseMixin):
         """
         if request := self._requests.get(req_id=req_id):
             for contract_description in contract_descriptions:
-                request.result.append(IBContract(**contract_description.contract.__dict__))
+                request.result.append(
+                    IBContract(**contract_description.contract.__dict__)
+                )
 
             self._end_request(req_id)

@@ -53,7 +53,9 @@ class TestBitmexExchange:
 
     def setup(self):
         # Fixture Setup
-        self.strategies = [MockStrategy(TestDataStubs.bartype_btcusdt_binance_100tick_last())]
+        self.strategies = [
+            MockStrategy(TestDataStubs.bartype_btcusdt_binance_100tick_last())
+        ]
 
         self.clock = TestClock()
         self.trader_id = TestIdStubs.trader_id()
@@ -122,7 +124,9 @@ class TestBitmexExchange:
 
         self.cache.add_instrument(XBTUSD_BITMEX)
 
-        self.strategy = MockStrategy(bar_type=TestDataStubs.bartype_btcusdt_binance_100tick_last())
+        self.strategy = MockStrategy(
+            bar_type=TestDataStubs.bartype_btcusdt_binance_100tick_last()
+        )
         self.strategy.register(
             trader_id=self.trader_id,
             portfolio=self.portfolio,

@@ -181,7 +181,9 @@ def exec_client(
 
 @pytest.fixture()
 def data_catalog(tmp_path) -> ParquetDataCatalog:
-    catalog: ParquetDataCatalog = setup_catalog(protocol="memory", path=tmp_path / "catalog")
+    catalog: ParquetDataCatalog = setup_catalog(
+        protocol="memory", path=tmp_path / "catalog"
+    )
     load_betfair_data(catalog)
     return catalog
 
@@ -191,7 +193,9 @@ def parser() -> BetfairParser:
     return BetfairParser(currency="GBP")
 
 
-async def handle_echo(reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
+async def handle_echo(
+    reader: asyncio.StreamReader, writer: asyncio.StreamWriter
+) -> None:
     writer.write(b"connected\r\n")
 
     while True:

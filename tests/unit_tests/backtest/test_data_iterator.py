@@ -41,7 +41,9 @@ class TestBacktestDataIterator:
 
         # Assert
         assert len(merged) == 15
-        assert all(merged[i].ts_init <= merged[i + 1].ts_init for i in range(len(merged) - 1))
+        assert all(
+            merged[i].ts_init <= merged[i + 1].ts_init for i in range(len(merged) - 1)
+        )
 
     def test_partial_consumption_then_complete(self):
         """
@@ -634,7 +636,9 @@ class TestBacktestDataIterator:
         def dynamic_provider_generator():
             yield [MyData(2, ts_init=1000)]  # Same timestamp
 
-        iterator.init_data("dynamic_prepend", dynamic_provider_generator(), append_data=False)
+        iterator.init_data(
+            "dynamic_prepend", dynamic_provider_generator(), append_data=False
+        )
 
         # Static data with append=True (lower priority)
         iterator.add_data("static_append2", [MyData(3, ts_init=1000)], append_data=True)

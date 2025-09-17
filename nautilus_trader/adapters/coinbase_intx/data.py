@@ -18,7 +18,9 @@ from typing import Any
 
 from nautilus_trader.adapters.coinbase_intx.config import CoinbaseIntxDataClientConfig
 from nautilus_trader.adapters.coinbase_intx.constants import COINBASE_INTX
-from nautilus_trader.adapters.coinbase_intx.providers import CoinbaseIntxInstrumentProvider
+from nautilus_trader.adapters.coinbase_intx.providers import (
+    CoinbaseIntxInstrumentProvider,
+)
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.common.component import MessageBus
@@ -210,23 +212,33 @@ class CoinbaseIntxDataClient(LiveMarketDataClient):
             )
             return
 
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_book([pyo3_instrument_id])
 
     async def _subscribe_quote_ticks(self, command: SubscribeQuoteTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_quotes([pyo3_instrument_id])
 
     async def _subscribe_trade_ticks(self, command: SubscribeTradeTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_trades([pyo3_instrument_id])
 
     async def _subscribe_mark_prices(self, command: SubscribeMarkPrices) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_mark_prices([pyo3_instrument_id])
 
     async def _subscribe_index_prices(self, command: SubscribeIndexPrices) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_index_prices([pyo3_instrument_id])
 
     async def _subscribe_bars(self, command: SubscribeBars) -> None:
@@ -239,28 +251,44 @@ class CoinbaseIntxDataClient(LiveMarketDataClient):
     async def _unsubscribe_instrument(self, command: UnsubscribeInstrument) -> None:
         pass  # Do nothing further (subscriptions must be maintained for the clients)
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_book([pyo3_instrument_id])
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_book([pyo3_instrument_id])
 
     async def _unsubscribe_quote_ticks(self, command: UnsubscribeQuoteTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_quotes([pyo3_instrument_id])
 
     async def _unsubscribe_trade_ticks(self, command: UnsubscribeTradeTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_trades([pyo3_instrument_id])
 
     async def _unsubscribe_mark_prices(self, command: UnsubscribeMarkPrices) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_mark_prices([pyo3_instrument_id])
 
     async def _unsubscribe_index_prices(self, command: UnsubscribeIndexPrices) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_index_prices([pyo3_instrument_id])
 
     async def _unsubscribe_bars(self, command: UnsubscribeBars) -> None:
@@ -278,12 +306,16 @@ class CoinbaseIntxDataClient(LiveMarketDataClient):
                 f"Requesting instrument {request.instrument_id} with specified `end` which has no effect",
             )
 
-        instrument: Instrument | None = self._instrument_provider.find(request.instrument_id)
+        instrument: Instrument | None = self._instrument_provider.find(
+            request.instrument_id
+        )
         if instrument is None:
             self._log.error(f"Cannot find instrument for {request.instrument_id}")
             return
 
-        self._handle_instrument(instrument, request.id, request.start, request.end, request.params)
+        self._handle_instrument(
+            instrument, request.id, request.start, request.end, request.params
+        )
 
     async def _request_instruments(self, request: RequestInstruments) -> None:
         if request.start is not None:

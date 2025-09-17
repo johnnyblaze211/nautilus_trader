@@ -26,7 +26,8 @@ class TestTradeTick:
     def test_fully_qualified_name(self):
         # Arrange, Act, Assert
         assert (
-            MarkPriceUpdate.fully_qualified_name() == "nautilus_trader.model.data:MarkPriceUpdate"
+            MarkPriceUpdate.fully_qualified_name()
+            == "nautilus_trader.model.data:MarkPriceUpdate"
         )
 
     def test_hash_str_and_repr(self):

@@ -110,11 +110,15 @@ class BitmexExecutionClient(LiveExecutionClient):
         # Configuration
         self._config = config
         self._log.info(f"config.testnet={config.testnet}", LogColor.BLUE)
-        self._log.info(f"config.http_timeout_secs={config.http_timeout_secs}", LogColor.BLUE)
+        self._log.info(
+            f"config.http_timeout_secs={config.http_timeout_secs}", LogColor.BLUE
+        )
 
         # Set initial account ID (will be updated with actual account number on connect)
         self._account_id_prefix = name or BITMEX_VENUE.value
-        account_id = AccountId(f"{self._account_id_prefix}-master")  # Temporary, like OKX
+        account_id = AccountId(
+            f"{self._account_id_prefix}-master"
+        )  # Temporary, like OKX
         self._set_account_id(account_id)
 
         # Create pyo3 account ID for Rust HTTP client
@@ -201,13 +205,19 @@ class BitmexExecutionClient(LiveExecutionClient):
 
             # Update account ID with actual account number from BitMEX
             if account_number:
-                actual_account_id = AccountId(f"{self._account_id_prefix}-{account_number}")
+                actual_account_id = AccountId(
+                    f"{self._account_id_prefix}-{account_number}"
+                )
                 self._set_account_id(actual_account_id)
                 self.pyo3_account_id = nautilus_pyo3.AccountId(actual_account_id.value)
-                self._log.info(f"Updated account ID to {actual_account_id}", LogColor.BLUE)
+                self._log.info(
+                    f"Updated account ID to {actual_account_id}", LogColor.BLUE
+                )
 
             # Now request the account state with the correct account ID
-            pyo3_account_state = await self._http_client.request_account_state(self.pyo3_account_id)
+            pyo3_account_state = await self._http_client.request_account_state(
+                self.pyo3_account_id
+            )
             account_state = AccountState.from_dict(pyo3_account_state.to_dict())
 
             self.generate_account_state(
@@ -268,13 +278,17 @@ class BitmexExecutionClient(LiveExecutionClient):
             ts_event=self._clock.timestamp_ns(),
         )
 
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(order.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            order.instrument_id.value
+        )
         pyo3_client_order_id = nautilus_pyo3.ClientOrderId(order.client_order_id.value)
         pyo3_order_type = order_type_to_pyo3(order.order_type)
         pyo3_order_side = order_side_to_pyo3(order.side)
         pyo3_quantity = nautilus_pyo3.Quantity.from_str(str(order.quantity))
         pyo3_time_in_force = time_in_force_to_pyo3(order.time_in_force)
-        pyo3_price = nautilus_pyo3.Price.from_str(str(order.price)) if order.has_price else None
+        pyo3_price = (
+            nautilus_pyo3.Price.from_str(str(order.price)) if order.has_price else None
+        )
         pyo3_trigger_price = (
             nautilus_pyo3.Price.from_str(str(order.trigger_price))
             if order.has_trigger_price
@@ -327,7 +341,9 @@ class BitmexExecutionClient(LiveExecutionClient):
             )
             return
 
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(order.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            order.instrument_id.value
+        )
         pyo3_client_order_id = (
             nautilus_pyo3.ClientOrderId(command.client_order_id.value)
             if command.client_order_id
@@ -339,9 +355,13 @@ class BitmexExecutionClient(LiveExecutionClient):
             else None
         )
         pyo3_quantity = (
-            nautilus_pyo3.Quantity.from_str(str(command.quantity)) if command.quantity else None
+            nautilus_pyo3.Quantity.from_str(str(command.quantity))
+            if command.quantity
+            else None
         )
-        pyo3_price = nautilus_pyo3.Price.from_str(str(command.price)) if command.price else None
+        pyo3_price = (
+            nautilus_pyo3.Price.from_str(str(command.price)) if command.price else None
+        )
         pyo3_trigger_price = (
             nautilus_pyo3.Price.from_str(str(command.trigger_price))
             if command.trigger_price
@@ -393,8 +413,12 @@ class BitmexExecutionClient(LiveExecutionClient):
             self._log.error(f"Failed to cancel order {command.client_order_id}: {e}")
 
     async def _cancel_all_orders(self, command: CancelAllOrders) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
-        pyo3_order_side = order_side_to_pyo3(command.order_side) if command.order_side else None
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
+        pyo3_order_side = (
+            order_side_to_pyo3(command.order_side) if command.order_side else None
+        )
 
         try:
             await self._http_client.cancel_all_orders(
@@ -556,7 +580,9 @@ class BitmexExecutionClient(LiveExecutionClient):
         for fill_report in reports:
             self._handle_fill_report_pyo3(fill_report)
 
-    def _handle_order_rejected_pyo3(self, pyo3_event: nautilus_pyo3.OrderRejected) -> None:
+    def _handle_order_rejected_pyo3(
+        self, pyo3_event: nautilus_pyo3.OrderRejected
+    ) -> None:
         event = OrderRejected.from_dict(pyo3_event.to_dict())
         self._send_order_event(event)
 
@@ -692,7 +718,9 @@ class BitmexExecutionClient(LiveExecutionClient):
         _report = PositionStatusReport.from_pyo3(pyo3_report)
 
     def _is_external_order(self, client_order_id: ClientOrderId) -> bool:
-        return not client_order_id or not self._cache.strategy_id_for_order(client_order_id)
+        return not client_order_id or not self._cache.strategy_id_for_order(
+            client_order_id
+        )
 
 
 def is_order_updated(order: Order, report: OrderStatusReport) -> bool:

@@ -58,7 +58,9 @@ class TardisCSVDataLoader:
         self._price_precision = price_precision
         self._size_precision = size_precision
         self._instrument_id = (
-            nautilus_pyo3.InstrumentId.from_str(instrument_id.value) if instrument_id else None
+            nautilus_pyo3.InstrumentId.from_str(instrument_id.value)
+            if instrument_id
+            else None
         )
 
     def load_deltas(
@@ -331,7 +333,9 @@ class TardisCSVDataLoader:
         chunk_size: int = 100_000,
         as_legacy_cython: bool = True,
         limit: int | None = None,
-    ) -> Generator[list[OrderBookDelta] | list[nautilus_pyo3.OrderBookDelta], None, None]:
+    ) -> Generator[
+        list[OrderBookDelta] | list[nautilus_pyo3.OrderBookDelta], None, None
+    ]:
         """
         Stream order book deltas data from the given `filepath` in chunks.
 
@@ -538,7 +542,9 @@ class TardisCSVDataLoader:
         chunk_size: int = 100_000,
         as_legacy_cython: bool = True,
         limit: int | None = None,
-    ) -> Generator[list[OrderBookDepth10] | list[nautilus_pyo3.OrderBookDepth10], None, None]:
+    ) -> Generator[
+        list[OrderBookDepth10] | list[nautilus_pyo3.OrderBookDepth10], None, None
+    ]:
         """
         Stream order book depth snapshots from the given `filepath` in chunks.
 
@@ -621,7 +627,9 @@ class TardisCSVDataLoader:
         chunk_size: int = 100_000,
         as_legacy_cython: bool = True,
         limit: int | None = None,
-    ) -> Generator[list[FundingRateUpdate] | list[nautilus_pyo3.FundingRateUpdate], None, None]:
+    ) -> Generator[
+        list[FundingRateUpdate] | list[nautilus_pyo3.FundingRateUpdate], None, None
+    ]:
         """
         Stream funding rate updates from Tardis derivative ticker CSV data in chunks.
 

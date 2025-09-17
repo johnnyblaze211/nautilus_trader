@@ -34,7 +34,9 @@ def create_6E_instrument(venue: Venue) -> FuturesContract:
     symbol = Symbol("6E")
     return FuturesContract(
         # Core identification parameters for the Euro FX futures contract
-        instrument_id=InstrumentId(symbol, venue),  # 6E is CME's code for EUR/USD futures
+        instrument_id=InstrumentId(
+            symbol, venue
+        ),  # 6E is CME's code for EUR/USD futures
         raw_symbol=symbol,  # Symbol as used on the exchange
         asset_class=AssetClass.FX,  # Indicates this is an FX futures contract
         currency=USD,  # Contract is denominated in USD
@@ -44,8 +46,12 @@ def create_6E_instrument(venue: Venue) -> FuturesContract:
             Decimal("0.00005"),
             precision=5,
         ),  # Minimum tick = 0.00005 ($6.25 value)
-        multiplier=Quantity(Decimal("125000"), precision=0),  # Each contract = 125,000 EUR
-        lot_size=Quantity(Decimal("1"), precision=0),  # Minimum trading size is 1 contract
+        multiplier=Quantity(
+            Decimal("125000"), precision=0
+        ),  # Each contract = 125,000 EUR
+        lot_size=Quantity(
+            Decimal("1"), precision=0
+        ),  # Minimum trading size is 1 contract
         # Contract specifications and expiration details
         underlying="EUR/USD",  # The underlying forex pair
         activation_ns=0,  # Contract start time (0 = active now)

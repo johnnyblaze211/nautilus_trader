@@ -94,7 +94,9 @@ def market_change_to_updates(  # noqa: C901
             ),
         )
         updates.extend(
-            market_definition_to_instrument_closes(mc.market_definition, mc.id, ts_event, ts_init),
+            market_definition_to_instrument_closes(
+                mc.market_definition, mc.id, ts_event, ts_init
+            ),
         )
         updates.extend(
             market_definition_to_betfair_starting_prices(
@@ -129,7 +131,9 @@ def market_change_to_updates(  # noqa: C901
                     updates.append(snapshot)
             else:
                 # Delta update
-                deltas = runner_change_to_order_book_deltas(rc, instrument_id, ts_event, ts_init)
+                deltas = runner_change_to_order_book_deltas(
+                    rc, instrument_id, ts_event, ts_init
+                )
                 if deltas is not None:
                     book_updates.append(deltas)
 
@@ -150,7 +154,9 @@ def market_change_to_updates(  # noqa: C901
             # BetfairTicker
             if any((rc.ltp, rc.tv, rc.spn, rc.spf)):
                 updates.append(
-                    runner_change_to_betfair_ticker(rc, instrument_id, ts_event, ts_init),
+                    runner_change_to_betfair_ticker(
+                        rc, instrument_id, ts_event, ts_init
+                    ),
                 )
 
             # BSP order book deltas
@@ -186,7 +192,10 @@ def market_definition_to_instrument_status(
             selection_id=runner.id,
             selection_handicap=runner.handicap,
         )
-        key: tuple[MarketStatusAction, bool] = (market_definition.status, market_definition.in_play)
+        key: tuple[MarketStatusAction, bool] = (
+            market_definition.status,
+            market_definition.in_play,
+        )
         if runner.status in (RunnerStatus.REMOVED, RunnerStatus.REMOVED_VACANT):
             status = MarketStatusAction.CLOSE
         else:
@@ -286,7 +295,9 @@ def runner_to_betfair_starting_price(
             ts_event=ts_event,
             ts_init=ts_init,
         )
-        return CustomData(DataType(BetfairStartingPrice, {"instrument_id": instrument_id}), bsp)
+        return CustomData(
+            DataType(BetfairStartingPrice, {"instrument_id": instrument_id}), bsp
+        )
     else:
         return None
 
@@ -382,7 +393,9 @@ def runner_change_to_trade_ticks(
         existing_volume = traded_volumes[trd.price]
         if not trd.volume > existing_volume:
             continue
-        trade_id = hash_market_trade(timestamp=ts_event, price=trd.price, volume=trd.volume)
+        trade_id = hash_market_trade(
+            timestamp=ts_event, price=trd.price, volume=trd.volume
+        )
         tick = TradeTick(
             instrument_id,
             betfair_float_to_price(trd.price),

@@ -147,7 +147,9 @@ class BetfairDataClient(LiveMarketDataClient):
         if self._instrument_provider.count == 0:
             await self._instrument_provider.load_all_async()
         instruments = self._instrument_provider.list_all()
-        self._log.debug(f"Loading {len(instruments)} instruments from provider into cache")
+        self._log.debug(
+            f"Loading {len(instruments)} instruments from provider into cache"
+        )
         for instrument in instruments:
             self._handle_data(instrument)
 
@@ -220,33 +222,49 @@ class BetfairDataClient(LiveMarketDataClient):
 
     # -- SUBSCRIPTIONS ----------------------------------------------------------------------------
     async def _subscribe_order_book_deltas(self, command: SubscribeOrderBook) -> None:
-        self._log.info("Skipping subscribe_order_book_deltas, Betfair subscribes automatically")
+        self._log.info(
+            "Skipping subscribe_order_book_deltas, Betfair subscribes automatically"
+        )
 
     async def _subscribe_instrument(self, command: SubscribeInstrument) -> None:
-        self._log.info("Skipping subscribe_instrument, Betfair subscribes automatically")
+        self._log.info(
+            "Skipping subscribe_instrument, Betfair subscribes automatically"
+        )
 
     async def _subscribe_quote_ticks(self, command: SubscribeQuoteTicks) -> None:
-        self._log.info("Skipping subscribe_quote_ticks, Betfair subscribes automatically")
+        self._log.info(
+            "Skipping subscribe_quote_ticks, Betfair subscribes automatically"
+        )
 
     async def _subscribe_trade_ticks(self, command: SubscribeTradeTicks) -> None:
-        self._log.info("Skipping subscribe_trade_ticks, Betfair subscribes automatically")
+        self._log.info(
+            "Skipping subscribe_trade_ticks, Betfair subscribes automatically"
+        )
 
     async def _subscribe_instruments(self, command: SubscribeInstruments) -> None:
         for instrument in self._instrument_provider.list_all():
             self._handle_data(instrument)
 
-    async def _subscribe_instrument_status(self, command: SubscribeInstrumentStatus) -> None:
+    async def _subscribe_instrument_status(
+        self, command: SubscribeInstrumentStatus
+    ) -> None:
         pass  # Subscribed as part of orderbook
 
-    async def _subscribe_instrument_close(self, command: SubscribeInstrumentClose) -> None:
+    async def _subscribe_instrument_close(
+        self, command: SubscribeInstrumentClose
+    ) -> None:
         pass  # Subscribed as part of orderbook
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         # TODO - this could be done by removing the market from self.__subscribed_market_ids and resending the
         #  subscription message - when we have a use case
         self._log.warning("Betfair does not support unsubscribing")
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         # TODO - this could be done by removing the market from self.__subscribed_market_ids and resending the
         #  subscription message - when we have a use case
         self._log.warning("Betfair does not support unsubscribing")
@@ -257,11 +275,19 @@ class BetfairDataClient(LiveMarketDataClient):
     async def _unsubscribe_instruments(self, command: UnsubscribeInstruments) -> None:
         self._log.info("Skipping unsubscribe_instrument, not applicable for Betfair")
 
-    async def _unsubscribe_instrument_status(self, command: UnsubscribeInstrumentStatus) -> None:
-        self._log.info("Skipping unsubscribe_instrument_status, not applicable for Betfair")
+    async def _unsubscribe_instrument_status(
+        self, command: UnsubscribeInstrumentStatus
+    ) -> None:
+        self._log.info(
+            "Skipping unsubscribe_instrument_status, not applicable for Betfair"
+        )
 
-    async def _unsubscribe_instrument_close(self, command: UnsubscribeInstrumentClose) -> None:
-        self._log.info("Skipping unsubscribe_instrument_status, not applicable for Betfair")
+    async def _unsubscribe_instrument_close(
+        self, command: UnsubscribeInstrumentClose
+    ) -> None:
+        self._log.info(
+            "Skipping unsubscribe_instrument_status, not applicable for Betfair"
+        )
 
     async def _unsubscribe_quote_ticks(self, command: UnsubscribeQuoteTicks) -> None:
         self._log.info("Skipping unsubscribe_quote_ticks, not applicable for Betfair")
@@ -318,7 +344,9 @@ class BetfairDataClient(LiveMarketDataClient):
             for mc in update.mc:
                 if mc.con:
                     latency_ms = self._clock.timestamp_ms() - update.pt
-                    self._log.warning(f"Stream conflation detected: latency ~{latency_ms}ms")
+                    self._log.warning(
+                        f"Stream conflation detected: latency ~{latency_ms}ms"
+                    )
 
     def _handle_status_message(self, update: Status) -> None:
         if update.is_error:

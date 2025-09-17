@@ -169,7 +169,9 @@ class TestCurrency:
 
         assert result == ape_coin
 
-    def test_register_when_overwrite_false_does_not_overwrite_internal_currency_map(self):
+    def test_register_when_overwrite_false_does_not_overwrite_internal_currency_map(
+        self,
+    ):
         # Arrange, Act
         another_aud = Currency(
             code="AUD",

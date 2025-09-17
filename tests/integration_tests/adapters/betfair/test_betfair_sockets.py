@@ -81,7 +81,9 @@ class TestBetfairSockets:
         # Arrange
         messages = []
         host, port = socket_server
-        client = self._build_stream_client(host=host, port=port, handler=messages.append)
+        client = self._build_stream_client(
+            host=host, port=port, handler=messages.append
+        )
 
         # Act
         await client.connect()
@@ -95,7 +97,9 @@ class TestBetfairSockets:
         # Arrange
         messages = []
         host, port = closing_socket_server
-        client = self._build_stream_client(host=host, port=port, handler=messages.append)
+        client = self._build_stream_client(
+            host=host, port=port, handler=messages.append
+        )
 
         # Act
         await client.connect()
@@ -110,7 +114,9 @@ class TestBetfairSockets:
         # Arrange
         messages = []
         host, port = closing_socket_server
-        client = self._build_stream_client(host=host, port=port, handler=messages.append)
+        client = self._build_stream_client(
+            host=host, port=port, handler=messages.append
+        )
 
         # Act
         await client.connect()
@@ -267,9 +273,15 @@ def test_betfair_messages_not_mistaken_for_fix():
             + b"\r\n",
             Status,
         ),
-        (msgspec.json.encode({"op": "mcm", "id": 1, "clk": "ABC", "pt": 123}) + b"\r\n", MCM),
         (
-            msgspec.json.encode({"op": "ocm", "id": 1, "clk": "XYZ", "pt": 999, "oc": []})
+            msgspec.json.encode({"op": "mcm", "id": 1, "clk": "ABC", "pt": 123})
+            + b"\r\n",
+            MCM,
+        ),
+        (
+            msgspec.json.encode(
+                {"op": "ocm", "id": 1, "clk": "XYZ", "pt": 999, "oc": []}
+            )
             + b"\r\n",
             OCM,
         ),
@@ -306,7 +318,8 @@ def test_multiple_messages_processed_in_sequence(message_collector):
         )
         + b"\r\n",
         BetfairStreaming.mcm_HEARTBEAT(),
-        msgspec.json.encode({"op": "ocm", "id": 2, "clk": "XYZ", "pt": 999, "oc": []}) + b"\r\n",
+        msgspec.json.encode({"op": "ocm", "id": 2, "clk": "XYZ", "pt": 999, "oc": []})
+        + b"\r\n",
     ]
 
     # Act

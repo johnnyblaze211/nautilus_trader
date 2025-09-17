@@ -662,7 +662,9 @@ class TestSimulatedExchangeEmulatedContingencyOrders:
         sl_order = self.cache.order(bracket.orders[1].client_order_id)
         tp_order = self.cache.order(bracket.orders[2].client_order_id)
         assert entry_order.status == OrderStatus.FILLED
-        assert entry_order.avg_px == entry_trigger_price  # <-- fills where market is at trigger
+        assert (
+            entry_order.avg_px == entry_trigger_price
+        )  # <-- fills where market is at trigger
         assert sl_order.status in (OrderStatus.ACCEPTED, OrderStatus.EMULATED)
         assert tp_order.status in (OrderStatus.ACCEPTED, OrderStatus.EMULATED)
 

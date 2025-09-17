@@ -119,7 +119,9 @@ class TestComponentStubs:
         catalog: ParquetDataCatalog,
         engine_config: BacktestEngineConfig,
     ) -> BacktestNode:
-        run_config = TestConfigStubs.backtest_run_config(catalog=catalog, config=engine_config)
+        run_config = TestConfigStubs.backtest_run_config(
+            catalog=catalog, config=engine_config
+        )
         node = BacktestNode(configs=[run_config])
         return node
 

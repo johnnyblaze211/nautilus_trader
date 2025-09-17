@@ -122,7 +122,9 @@ class TestSimulatedExchangeCashAccount:
         self.cache.add_instrument(_AAPL_XNAS)
 
         # Create mock strategy
-        self.strategy = MockStrategy(bar_type=BarType.from_str("AAPL.XNAS-1-MINUTE-BID-INTERNAL"))
+        self.strategy = MockStrategy(
+            bar_type=BarType.from_str("AAPL.XNAS-1-MINUTE-BID-INTERNAL")
+        )
         self.strategy.register(
             trader_id=self.trader_id,
             portfolio=self.portfolio,
@@ -140,7 +142,8 @@ class TestSimulatedExchangeCashAccount:
     def test_repr(self) -> None:
         # Arrange, Act, Assert
         assert (
-            repr(self.exchange) == "SimulatedExchange(id=XNAS, oms_type=NETTING, account_type=CASH)"
+            repr(self.exchange)
+            == "SimulatedExchange(id=XNAS, oms_type=NETTING, account_type=CASH)"
         )
 
     def test_equity_short_selling_will_reject(self) -> None:

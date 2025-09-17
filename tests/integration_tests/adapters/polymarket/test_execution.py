@@ -23,8 +23,12 @@ import pytest
 from py_clob_client.client import ClobClient
 
 from nautilus_trader.adapters.polymarket.common.constants import POLYMARKET_VENUE
-from nautilus_trader.adapters.polymarket.common.credentials import PolymarketWebSocketAuth
-from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_instrument_id
+from nautilus_trader.adapters.polymarket.common.credentials import (
+    PolymarketWebSocketAuth,
+)
+from nautilus_trader.adapters.polymarket.common.symbol import (
+    get_polymarket_instrument_id,
+)
 from nautilus_trader.adapters.polymarket.config import PolymarketExecClientConfig
 from nautilus_trader.adapters.polymarket.execution import PolymarketExecutionClient
 from nautilus_trader.adapters.polymarket.providers import PolymarketInstrumentProvider
@@ -81,7 +85,9 @@ class TestPolymarketExecutionClient:
 
         # Mock HTTP client
         self.http_client = MagicMock(spec=ClobClient)
-        self.http_client.get_address.return_value = "0xa3D82Ed56F4c68d2328Fb8c29e568Ba2cAF7d7c8"
+        self.http_client.get_address.return_value = (
+            "0xa3D82Ed56F4c68d2328Fb8c29e568Ba2cAF7d7c8"
+        )
 
         # Mock the creds attribute
         mock_creds = MagicMock()
@@ -635,12 +641,17 @@ class TestPolymarketExecutionClient:
         Test successful market order submission using new MarketOrderArgs.
         """
         # Arrange
-        mock_create_market_order = mocker.patch.object(self.http_client, "create_market_order")
+        mock_create_market_order = mocker.patch.object(
+            self.http_client, "create_market_order"
+        )
         mock_post_order = mocker.patch.object(self.http_client, "post_order")
 
         # Mock successful responses
         mock_create_market_order.return_value = {"signed_order": "mock_signed_market"}
-        mock_post_order.return_value = {"success": True, "orderID": "test_market_order_id"}
+        mock_post_order.return_value = {
+            "success": True,
+            "orderID": "test_market_order_id",
+        }
 
         market_order = self.strategy.order_factory.market(
             instrument_id=ELECTION_INSTRUMENT.id,
@@ -667,7 +678,9 @@ class TestPolymarketExecutionClient:
         mock_post_order.assert_called_once()
 
         # Verify MarketOrderArgs were created correctly
-        call_args = mock_create_market_order.call_args[0][0]  # First positional argument
+        call_args = mock_create_market_order.call_args[0][
+            0
+        ]  # First positional argument
         assert call_args.amount == 10.0
         assert call_args.side == "BUY"
         assert call_args.price == 0  # Market order should have price 0
@@ -685,12 +698,17 @@ class TestPolymarketExecutionClient:
         Test market order submission with FOK time in force.
         """
         # Arrange
-        mock_create_market_order = mocker.patch.object(self.http_client, "create_market_order")
+        mock_create_market_order = mocker.patch.object(
+            self.http_client, "create_market_order"
+        )
         mock_post_order = mocker.patch.object(self.http_client, "post_order")
 
         # Mock successful responses
         mock_create_market_order.return_value = {"signed_order": "mock_signed_market"}
-        mock_post_order.return_value = {"success": True, "orderID": "test_fok_market_order_id"}
+        mock_post_order.return_value = {
+            "success": True,
+            "orderID": "test_fok_market_order_id",
+        }
 
         market_order = self.strategy.order_factory.market(
             instrument_id=ELECTION_INSTRUMENT.id,
@@ -733,7 +751,10 @@ class TestPolymarketExecutionClient:
 
         # Mock successful responses
         mock_create_order.return_value = {"signed_order": "mock_signed_limit"}
-        mock_post_order.return_value = {"success": True, "orderID": "test_limit_order_id"}
+        mock_post_order.return_value = {
+            "success": True,
+            "orderID": "test_limit_order_id",
+        }
 
         limit_order = self.strategy.order_factory.limit(
             instrument_id=ELECTION_INSTRUMENT.id,

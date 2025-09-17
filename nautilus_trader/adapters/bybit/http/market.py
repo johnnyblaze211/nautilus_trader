@@ -22,15 +22,23 @@ from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 from nautilus_trader.adapters.bybit.common.symbol import BybitSymbol
 
 # fmt: off
-from nautilus_trader.adapters.bybit.endpoints.market.instruments_info import BybitInstrumentsInfoEndpoint
-from nautilus_trader.adapters.bybit.endpoints.market.instruments_info import BybitInstrumentsInfoGetParams
+from nautilus_trader.adapters.bybit.endpoints.market.instruments_info import (
+    BybitInstrumentsInfoEndpoint,
+)
+from nautilus_trader.adapters.bybit.endpoints.market.instruments_info import (
+    BybitInstrumentsInfoGetParams,
+)
 
 # fmt: on
 from nautilus_trader.adapters.bybit.endpoints.market.klines import BybitKlinesEndpoint
 from nautilus_trader.adapters.bybit.endpoints.market.klines import BybitKlinesGetParams
-from nautilus_trader.adapters.bybit.endpoints.market.server_time import BybitServerTimeEndpoint
+from nautilus_trader.adapters.bybit.endpoints.market.server_time import (
+    BybitServerTimeEndpoint,
+)
 from nautilus_trader.adapters.bybit.endpoints.market.tickers import BybitTickersEndpoint
-from nautilus_trader.adapters.bybit.endpoints.market.tickers import BybitTickersGetParams
+from nautilus_trader.adapters.bybit.endpoints.market.tickers import (
+    BybitTickersGetParams,
+)
 from nautilus_trader.adapters.bybit.endpoints.market.trades import BybitTradesEndpoint
 from nautilus_trader.adapters.bybit.endpoints.market.trades import BybitTradesGetParams
 from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrument
@@ -45,7 +53,9 @@ from nautilus_trader.core.correctness import PyCondition
 if TYPE_CHECKING:
     from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
     from nautilus_trader.adapters.bybit.schemas.market.kline import BybitKline
-    from nautilus_trader.adapters.bybit.schemas.market.server_time import BybitServerTime
+    from nautilus_trader.adapters.bybit.schemas.market.server_time import (
+        BybitServerTime,
+    )
     from nautilus_trader.adapters.bybit.schemas.market.ticker import BybitTickerList
     from nautilus_trader.adapters.bybit.schemas.market.trades import BybitTrade
     from nautilus_trader.common.component import LiveClock
@@ -66,7 +76,9 @@ class BybitMarketHttpAPI:
         self._clock = clock
         self.base_endpoint = "/v5/market/"
 
-        self._endpoint_instruments = BybitInstrumentsInfoEndpoint(client, self.base_endpoint)
+        self._endpoint_instruments = BybitInstrumentsInfoEndpoint(
+            client, self.base_endpoint
+        )
         self._endpoint_server_time = BybitServerTimeEndpoint(client, self.base_endpoint)
         self._endpoint_klines = BybitKlinesEndpoint(client, self.base_endpoint)
         self._endpoint_tickers = BybitTickersEndpoint(client, self.base_endpoint)
@@ -217,7 +229,9 @@ class BybitMarketHttpAPI:
             product_type=bybit_symbol.product_type,
             limit=limit,
         )
-        trade_ticks: list[TradeTick] = [t.parse_to_trade(instrument_id, ts_init) for t in trades]
+        trade_ticks: list[TradeTick] = [
+            t.parse_to_trade(instrument_id, ts_init) for t in trades
+        ]
         return trade_ticks
 
     async def request_bybit_bars(

@@ -219,7 +219,9 @@ class TestPortfolio:
         # Assert
         assert self.portfolio.unrealized_pnl(GBPUSD_SIM.id) is None
 
-    def test_exceed_free_balance_single_currency_raises_account_balance_negative_exception(self):
+    def test_exceed_free_balance_single_currency_raises_account_balance_negative_exception(
+        self,
+    ):
         # Arrange
         AccountFactory.register_calculated_account("SIM")
 
@@ -254,7 +256,9 @@ class TestPortfolio:
 
         self.cache.add_order(order, position_id=None)
 
-        self.exec_engine.process(TestEventStubs.order_submitted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order, account_id=account_id)
+        )
 
         # Act, Assert: push account to negative balance (wouldn't normally be allowed by risk engine)
         with pytest.raises(AccountBalanceNegative):
@@ -296,13 +300,17 @@ class TestPortfolio:
         order = self.order_factory.limit(  # will use up entire quote balance
             instrument_id=BTCUSDT_BINANCE.id,
             order_side=OrderSide.BUY,
-            quantity=Quantity.from_str(f"{Decimal('100_000'):.{BTCUSDT_BINANCE.size_precision}f}"),
+            quantity=Quantity.from_str(
+                f"{Decimal('100_000'):.{BTCUSDT_BINANCE.size_precision}f}"
+            ),
             price=Price.from_str("1"),
         )
 
         self.cache.add_order(order, position_id=None)
 
-        self.exec_engine.process(TestEventStubs.order_submitted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order, account_id=account_id)
+        )
 
         usdt_balance = account.balance(USDT)
         assert usdt_balance.total == Money(100_100.00000000, USDT)
@@ -312,7 +320,9 @@ class TestPortfolio:
         btc_balance = account.balance(BTC)
         assert btc_balance is None
 
-        self.exec_engine.process(TestEventStubs.order_accepted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_accepted(order, account_id=account_id)
+        )
 
         usdt_balance = account.balance(USDT)
         assert usdt_balance.total == Money(100_100.00000000, USDT)
@@ -372,12 +382,16 @@ class TestPortfolio:
         order = self.order_factory.market(
             instrument_id=BTCUSDT_BINANCE.id,
             order_side=OrderSide.BUY,
-            quantity=Quantity.from_str(f"{Decimal('100_000'):.{BTCUSDT_BINANCE.size_precision}f}"),
+            quantity=Quantity.from_str(
+                f"{Decimal('100_000'):.{BTCUSDT_BINANCE.size_precision}f}"
+            ),
         )
 
         self.cache.add_order(order, position_id=None)
 
-        self.exec_engine.process(TestEventStubs.order_submitted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order, account_id=account_id)
+        )
 
         usdt_balance = account.balance(USDT)
         assert usdt_balance.total == Money(100_100.00000000, USDT)
@@ -387,7 +401,9 @@ class TestPortfolio:
         btc_balance = account.balance(BTC)
         assert btc_balance is None
 
-        self.exec_engine.process(TestEventStubs.order_accepted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_accepted(order, account_id=account_id)
+        )
 
         usdt_balance = account.balance(USDT)
         assert usdt_balance.total == Money(100_100.00000000, USDT)
@@ -416,7 +432,9 @@ class TestPortfolio:
         assert btc_balance.locked == Money(0.00000000, BTC)
         assert btc_balance.free == Money(100_000.00000000, BTC)
 
-    def test_limit_order_consumes_nearly_entire_balance_of_single_currency_margin_account(self):
+    def test_limit_order_consumes_nearly_entire_balance_of_single_currency_margin_account(
+        self,
+    ):
         # Arrange
         AccountFactory.register_calculated_account("SIM")
 
@@ -447,20 +465,26 @@ class TestPortfolio:
         order = self.order_factory.limit(  # will use up entire quote balance
             instrument_id=AUDUSD_SIM.id,
             order_side=OrderSide.BUY,
-            quantity=Quantity.from_str(f"{Decimal('3_300_000'):.{AUDUSD_SIM.size_precision}f}"),
+            quantity=Quantity.from_str(
+                f"{Decimal('3_300_000'):.{AUDUSD_SIM.size_precision}f}"
+            ),
             price=Price.from_str("1"),
         )
 
         self.cache.add_order(order, position_id=None)
 
-        self.exec_engine.process(TestEventStubs.order_submitted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order, account_id=account_id)
+        )
 
         usdt_balance = account.balance(USD)
         assert usdt_balance.total == Money(100_000.00000000, USD)
         assert usdt_balance.locked == Money(0.00000000, USD)
         assert usdt_balance.free == Money(100_000.00000000, USD)
 
-        self.exec_engine.process(TestEventStubs.order_accepted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_accepted(order, account_id=account_id)
+        )
 
         usdt_balance = account.balance(USD)
         assert usdt_balance.total == Money(100_000.00000000, USD)
@@ -483,7 +507,9 @@ class TestPortfolio:
 
         assert self.portfolio.net_position(AUDUSD_SIM.id) == Decimal("3_300_000")
 
-    def test_market_order_consumes_nearly_entire_balance_of_single_currency_margin_account(self):
+    def test_market_order_consumes_nearly_entire_balance_of_single_currency_margin_account(
+        self,
+    ):
         # Arrange
         AccountFactory.register_calculated_account("SIM")
 
@@ -514,19 +540,25 @@ class TestPortfolio:
         order = self.order_factory.market(  # will use up entire quote balance
             instrument_id=AUDUSD_SIM.id,
             order_side=OrderSide.BUY,
-            quantity=Quantity.from_str(f"{Decimal('3_300_000'):.{AUDUSD_SIM.size_precision}f}"),
+            quantity=Quantity.from_str(
+                f"{Decimal('3_300_000'):.{AUDUSD_SIM.size_precision}f}"
+            ),
         )
 
         self.cache.add_order(order, position_id=None)
 
-        self.exec_engine.process(TestEventStubs.order_submitted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order, account_id=account_id)
+        )
 
         usdt_balance = account.balance(USD)
         assert usdt_balance.total == Money(100_000.00000000, USD)
         assert usdt_balance.locked == Money(0.00000000, USD)
         assert usdt_balance.free == Money(100_000.00000000, USD)
 
-        self.exec_engine.process(TestEventStubs.order_accepted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_accepted(order, account_id=account_id)
+        )
 
         usdt_balance = account.balance(USD)
         assert usdt_balance.total == Money(100_000.00000000, USD)
@@ -549,7 +581,9 @@ class TestPortfolio:
 
         assert self.portfolio.net_position(AUDUSD_SIM.id) == Decimal("3_300_000")
 
-    def test_exceed_free_balance_multi_currency_raises_account_balance_negative_exception(self):
+    def test_exceed_free_balance_multi_currency_raises_account_balance_negative_exception(
+        self,
+    ):
         # Arrange
         AccountFactory.register_calculated_account("BINANCE")
 
@@ -591,7 +625,9 @@ class TestPortfolio:
 
         self.cache.add_order(order, position_id=None)
 
-        self.exec_engine.process(TestEventStubs.order_submitted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order, account_id=account_id)
+        )
 
         # Act, Assert: push account to negative balance (wouldn't normally be allowed by risk engine)
         # TODO: The below is the old test prior to validating balance updates
@@ -649,8 +685,12 @@ class TestPortfolio:
         self.cache.add_order(order, position_id=None)
 
         # Act: push order state to ACCEPTED
-        self.exec_engine.process(TestEventStubs.order_submitted(order, account_id=account_id))
-        self.exec_engine.process(TestEventStubs.order_accepted(order, account_id=account_id))
+        self.exec_engine.process(
+            TestEventStubs.order_submitted(order, account_id=account_id)
+        )
+        self.exec_engine.process(
+            TestEventStubs.order_accepted(order, account_id=account_id)
+        )
 
         # Assert
         assert self.portfolio.balances_locked(BINANCE)[USDT].as_decimal() == 50_000
@@ -792,14 +832,18 @@ class TestPortfolio:
         # Push states to ACCEPTED
         order1.apply(TestEventStubs.order_submitted(order1))
         self.cache.update_order(order1)
-        order1.apply(TestEventStubs.order_accepted(order1, venue_order_id=VenueOrderId("1")))
+        order1.apply(
+            TestEventStubs.order_accepted(order1, venue_order_id=VenueOrderId("1"))
+        )
         self.cache.update_order(order1)
 
         # Act
         self.portfolio.initialize_orders()
 
         # Assert
-        assert self.portfolio.margins_init(BINANCE)[BTCUSDT_PERP_BINANCE.id] == Money(2.5, USDT)
+        assert self.portfolio.margins_init(BINANCE)[BTCUSDT_PERP_BINANCE.id] == Money(
+            2.5, USDT
+        )
 
     def test_update_positions(self):
         # Arrange
@@ -983,16 +1027,30 @@ class TestPortfolio:
         self.portfolio.update_position(TestEventStubs.position_opened(position))
 
         # Assert
-        assert self.portfolio.net_exposures(BINANCE) == {USDT: Money(105100.00000000, USDT)}
-        assert self.portfolio.unrealized_pnls(BINANCE) == {USDT: Money(100.00000000, USDT)}
-        assert self.portfolio.realized_pnls(BINANCE) == {USDT: Money(-18.900000000, USDT)}
+        assert self.portfolio.net_exposures(BINANCE) == {
+            USDT: Money(105100.00000000, USDT)
+        }
+        assert self.portfolio.unrealized_pnls(BINANCE) == {
+            USDT: Money(100.00000000, USDT)
+        }
+        assert self.portfolio.realized_pnls(BINANCE) == {
+            USDT: Money(-18.900000000, USDT)
+        }
         assert self.portfolio.margins_maint(BINANCE) == {
             BTCUSDT_PERP_BINANCE.id: Money(2_625.00000000, USDT),
         }
-        assert self.portfolio.net_exposure(BTCUSDT_PERP_BINANCE.id) == Money(105100.00000000, USDT)
-        assert self.portfolio.unrealized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(100.00000000, USDT)
-        assert self.portfolio.realized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(-18.900000000, USDT)
-        assert self.portfolio.net_position(order.instrument_id) == Decimal("10.00000000")
+        assert self.portfolio.net_exposure(BTCUSDT_PERP_BINANCE.id) == Money(
+            105100.00000000, USDT
+        )
+        assert self.portfolio.unrealized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(
+            100.00000000, USDT
+        )
+        assert self.portfolio.realized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(
+            -18.900000000, USDT
+        )
+        assert self.portfolio.net_position(order.instrument_id) == Decimal(
+            "10.00000000"
+        )
         assert self.portfolio.is_net_long(order.instrument_id)
         assert not self.portfolio.is_net_short(order.instrument_id)
         assert not self.portfolio.is_flat(order.instrument_id)
@@ -1050,7 +1108,9 @@ class TestPortfolio:
         )
 
         last = Bar(
-            bar_type=BarType.from_str(f"{BTCUSDT_PERP_BINANCE.id}-1-MINUTE-LAST-EXTERNAL"),
+            bar_type=BarType.from_str(
+                f"{BTCUSDT_PERP_BINANCE.id}-1-MINUTE-LAST-EXTERNAL"
+            ),
             open=Price.from_str("10510.00"),
             high=Price.from_str("10510.00"),
             low=Price.from_str("10510.00"),
@@ -1069,16 +1129,30 @@ class TestPortfolio:
         self.portfolio.update_position(TestEventStubs.position_opened(position))
 
         # Assert
-        assert self.portfolio.net_exposures(BINANCE) == {USDT: Money(105100.00000000, USDT)}
-        assert self.portfolio.unrealized_pnls(BINANCE) == {USDT: Money(100.00000000, USDT)}
-        assert self.portfolio.realized_pnls(BINANCE) == {USDT: Money(-18.90000000, USDT)}
+        assert self.portfolio.net_exposures(BINANCE) == {
+            USDT: Money(105100.00000000, USDT)
+        }
+        assert self.portfolio.unrealized_pnls(BINANCE) == {
+            USDT: Money(100.00000000, USDT)
+        }
+        assert self.portfolio.realized_pnls(BINANCE) == {
+            USDT: Money(-18.90000000, USDT)
+        }
         assert self.portfolio.margins_maint(BINANCE) == {
             BTCUSDT_PERP_BINANCE.id: Money(2_625.00000000, USDT),
         }
-        assert self.portfolio.net_exposure(BTCUSDT_PERP_BINANCE.id) == Money(105100.00000000, USDT)
-        assert self.portfolio.unrealized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(100.00000000, USDT)
-        assert self.portfolio.realized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(-18.90000000, USDT)
-        assert self.portfolio.net_position(order.instrument_id) == Decimal("10.00000000")
+        assert self.portfolio.net_exposure(BTCUSDT_PERP_BINANCE.id) == Money(
+            105100.00000000, USDT
+        )
+        assert self.portfolio.unrealized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(
+            100.00000000, USDT
+        )
+        assert self.portfolio.realized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(
+            -18.90000000, USDT
+        )
+        assert self.portfolio.net_position(order.instrument_id) == Decimal(
+            "10.00000000"
+        )
         assert self.portfolio.is_net_long(order.instrument_id)
         assert not self.portfolio.is_net_short(order.instrument_id)
         assert not self.portfolio.is_flat(order.instrument_id)
@@ -1155,14 +1229,22 @@ class TestPortfolio:
         self.portfolio.update_position(TestEventStubs.position_opened(position))
 
         # Assert
-        assert self.portfolio.net_exposures(BINANCE) == {USDT: Money(7987.77875000, USDT)}
-        assert self.portfolio.unrealized_pnls(BINANCE) == {USDT: Money(-262.77875000, USDT)}
+        assert self.portfolio.net_exposures(BINANCE) == {
+            USDT: Money(7987.77875000, USDT)
+        }
+        assert self.portfolio.unrealized_pnls(BINANCE) == {
+            USDT: Money(-262.77875000, USDT)
+        }
         assert self.portfolio.realized_pnls(BINANCE) == {USDT: Money(-1.3905000, USDT)}
         assert self.portfolio.margins_maint(BINANCE) == {
             BTCUSDT_PERP_BINANCE.id: Money(193.12500000, USDT),
         }
-        assert self.portfolio.net_exposure(BTCUSDT_PERP_BINANCE.id) == Money(7987.77875000, USDT)
-        assert self.portfolio.unrealized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(-262.77875000, USDT)
+        assert self.portfolio.net_exposure(BTCUSDT_PERP_BINANCE.id) == Money(
+            7987.77875000, USDT
+        )
+        assert self.portfolio.unrealized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(
+            -262.77875000, USDT
+        )
         assert self.portfolio.net_position(order.instrument_id) == Decimal("-0.515000")
         assert not self.portfolio.is_net_long(order.instrument_id)
         assert self.portfolio.is_net_short(order.instrument_id)
@@ -1248,7 +1330,9 @@ class TestPortfolio:
 
         # Assert
         assert self.portfolio.net_exposures(BITMEX) == {ETH: Money(26.59220848, ETH)}
-        assert self.portfolio.margins_maint(BITMEX) == {ETHUSD_BITMEX.id: Money(0.18614546, ETH)}
+        assert self.portfolio.margins_maint(BITMEX) == {
+            ETHUSD_BITMEX.id: Money(0.18614546, ETH)
+        }
         assert self.portfolio.net_exposure(ETHUSD_BITMEX.id) == Money(26.59220848, ETH)
         assert self.portfolio.unrealized_pnl(ETHUSD_BITMEX.id) == Money(0.00000000, ETH)
 
@@ -2040,9 +2124,13 @@ class TestPortfolio:
         self.portfolio.update_quote_tick(last)
 
         # Assert
-        assert self.portfolio.net_exposures(BETFAIR) == {GBP: Money(-200.00, GBP)}  # Stake * odds
+        assert self.portfolio.net_exposures(BETFAIR) == {
+            GBP: Money(-200.00, GBP)
+        }  # Stake * odds
         assert self.portfolio.unrealized_pnls(BETFAIR) == {GBP: Money(4.76, GBP)}
-        assert self.portfolio.realized_pnls(BETFAIR) == {GBP: Money(0.00, GBP)}  # Commission
+        assert self.portfolio.realized_pnls(BETFAIR) == {
+            GBP: Money(0.00, GBP)
+        }  # Commission
         assert self.portfolio.net_exposure(BETTING_INSTRUMENT.id) == Money(-200.00, GBP)
         assert self.portfolio.unrealized_pnl(BETTING_INSTRUMENT.id) == Money(4.76, GBP)
         assert self.portfolio.realized_pnl(BETTING_INSTRUMENT.id) == Money(0.00, GBP)
@@ -2278,7 +2366,9 @@ class TestPortfolio:
             expected_exposure,
             GBP,
         )
-        assert self.portfolio.realized_pnl(instrument.id) == Money(expected_realized, GBP)
+        assert self.portfolio.realized_pnl(instrument.id) == Money(
+            expected_realized, GBP
+        )
         assert self.portfolio.unrealized_pnl(instrument.id, mark.value) == Money(
             expected_unrealized,
             GBP,
@@ -2395,7 +2485,9 @@ class TestPortfolio:
             expected_exposure,
             GBP,
         )
-        assert self.portfolio.realized_pnl(instrument.id) == Money(expected_realized, GBP)
+        assert self.portfolio.realized_pnl(instrument.id) == Money(
+            expected_realized, GBP
+        )
         assert self.portfolio.unrealized_pnl(instrument.id, mark.value) == Money(
             expected_unrealized,
             GBP,
@@ -2516,7 +2608,9 @@ class TestPortfolio:
             expected_exposure,
             GBP,
         )
-        assert self.portfolio.realized_pnl(instrument.id) == Money(expected_realized, GBP)
+        assert self.portfolio.realized_pnl(instrument.id) == Money(
+            expected_realized, GBP
+        )
         assert self.portfolio.unrealized_pnl(instrument.id, mark.value) == Money(
             expected_unrealized,
             GBP,
@@ -2635,7 +2729,9 @@ class TestPortfolio:
             expected_exposure,
             GBP,
         )
-        assert self.portfolio.realized_pnl(instrument.id) == Money(expected_realized, GBP)
+        assert self.portfolio.realized_pnl(instrument.id) == Money(
+            expected_realized, GBP
+        )
         assert self.portfolio.unrealized_pnl(instrument.id, mark.value) == Money(
             expected_unrealized,
             GBP,

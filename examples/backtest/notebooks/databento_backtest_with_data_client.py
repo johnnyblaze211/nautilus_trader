@@ -116,11 +116,15 @@ class FuturesStrategy(Strategy):
         self.position_opened = False
 
     def on_start(self) -> None:
-        self.bar_type = BarType.from_str(f"{self.config.future_id}-1-MINUTE-LAST-EXTERNAL")
+        self.bar_type = BarType.from_str(
+            f"{self.config.future_id}-1-MINUTE-LAST-EXTERNAL"
+        )
 
         # Request instrument
         now = self.clock.utc_now()
-        self.request_instrument(self.bar_type.instrument_id, end=now, update_catalog=True)
+        self.request_instrument(
+            self.bar_type.instrument_id, end=now, update_catalog=True
+        )
         # instrument = self.cache.instrument(self.bar_type.instrument_id)
         # self.log.warning(f"{instrument=}")
 

@@ -122,7 +122,9 @@ class BinanceSpotOrderBookPartialDepthData(msgspec.Struct):
         instrument_id: InstrumentId,
         ts_init: int,
     ) -> OrderBookDeltas:
-        deltas: list[OrderBookDelta] = [OrderBookDelta.clear(instrument_id, 0, ts_init, ts_init)]
+        deltas: list[OrderBookDelta] = [
+            OrderBookDelta.clear(instrument_id, 0, ts_init, ts_init)
+        ]
 
         bids_len = len(self.bids)
         asks_len = len(self.asks)

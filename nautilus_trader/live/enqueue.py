@@ -14,7 +14,8 @@
 # -------------------------------------------------------------------------------------------------
 
 import asyncio
-from typing import Generic, TypeVar
+from typing import Generic
+from typing import TypeVar
 from weakref import WeakSet
 
 from nautilus_trader.common.component import Clock
@@ -113,7 +114,9 @@ class ThrottledEnqueuer(Generic[T]):
         assert msg is not None, "message was `None` when a value was expected"
 
         if self._queue.qsize() < self._queue.maxsize:
-            self._loop.call_soon_threadsafe(self._enqueue_nowait_safely, self._queue, msg)
+            self._loop.call_soon_threadsafe(
+                self._enqueue_nowait_safely, self._queue, msg
+            )
             return
 
         task = self._loop.create_task(self._queue.put(msg))

@@ -39,7 +39,9 @@ USDJPY_SIM = TestInstrumentProvider.default_fx_ccy("USD/JPY")
 
 class TestSimulationModules:
     def create_engine(self, modules: list) -> BacktestEngine:
-        engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(bypass_logging=True)))
+        engine = BacktestEngine(
+            BacktestEngineConfig(logging=LoggingConfig(bypass_logging=True))
+        )
         engine.add_venue(
             venue=Venue("SIM"),
             oms_type=OmsType.HEDGING,
@@ -89,7 +91,9 @@ class TestSimulationModules:
             def pre_process(self, data: Data) -> None:
                 if data.ts_init == 1359676979900000000:
                     assert data
-                    matching_engine = self.exchange.get_matching_engine(data.instrument_id)
+                    matching_engine = self.exchange.get_matching_engine(
+                        data.instrument_id
+                    )
                     assert matching_engine
 
             def process(self, ts_now: int) -> None:

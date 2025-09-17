@@ -22,14 +22,28 @@ from nautilus_trader.adapters.bybit.common.enums import BybitKlineInterval
 from nautilus_trader.adapters.bybit.common.enums import BybitProductType
 from nautilus_trader.adapters.bybit.http.client import BybitHttpClient
 from nautilus_trader.adapters.bybit.http.market import BybitMarketHttpAPI
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsLinearResponse
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsOptionResponse
-from nautilus_trader.adapters.bybit.schemas.instrument import BybitInstrumentsSpotResponse
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsLinearResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsOptionResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.instrument import (
+    BybitInstrumentsSpotResponse,
+)
 from nautilus_trader.adapters.bybit.schemas.market.kline import BybitKlinesResponse
-from nautilus_trader.adapters.bybit.schemas.market.server_time import BybitServerTimeResponse
-from nautilus_trader.adapters.bybit.schemas.market.ticker import BybitTickersLinearResponse
-from nautilus_trader.adapters.bybit.schemas.market.ticker import BybitTickersOptionResponse
-from nautilus_trader.adapters.bybit.schemas.market.ticker import BybitTickersSpotResponse
+from nautilus_trader.adapters.bybit.schemas.market.server_time import (
+    BybitServerTimeResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.market.ticker import (
+    BybitTickersLinearResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.market.ticker import (
+    BybitTickersOptionResponse,
+)
+from nautilus_trader.adapters.bybit.schemas.market.ticker import (
+    BybitTickersSpotResponse,
+)
 from nautilus_trader.common.component import LiveClock
 from nautilus_trader.core.nautilus_pyo3 import HttpClient
 from tests.integration_tests.adapters.bybit.utils.get_mock import get_mock
@@ -59,7 +73,9 @@ class TestBybitMarketHttpAPI:
             "tests.integration_tests.adapters.bybit.resources.http_responses",
             "server_time.json",
         )
-        response_decoded = msgspec.json.Decoder(BybitServerTimeResponse).decode(response)
+        response_decoded = msgspec.json.Decoder(BybitServerTimeResponse).decode(
+            response
+        )
 
         monkeypatch.setattr(HttpClient, "request", get_mock(response))
         server_time = await self.http_api.fetch_server_time()
@@ -76,7 +92,9 @@ class TestBybitMarketHttpAPI:
             "tests.integration_tests.adapters.bybit.resources.http_responses.spot",
             "instruments.json",
         )
-        response_decoded = msgspec.json.Decoder(BybitInstrumentsSpotResponse).decode(response)
+        response_decoded = msgspec.json.Decoder(BybitInstrumentsSpotResponse).decode(
+            response
+        )
 
         monkeypatch.setattr(HttpClient, "request", get_mock(response))
         instruments = await self.http_api.fetch_instruments(BybitProductType.SPOT)
@@ -90,7 +108,9 @@ class TestBybitMarketHttpAPI:
             "tests.integration_tests.adapters.bybit.resources.http_responses.linear",
             "instruments.json",
         )
-        response_decoded = msgspec.json.Decoder(BybitInstrumentsLinearResponse).decode(response)
+        response_decoded = msgspec.json.Decoder(BybitInstrumentsLinearResponse).decode(
+            response
+        )
 
         monkeypatch.setattr(HttpClient, "request", get_mock(response))
         instruments = await self.http_api.fetch_instruments(BybitProductType.LINEAR)
@@ -104,7 +124,9 @@ class TestBybitMarketHttpAPI:
             "tests.integration_tests.adapters.bybit.resources.http_responses.option",
             "instruments.json",
         )
-        response_decoded = msgspec.json.Decoder(BybitInstrumentsOptionResponse).decode(response)
+        response_decoded = msgspec.json.Decoder(BybitInstrumentsOptionResponse).decode(
+            response
+        )
 
         monkeypatch.setattr(HttpClient, "request", get_mock(response))
         instruments = await self.http_api.fetch_instruments(BybitProductType.OPTION)
@@ -164,7 +186,9 @@ class TestBybitMarketHttpAPI:
             "tests.integration_tests.adapters.bybit.resources.http_responses.linear",
             "tickers.json",
         )
-        response_decoded = msgspec.json.Decoder(BybitTickersLinearResponse).decode(response)
+        response_decoded = msgspec.json.Decoder(BybitTickersLinearResponse).decode(
+            response
+        )
         monkeypatch.setattr(HttpClient, "request", get_mock(response))
         tickers = await self.http_api.fetch_tickers(BybitProductType.LINEAR)
         assert response_decoded.result.list == tickers
@@ -178,7 +202,9 @@ class TestBybitMarketHttpAPI:
             "tests.integration_tests.adapters.bybit.resources.http_responses.option",
             "tickers.json",
         )
-        response_decoded = msgspec.json.Decoder(BybitTickersOptionResponse).decode(response)
+        response_decoded = msgspec.json.Decoder(BybitTickersOptionResponse).decode(
+            response
+        )
         monkeypatch.setattr(HttpClient, "request", get_mock(response))
         tickers = await self.http_api.fetch_tickers(BybitProductType.OPTION)
         assert response_decoded.result.list == tickers
@@ -192,7 +218,9 @@ class TestBybitMarketHttpAPI:
             "tests.integration_tests.adapters.bybit.resources.http_responses.spot",
             "tickers.json",
         )
-        response_decoded = msgspec.json.Decoder(BybitTickersSpotResponse).decode(response)
+        response_decoded = msgspec.json.Decoder(BybitTickersSpotResponse).decode(
+            response
+        )
         monkeypatch.setattr(HttpClient, "request", get_mock(response))
         tickers = await self.http_api.fetch_tickers(BybitProductType.SPOT)
         assert response_decoded.result.list == tickers

@@ -126,7 +126,9 @@ class TestBinanceUserHttpAPI:
         # Assert
         name, args, kwargs = mock_request.call_args[0]
         assert name == "GET"
-        assert args == "/sapi/v1/asset/query/trading-fee"  # Binance.US uses different endpoint
+        assert (
+            args == "/sapi/v1/asset/query/trading-fee"
+        )  # Binance.US uses different endpoint
         assert kwargs["symbol"] == "BTCUSDT"
         assert "signature" in kwargs
         assert "timestamp" in kwargs

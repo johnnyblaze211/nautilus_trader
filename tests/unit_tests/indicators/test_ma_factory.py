@@ -66,7 +66,9 @@ class TestMaFactory:
 
     def test_double_exponential_returns_expected_indicator(self):
         # Arrange, Act
-        indicator = MovingAverageFactory.create(10, MovingAverageType.DOUBLE_EXPONENTIAL)
+        indicator = MovingAverageFactory.create(
+            10, MovingAverageType.DOUBLE_EXPONENTIAL
+        )
 
         # Assert
         assert isinstance(indicator, DoubleExponentialMovingAverage)

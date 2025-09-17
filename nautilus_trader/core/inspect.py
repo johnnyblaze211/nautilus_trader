@@ -34,7 +34,12 @@ def is_nautilus_class(cls: type) -> bool:
         return True
     if cls.__module__.startswith("nautilus_trader.test_kit"):
         return False
-    return bool(any(base.__module__.startswith("nautilus_trader.model") for base in cls.__bases__))
+    return bool(
+        any(
+            base.__module__.startswith("nautilus_trader.model")
+            for base in cls.__bases__
+        )
+    )
 
 
 def get_size_of(obj: Any) -> int:
@@ -65,7 +70,9 @@ def get_size_of(obj: Any) -> int:
         # Filter object that are already marked.
         # Using dict notation will prevent repeated objects.
         new_ref = {
-            o_id: o for o_id, o in all_refs if o_id not in marked and not isinstance(o, type)
+            o_id: o
+            for o_id, o in all_refs
+            if o_id not in marked and not isinstance(o, type)
         }
 
         # The new obj_q will be the ones that were not marked,

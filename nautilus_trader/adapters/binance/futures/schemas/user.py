@@ -26,7 +26,9 @@ from nautilus_trader.adapters.binance.common.enums import BinanceOrderType
 from nautilus_trader.adapters.binance.common.enums import BinanceTimeInForce
 from nautilus_trader.adapters.binance.execution import BinanceCommonExecutionClient
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesEventType
-from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesPositionUpdateReason
+from nautilus_trader.adapters.binance.futures.enums import (
+    BinanceFuturesPositionUpdateReason,
+)
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesWorkingType
 from nautilus_trader.core.datetime import millis_to_nanos
 from nautilus_trader.core.datetime import unix_nanos_to_dt
@@ -217,7 +219,9 @@ class BinanceFuturesOrderData(msgspec.Struct, kw_only=True, frozen=True):
     ot: BinanceOrderType
     ps: BinanceFuturesPositionSide
     cp: bool | None = None  # If Close-All, pushed with conditional order
-    AP: str | None = None  # Activation Price, only pushed with TRAILING_STOP_MARKET order
+    AP: str | None = (
+        None  # Activation Price, only pushed with TRAILING_STOP_MARKET order
+    )
     cr: str | None = None  # Callback Rate, only pushed with TRAILING_STOP_MARKET order
     pP: bool  # ignore
     si: int  # ignore
@@ -299,7 +303,9 @@ class BinanceFuturesOrderData(msgspec.Struct, kw_only=True, frozen=True):
 
         instrument = exec_client._instrument_provider.find(instrument_id=instrument_id)
         if instrument is None:
-            raise ValueError(f"Cannot handle trade: instrument {instrument_id} not found")
+            raise ValueError(
+                f"Cannot handle trade: instrument {instrument_id} not found"
+            )
 
         price_precision = instrument.price_precision
         size_precision = instrument.size_precision
@@ -357,7 +363,8 @@ class BinanceFuturesOrderData(msgspec.Struct, kw_only=True, frozen=True):
                 ts_event=ts_event,
             )
         elif self.x == BinanceExecutionType.CANCELED or (
-            exec_client.treat_expired_as_canceled and self.x == BinanceExecutionType.EXPIRED
+            exec_client.treat_expired_as_canceled
+            and self.x == BinanceExecutionType.EXPIRED
         ):
             exec_client.generate_order_canceled(
                 strategy_id=strategy_id,
@@ -378,9 +385,13 @@ class BinanceFuturesOrderData(msgspec.Struct, kw_only=True, frozen=True):
                 ts_event=ts_event,
             )
         elif self.x == BinanceExecutionType.EXPIRED:
-            instrument = exec_client._instrument_provider.find(instrument_id=instrument_id)
+            instrument = exec_client._instrument_provider.find(
+                instrument_id=instrument_id
+            )
             if instrument is None:
-                raise ValueError(f"Cannot handle amendment: instrument {instrument_id} not found")
+                raise ValueError(
+                    f"Cannot handle amendment: instrument {instrument_id} not found"
+                )
 
             price_precision = instrument.price_precision
             size_precision = instrument.size_precision
@@ -393,7 +404,9 @@ class BinanceFuturesOrderData(msgspec.Struct, kw_only=True, frozen=True):
                     venue_order_id=venue_order_id,
                     quantity=Quantity(float(self.q), size_precision),
                     price=Price(float(self.p), price_precision),
-                    trigger_price=(Price(float(self.sp), price_precision) if self.sp else None),
+                    trigger_price=(
+                        Price(float(self.sp), price_precision) if self.sp else None
+                    ),
                     ts_event=ts_event,
                 )
             else:

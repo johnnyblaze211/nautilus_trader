@@ -198,15 +198,22 @@ class NautilusKernel:
                     # Initialize logging for sync Rust and Python
                     self._log_guard = nautilus_pyo3.init_logging(
                         trader_id=nautilus_pyo3.TraderId(self._trader_id.value),
-                        instance_id=nautilus_pyo3.UUID4.from_str(self._instance_id.value),
+                        instance_id=nautilus_pyo3.UUID4.from_str(
+                            self._instance_id.value
+                        ),
                         level_stdout=nautilus_pyo3.LogLevel(logging.log_level),
-                        level_file=nautilus_pyo3.LogLevel(logging.log_level_file or "OFF"),
+                        level_file=nautilus_pyo3.LogLevel(
+                            logging.log_level_file or "OFF"
+                        ),
                         component_levels=logging.log_component_levels,
                         directory=logging.log_directory,
                         file_name=logging.log_file_name,
                         file_format=logging.log_file_format,
                         file_rotate=(
-                            (logging.log_file_max_size, logging.log_file_max_backup_count)
+                            (
+                                logging.log_file_max_size,
+                                logging.log_file_max_backup_count,
+                            )
                             if logging.log_file_max_size
                             else None
                         ),
@@ -217,7 +224,9 @@ class NautilusKernel:
                     nautilus_pyo3.log_header(
                         trader_id=nautilus_pyo3.TraderId(self._trader_id.value),
                         machine_id=self._machine_id,
-                        instance_id=nautilus_pyo3.UUID4.from_str(self._instance_id.value),
+                        instance_id=nautilus_pyo3.UUID4.from_str(
+                            self._instance_id.value
+                        ),
                         component=name,
                     )
                 else:
@@ -283,7 +292,9 @@ class NautilusKernel:
             self._msgbus_db = nautilus_pyo3.RedisMessageBusDatabase(
                 trader_id=nautilus_pyo3.TraderId(self._trader_id.value),
                 instance_id=nautilus_pyo3.UUID4.from_str(self._instance_id.value),
-                config_json=msgspec.json.encode(config.message_bus, enc_hook=msgspec_encoding_hook),
+                config_json=msgspec.json.encode(
+                    config.message_bus, enc_hook=msgspec_encoding_hook
+                ),
             )
         else:
             raise ValueError(
@@ -530,7 +541,9 @@ class NautilusKernel:
 
         # Create importable execution algorithms
         for exec_algorithm_config in config.exec_algorithms:
-            exec_algorithm: ExecAlgorithm = ExecAlgorithmFactory.create(exec_algorithm_config)
+            exec_algorithm: ExecAlgorithm = ExecAlgorithmFactory.create(
+                exec_algorithm_config
+            )
             self._trader.add_exec_algorithm(exec_algorithm)
 
         # State flags
@@ -600,7 +613,9 @@ class NautilusKernel:
 
     def _on_shutdown_system(self, command: ShutdownSystem):
         if command.trader_id != self.trader_id:
-            self._log.warning(f"Received {command!r} not for this trader {self.trader_id}")
+            self._log.warning(
+                f"Received {command!r} not for this trader {self.trader_id}"
+            )
             return
 
         if self._environment == Environment.BACKTEST and is_backtest_force_stop():
@@ -1166,7 +1181,9 @@ class NautilusKernel:
 
         # Log tasks that are about to be cancelled
         for task in pending_tasks:
-            self._log.info(f"Canceling pending task '{task.get_name()}' (id={id(task)})")
+            self._log.info(
+                f"Canceling pending task '{task.get_name()}' (id={id(task)})"
+            )
             task.cancel()
 
         async def _cancel_and_wait_for_tasks():
@@ -1184,7 +1201,9 @@ class NautilusKernel:
                     )
 
                     for t in still_pending:
-                        self._log.warning(f"Task '{t.get_name()}' (id={id(t)}) still pending")
+                        self._log.warning(
+                            f"Task '{t.get_name()}' (id={id(t)}) still pending"
+                        )
 
                 # Log any exceptions from the completed tasks
                 for d in done:
@@ -1329,7 +1348,8 @@ class NautilusKernel:
 
     async def _await_portfolio_initialization(self) -> bool:
         self._log.info(
-            "Awaiting portfolio initialization " f"({self._config.timeout_portfolio}s timeout)...",
+            "Awaiting portfolio initialization "
+            f"({self._config.timeout_portfolio}s timeout)...",
             color=LogColor.BLUE,
         )
 

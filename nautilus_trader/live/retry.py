@@ -17,7 +17,8 @@ import asyncio
 from collections.abc import Awaitable
 from collections.abc import Callable
 from random import randint
-from typing import Generic, TypeVar
+from typing import Generic
+from typing import TypeVar
 
 from nautilus_trader.common.component import Logger
 
@@ -238,7 +239,9 @@ class RetryManager(Generic[T]):
             self.log.error(message)
 
     def _details_str(self) -> str:
-        self.details_str = " " + ", ".join([repr(x) for x in self.details]) if self.details else ""
+        self.details_str = (
+            " " + ", ".join([repr(x) for x in self.details]) if self.details else ""
+        )
         self.details_str += f": {self.last_exception!r}" if self.last_exception else ""
         return self.details_str
 
@@ -292,7 +295,9 @@ class RetryManagerPool(Generic[T]):
         self.retry_check = retry_check
         self.error_logger = error_logger
         self.pool_size = pool_size
-        self._pool: list[RetryManager[T]] = [self._create_manager() for _ in range(pool_size)]
+        self._pool: list[RetryManager[T]] = [
+            self._create_manager() for _ in range(pool_size)
+        ]
         self._lock = asyncio.Lock()
         self._active_managers: set[RetryManager[T]] = set()
 
@@ -342,7 +347,9 @@ class RetryManagerPool(Generic[T]):
                 retry_manager = self._create_manager()
 
             self._active_managers.add(retry_manager)
-            self.logger.debug(f"Acquired {retry_manager!r} (active: {len(self._active_managers)})")
+            self.logger.debug(
+                f"Acquired {retry_manager!r} (active: {len(self._active_managers)})"
+            )
             return retry_manager
 
     async def release(self, retry_manager: RetryManager) -> None:

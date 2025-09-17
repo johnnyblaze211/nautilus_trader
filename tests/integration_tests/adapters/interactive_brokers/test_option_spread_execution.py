@@ -158,7 +158,9 @@ class TestOptionSpreadExecution:
 
         # Create a simple spread instrument for testing
         self.option_spread = OptionContract(
-            instrument_id=InstrumentId(Symbol("(1)E1AQ5 C6400_(2)E1AQ5 P6440"), Venue("XCME")),
+            instrument_id=InstrumentId(
+                Symbol("(1)E1AQ5 C6400_(2)E1AQ5 P6440"), Venue("XCME")
+            ),
             raw_symbol=Symbol("(1)E1AQ5 C6400_(2)E1AQ5 P6440"),
             asset_class=AssetClass.EQUITY,
             currency=Currency.from_str("USD"),
@@ -248,7 +250,9 @@ class TestOptionSpreadExecution:
             trader_id=self.trader_id,
             strategy_id=self.strategy_id,
             instrument_id=self.put_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 P6440"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 P6440"
+            ),
             venue_order_id=VenueOrderId("213-LEG-1"),
             account_id=self.account_id,
             trade_id=TradeId("0000e1a7.6882c67b.02.01-1"),
@@ -269,7 +273,9 @@ class TestOptionSpreadExecution:
             trader_id=self.trader_id,
             strategy_id=self.strategy_id,
             instrument_id=self.call_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"
+            ),
             venue_order_id=VenueOrderId("213-LEG-0"),
             account_id=self.account_id,
             trade_id=TradeId("0000e1a7.6882c67b.03.01-0"),
@@ -294,8 +300,12 @@ class TestOptionSpreadExecution:
         positions = self.cache.positions()
         assert len(positions) == 2
 
-        put_position = next(p for p in positions if p.instrument_id == self.put_option.id)
-        call_position = next(p for p in positions if p.instrument_id == self.call_option.id)
+        put_position = next(
+            p for p in positions if p.instrument_id == self.put_option.id
+        )
+        call_position = next(
+            p for p in positions if p.instrument_id == self.call_option.id
+        )
 
         assert put_position.quantity == Quantity.from_int(6)  # 2:1 ratio
         assert call_position.quantity == Quantity.from_int(3)  # 1:1 ratio
@@ -309,7 +319,9 @@ class TestOptionSpreadExecution:
             trader_id=self.trader_id,
             strategy_id=self.strategy_id,
             instrument_id=self.put_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 P6440"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 P6440"
+            ),
             venue_order_id=VenueOrderId("213-LEG-1"),
             account_id=self.account_id,
             trade_id=TradeId("0000e1a7.6882c67b.02.01-1"),
@@ -330,7 +342,9 @@ class TestOptionSpreadExecution:
             trader_id=self.trader_id,
             strategy_id=self.strategy_id,
             instrument_id=self.call_option.id,
-            client_order_id=ClientOrderId("O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"),
+            client_order_id=ClientOrderId(
+                "O-20250725-080046-TEST-000-1-LEG-E1AQ5 C6400"
+            ),
             venue_order_id=VenueOrderId("213-LEG-0"),
             account_id=self.account_id,
             trade_id=TradeId("0000e1a7.6882c67b.03.01-0"),
@@ -356,8 +370,12 @@ class TestOptionSpreadExecution:
         assert len(positions) == 2
 
         # Find positions by instrument
-        put_position = next(p for p in positions if p.instrument_id == self.put_option.id)
-        call_position = next(p for p in positions if p.instrument_id == self.call_option.id)
+        put_position = next(
+            p for p in positions if p.instrument_id == self.put_option.id
+        )
+        call_position = next(
+            p for p in positions if p.instrument_id == self.call_option.id
+        )
 
         # Verify put position (6 contracts)
         assert put_position.quantity == Quantity.from_int(6)

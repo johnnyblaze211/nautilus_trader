@@ -363,13 +363,17 @@ class TestFundingRateUpdate:
         # Arrange
         pyo3_funding_rates = [
             nautilus_pyo3.FundingRateUpdate(
-                instrument_id=nautilus_pyo3.InstrumentId.from_str("BTCUSDT-PERP.BINANCE"),
+                instrument_id=nautilus_pyo3.InstrumentId.from_str(
+                    "BTCUSDT-PERP.BINANCE"
+                ),
                 rate="0.0001",
                 ts_event=1_640_000_000_000_000_000,
                 ts_init=1_640_000_000_000_000_000,
             ),
             nautilus_pyo3.FundingRateUpdate(
-                instrument_id=nautilus_pyo3.InstrumentId.from_str("ETHUSDT-PERP.BINANCE"),
+                instrument_id=nautilus_pyo3.InstrumentId.from_str(
+                    "ETHUSDT-PERP.BINANCE"
+                ),
                 rate="0.0002",
                 next_funding_ns=1_640_000_100_000_000_000,
                 ts_event=1_640_000_001_000_000_000,

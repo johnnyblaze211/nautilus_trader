@@ -19,7 +19,9 @@ from enum import IntEnum
 from time import sleep
 from typing import ClassVar
 
-from nautilus_trader.adapters.interactive_brokers.config import DockerizedIBGatewayConfig
+from nautilus_trader.adapters.interactive_brokers.config import (
+    DockerizedIBGatewayConfig,
+)
 from nautilus_trader.common.component import Logger as NautilusLogger
 from nautilus_trader.common.secure import SecureString
 
@@ -159,7 +161,9 @@ class DockerizedIBGateway:
                 "READ_ONLY_API": {True: "yes", False: "no"}[self.read_only_api],
             },
         )
-        self.log.info(f"Container `{self.CONTAINER_NAME}-{self.port}` starting, waiting for ready")
+        self.log.info(
+            f"Container `{self.CONTAINER_NAME}-{self.port}` starting, waiting for ready"
+        )
 
         for _ in range(wait or self.timeout):
             if self.is_logged_in(container=self._container):

@@ -54,7 +54,10 @@ class TestDataType:
         assert data_type.metadata == {"a": 1, "b": 2, "c": None}
         assert data_type.topic == "Data.b=2.a=1.c=*"
         assert str(data_type) == "Data{'b': 2, 'a': 1, 'c': None}"
-        assert repr(data_type) == "DataType(type=Data, metadata={'b': 2, 'a': 1, 'c': None})"
+        assert (
+            repr(data_type)
+            == "DataType(type=Data, metadata={'b': 2, 'a': 1, 'c': None})"
+        )
 
     def test_data_type_equality_and_hash(self):
         # Arrange, Act
@@ -152,4 +155,7 @@ class TestDataType:
         # Act, Assert
         assert isinstance(hash(data_type), int)
         assert str(data_type) == "Data{'category': 1, 'code': 0}"
-        assert repr(data_type) == "DataType(type=Data, metadata={'category': 1, 'code': 0})"
+        assert (
+            repr(data_type)
+            == "DataType(type=Data, metadata={'category': 1, 'code': 0})"
+        )

@@ -152,7 +152,9 @@ class YieldCurveData(Data):
     """
 
     curve_name: str = "USD"
-    tenors: np.ndarray = field(default_factory=lambda: np.array([0.5, 1.0, 1.5, 2.0, 2.5]))
+    tenors: np.ndarray = field(
+        default_factory=lambda: np.array([0.5, 1.0, 1.5, 2.0, 2.5])
+    )
     interest_rates: np.ndarray = field(
         default_factory=lambda: np.array([0.04, 0.04, 0.04, 0.04, 0.04]),
     )
@@ -167,7 +169,9 @@ class YieldCurveData(Data):
         if len(self.interest_rates) == 1:
             return self.interest_rates[0]
 
-        return quadratic_interpolation(expiry_in_years, self.tenors, self.interest_rates)
+        return quadratic_interpolation(
+            expiry_in_years, self.tenors, self.interest_rates
+        )
 
     def to_dict(self, to_arrow=False):
         result = {
@@ -180,7 +184,9 @@ class YieldCurveData(Data):
         }
 
         if to_arrow:
-            result["date"] = int(unix_nanos_to_dt(result["ts_event"]).strftime("%Y%m%d"))
+            result["date"] = int(
+                unix_nanos_to_dt(result["ts_event"]).strftime("%Y%m%d")
+            )
 
         return result
 

@@ -119,7 +119,9 @@ class OKXExecutionClient(LiveExecutionClient):
 
         instrument_types = [i.name.upper() for i in config.instrument_types]
         contract_types = (
-            [c.name.upper() for c in config.contract_types] if config.contract_types else None
+            [c.name.upper() for c in config.contract_types]
+            if config.contract_types
+            else None
         )
 
         # Configuration
@@ -143,7 +145,8 @@ class OKXExecutionClient(LiveExecutionClient):
 
         # WebSocket API
         self._ws_client = nautilus_pyo3.OKXWebSocketClient.with_credentials(
-            url=config.base_url_ws or nautilus_pyo3.get_okx_ws_url_private(config.is_demo),
+            url=config.base_url_ws
+            or nautilus_pyo3.get_okx_ws_url_private(config.is_demo),
             account_id=self.pyo3_account_id,
         )
         self._ws_client_futures: set[asyncio.Future] = set()
@@ -172,7 +175,9 @@ class OKXExecutionClient(LiveExecutionClient):
         # Wait for connection to be established
         await self._ws_client.wait_until_active(timeout_secs=10.0)
         self._log.info(f"Connected to {self._ws_client.url}", LogColor.BLUE)
-        self._log.info(f"Private websocket API key {self._ws_client.api_key}", LogColor.BLUE)
+        self._log.info(
+            f"Private websocket API key {self._ws_client.api_key}", LogColor.BLUE
+        )
         self._log.info("OKX API key authenticated", LogColor.GREEN)
 
         # Subscribe to orders and account updates
@@ -212,7 +217,9 @@ class OKXExecutionClient(LiveExecutionClient):
                     timeout=2.0,
                 )
             except TimeoutError:
-                self._log.warning("Timeout while waiting for websockets shutdown to complete")
+                self._log.warning(
+                    "Timeout while waiting for websockets shutdown to complete"
+                )
 
         self._ws_client_futures.clear()
 
@@ -227,7 +234,9 @@ class OKXExecutionClient(LiveExecutionClient):
 
     async def _update_account_state(self) -> None:
         try:
-            pyo3_account_state = await self._http_client.request_account_state(self.pyo3_account_id)
+            pyo3_account_state = await self._http_client.request_account_state(
+                self.pyo3_account_id
+            )
             account_state = AccountState.from_dict(pyo3_account_state.to_dict())
 
             self.generate_account_state(
@@ -324,7 +333,9 @@ class OKXExecutionClient(LiveExecutionClient):
         )
 
         try:
-            pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+            pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+                command.instrument_id.value
+            )
             pyo3_reports: list[nautilus_pyo3.OrderStatusReport] = (
                 await self._http_client.request_order_status_reports(
                     account_id=self.pyo3_account_id,
@@ -342,7 +353,10 @@ class OKXExecutionClient(LiveExecutionClient):
                     command.client_order_id
                     and report.client_order_id is not None
                     and report.client_order_id == command.client_order_id
-                ) or (command.venue_order_id and report.venue_order_id == command.venue_order_id):
+                ) or (
+                    command.venue_order_id
+                    and report.venue_order_id == command.venue_order_id
+                ):
                     self._log.debug(f"Received {report}", LogColor.MAGENTA)
                     return report
 
@@ -494,7 +508,9 @@ class OKXExecutionClient(LiveExecutionClient):
 
         pyo3_trader_id = nautilus_pyo3.TraderId.from_str(order.trader_id.value)
         pyo3_strategy_id = nautilus_pyo3.StrategyId.from_str(order.strategy_id.value)
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         pyo3_client_order_id = (
             nautilus_pyo3.ClientOrderId(command.client_order_id.value)
             if command.client_order_id is not None
@@ -516,7 +532,9 @@ class OKXExecutionClient(LiveExecutionClient):
 
     async def _cancel_all_orders(self, command: CancelAllOrders) -> None:
         # For simplicity, cancel orders one by one
-        orders_open: list[Order] = self._cache.orders_open(instrument_id=command.instrument_id)
+        orders_open: list[Order] = self._cache.orders_open(
+            instrument_id=command.instrument_id
+        )
         for order in orders_open:
             if order.is_closed:
                 continue
@@ -547,7 +565,9 @@ class OKXExecutionClient(LiveExecutionClient):
 
         pyo3_trader_id = nautilus_pyo3.TraderId.from_str(order.trader_id.value)
         pyo3_strategy_id = nautilus_pyo3.StrategyId.from_str(order.strategy_id.value)
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         pyo3_client_order_id = (
             nautilus_pyo3.ClientOrderId(command.client_order_id.value)
             if command.client_order_id is not None
@@ -558,9 +578,13 @@ class OKXExecutionClient(LiveExecutionClient):
             if command.venue_order_id
             else None
         )
-        pyo3_price = nautilus_pyo3.Price.from_str(str(command.price)) if command.price else None
+        pyo3_price = (
+            nautilus_pyo3.Price.from_str(str(command.price)) if command.price else None
+        )
         pyo3_quantity = (
-            nautilus_pyo3.Quantity.from_str(str(command.quantity)) if command.quantity else None
+            nautilus_pyo3.Quantity.from_str(str(command.quantity))
+            if command.quantity
+            else None
         )
 
         await self._ws_client.modify_order(
@@ -590,12 +614,16 @@ class OKXExecutionClient(LiveExecutionClient):
 
         pyo3_trader_id = nautilus_pyo3.TraderId.from_str(order.trader_id.value)
         pyo3_strategy_id = nautilus_pyo3.StrategyId.from_str(order.strategy_id.value)
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(order.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            order.instrument_id.value
+        )
         pyo3_client_order_id = nautilus_pyo3.ClientOrderId(order.client_order_id.value)
         pyo3_order_side = order_side_to_pyo3(order.side)
         pyo3_order_type = order_type_to_pyo3(order.order_type)
         pyo3_quantity = nautilus_pyo3.Quantity.from_str(str(order.quantity))
-        pyo3_price = nautilus_pyo3.Price.from_str(str(order.price)) if order.has_price else None
+        pyo3_price = (
+            nautilus_pyo3.Price.from_str(str(order.price)) if order.has_price else None
+        )
         pyo3_trigger_price = (
             nautilus_pyo3.Price.from_str(str(order.trigger_price))
             if order.has_trigger_price
@@ -626,7 +654,9 @@ class OKXExecutionClient(LiveExecutionClient):
     # -- WEBSOCKET HANDLERS -----------------------------------------------------------------------
 
     def _is_external_order(self, client_order_id: ClientOrderId) -> bool:
-        return not client_order_id or not self._cache.strategy_id_for_order(client_order_id)
+        return not client_order_id or not self._cache.strategy_id_for_order(
+            client_order_id
+        )
 
     def _handle_msg(self, msg: Any) -> None:
         if isinstance(msg, nautilus_pyo3.OKXWebSocketError):
@@ -669,7 +699,9 @@ class OKXExecutionClient(LiveExecutionClient):
         except Exception as e:
             self._log.error(f"Failed to process account state update: {e}")
 
-    def _handle_order_rejected_pyo3(self, pyo3_event: nautilus_pyo3.OrderRejected) -> None:
+    def _handle_order_rejected_pyo3(
+        self, pyo3_event: nautilus_pyo3.OrderRejected
+    ) -> None:
         event = OrderRejected.from_dict(pyo3_event.to_dict())
         self._send_order_event(event)
 
@@ -687,7 +719,9 @@ class OKXExecutionClient(LiveExecutionClient):
         event = OrderModifyRejected.from_dict(pyo3_event.to_dict())
         self._send_order_event(event)
 
-    def _handle_order_status_report_pyo3(self, msg: nautilus_pyo3.OrderStatusReport) -> None:
+    def _handle_order_status_report_pyo3(
+        self, msg: nautilus_pyo3.OrderStatusReport
+    ) -> None:
         report = OrderStatusReport.from_pyo3(msg)
 
         if self._is_external_order(report.client_order_id):

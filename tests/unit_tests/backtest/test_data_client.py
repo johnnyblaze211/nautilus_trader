@@ -130,7 +130,9 @@ class TestBacktestMarketDataClient:
         assert isinstance(spread_instrument, OptionSpread)
         assert spread_instrument.id == self.spread_instrument_id
         assert spread_instrument.underlying == ""  # Not necessary for option spreads
-        assert spread_instrument.strategy_type == "SPREAD"  # Set by BacktestMarketDataClient
+        assert (
+            spread_instrument.strategy_type == "SPREAD"
+        )  # Set by BacktestMarketDataClient
         assert spread_instrument.quote_currency == Currency.from_str("USD")
         assert spread_instrument.asset_class == self.option1.asset_class
         assert spread_instrument.price_precision == self.option1.price_precision

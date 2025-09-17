@@ -25,8 +25,12 @@ from nautilus_trader.backtest.engine import BacktestEngineConfig
 from nautilus_trader.backtest.models import FillModel
 from nautilus_trader.backtest.modules import FXRolloverInterestConfig
 from nautilus_trader.backtest.modules import FXRolloverInterestModule
-from nautilus_trader.examples.strategies.volatility_market_maker import VolatilityMarketMaker
-from nautilus_trader.examples.strategies.volatility_market_maker import VolatilityMarketMakerConfig
+from nautilus_trader.examples.strategies.volatility_market_maker import (
+    VolatilityMarketMaker,
+)
+from nautilus_trader.examples.strategies.volatility_market_maker import (
+    VolatilityMarketMakerConfig,
+)
 from nautilus_trader.model.currencies import USD
 from nautilus_trader.model.data import BarType
 from nautilus_trader.model.enums import AccountType
@@ -70,7 +74,9 @@ if __name__ == "__main__":
         oms_type=OmsType.NETTING,
         account_type=AccountType.MARGIN,
         base_currency=USD,  # Standard single-currency account
-        starting_balances=[Money(10_000_000, USD)],  # Single-currency or multi-currency accounts
+        starting_balances=[
+            Money(10_000_000, USD)
+        ],  # Single-currency or multi-currency accounts
         fill_model=fill_model,
         modules=[fx_rollover_interest],
         bar_execution=True,  # If bar data should move the market (True by default)

@@ -101,14 +101,18 @@ class BitmexDataClient(LiveMarketDataClient):
         self._config = config
         self._active_only = True  # Always use active instruments for live clients
         self._log.info(f"config.testnet={config.testnet}", LogColor.BLUE)
-        self._log.info(f"config.http_timeout_secs={config.http_timeout_secs}", LogColor.BLUE)
+        self._log.info(
+            f"config.http_timeout_secs={config.http_timeout_secs}", LogColor.BLUE
+        )
         self._log.info(
             f"config.update_instruments_interval_mins={config.update_instruments_interval_mins}",
             LogColor.BLUE,
         )
 
         # Periodic updates
-        self._update_instruments_interval_mins: int | None = config.update_instruments_interval_mins
+        self._update_instruments_interval_mins: int | None = (
+            config.update_instruments_interval_mins
+        )
         self._update_instruments_task: asyncio.Task | None = None
 
         # HTTP API
@@ -210,14 +214,18 @@ class BitmexDataClient(LiveMarketDataClient):
             )
             return
 
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
 
         if command.depth == 25:
             await self._ws_client.subscribe_book_25(pyo3_instrument_id)
         else:
             await self._ws_client.subscribe_book(pyo3_instrument_id)
 
-    async def _subscribe_order_book_snapshots(self, command: SubscribeOrderBook) -> None:
+    async def _subscribe_order_book_snapshots(
+        self, command: SubscribeOrderBook
+    ) -> None:
         if command.book_type != BookType.L2_MBP:
             self._log.warning(
                 f"Book type {book_type_to_str(command.book_type)} not supported by BitMEX, skipping subscription",
@@ -232,16 +240,22 @@ class BitmexDataClient(LiveMarketDataClient):
             )
             return
 
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
 
         await self._ws_client.subscribe_book_depth10(pyo3_instrument_id)
 
     async def _subscribe_quote_ticks(self, command: SubscribeQuoteTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_quotes(pyo3_instrument_id)
 
     async def _subscribe_trade_ticks(self, command: SubscribeTradeTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_trades(pyo3_instrument_id)
 
     async def _subscribe_instruments(self, command: SubscribeInstruments) -> None:
@@ -250,40 +264,60 @@ class BitmexDataClient(LiveMarketDataClient):
 
     async def _subscribe_instrument(self, command: SubscribeInstrument) -> None:
         # Subscribe to instrument updates for specific instrument via WebSocket
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_instrument(pyo3_instrument_id)
 
     async def _subscribe_mark_prices(self, command) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_mark_prices(pyo3_instrument_id)
 
     async def _subscribe_index_prices(self, command) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_index_prices(pyo3_instrument_id)
 
     async def _subscribe_funding_rates(self, command) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.subscribe_funding_rates(pyo3_instrument_id)
 
     async def _subscribe_bars(self, command: SubscribeBars) -> None:
         pyo3_bar_type = nautilus_pyo3.BarType.from_str(str(command.bar_type))
         await self._ws_client.subscribe_bars(pyo3_bar_type)
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_book(pyo3_instrument_id)
         await self._ws_client.unsubscribe_book_25(pyo3_instrument_id)
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_book_depth10(pyo3_instrument_id)
 
     async def _unsubscribe_quote_ticks(self, command: UnsubscribeQuoteTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_quotes(pyo3_instrument_id)
 
     async def _unsubscribe_trade_ticks(self, command: UnsubscribeTradeTicks) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_trades(pyo3_instrument_id)
 
     async def _unsubscribe_bars(self, command: UnsubscribeBars) -> None:
@@ -296,19 +330,27 @@ class BitmexDataClient(LiveMarketDataClient):
 
     async def _unsubscribe_instrument(self, command: UnsubscribeInstrument) -> None:
         # Unsubscribe from specific instrument updates
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_instrument(pyo3_instrument_id)
 
     async def _unsubscribe_mark_prices(self, command) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_mark_prices(pyo3_instrument_id)
 
     async def _unsubscribe_index_prices(self, command) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_index_prices(pyo3_instrument_id)
 
     async def _unsubscribe_funding_rates(self, command) -> None:
-        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(command.instrument_id.value)
+        pyo3_instrument_id = nautilus_pyo3.InstrumentId.from_str(
+            command.instrument_id.value
+        )
         await self._ws_client.unsubscribe_funding_rates(pyo3_instrument_id)
 
     async def _request_instruments(self, request: RequestInstruments) -> None:

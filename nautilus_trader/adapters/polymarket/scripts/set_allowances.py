@@ -6,6 +6,7 @@ from web3 import Web3
 from web3.constants import MAX_INT
 from web3.middleware import ExtraDataToPOAMiddleware
 
+
 # Before running this script you will need the following:
 # - Install the web3 Python package (pip install -U web3==7.12.1)
 # - A Polygon wallet funded with some MATIC
@@ -19,7 +20,10 @@ chain_id = 137
 erc20_approve_abi = [
     {
         "constant": False,
-        "inputs": [{"name": "_spender", "type": "address"}, {"name": "_value", "type": "uint256"}],
+        "inputs": [
+            {"name": "_spender", "type": "address"},
+            {"name": "_value", "type": "uint256"},
+        ],
         "name": "approve",
         "outputs": [{"name": "", "type": "bool"}],
         "payable": False,
@@ -64,8 +68,12 @@ signed_usdc_approve_tx = web3.eth.account.sign_transaction(
     raw_usdc_approve_txn,
     private_key=priv_key,
 )
-send_usdc_approve_tx = web3.eth.send_raw_transaction(signed_usdc_approve_tx.raw_transaction)
-usdc_approve_tx_receipt = web3.eth.wait_for_transaction_receipt(send_usdc_approve_tx, 600)
+send_usdc_approve_tx = web3.eth.send_raw_transaction(
+    signed_usdc_approve_tx.raw_transaction
+)
+usdc_approve_tx_receipt = web3.eth.wait_for_transaction_receipt(
+    send_usdc_approve_tx, 600
+)
 print(usdc_approve_tx_receipt)
 
 nonce = web3.eth.get_transaction_count(pub_key, "pending")
@@ -78,8 +86,12 @@ signed_ctf_approval_tx = web3.eth.account.sign_transaction(
     raw_ctf_approval_txn,
     private_key=priv_key,
 )
-send_ctf_approval_tx = web3.eth.send_raw_transaction(signed_ctf_approval_tx.raw_transaction)
-ctf_approval_tx_receipt = web3.eth.wait_for_transaction_receipt(send_ctf_approval_tx, 600)
+send_ctf_approval_tx = web3.eth.send_raw_transaction(
+    signed_ctf_approval_tx.raw_transaction
+)
+ctf_approval_tx_receipt = web3.eth.wait_for_transaction_receipt(
+    send_ctf_approval_tx, 600
+)
 print(ctf_approval_tx_receipt)
 
 nonce = web3.eth.get_transaction_count(pub_key, "pending")
@@ -93,8 +105,12 @@ signed_usdc_approve_tx = web3.eth.account.sign_transaction(
     raw_usdc_approve_txn,
     private_key=priv_key,
 )
-send_usdc_approve_tx = web3.eth.send_raw_transaction(signed_usdc_approve_tx.raw_transaction)
-usdc_approve_tx_receipt = web3.eth.wait_for_transaction_receipt(send_usdc_approve_tx, 600)
+send_usdc_approve_tx = web3.eth.send_raw_transaction(
+    signed_usdc_approve_tx.raw_transaction
+)
+usdc_approve_tx_receipt = web3.eth.wait_for_transaction_receipt(
+    send_usdc_approve_tx, 600
+)
 print(usdc_approve_tx_receipt)
 
 nonce = web3.eth.get_transaction_count(pub_key, "pending")
@@ -107,8 +123,12 @@ signed_ctf_approval_tx = web3.eth.account.sign_transaction(
     raw_ctf_approval_txn,
     private_key=priv_key,
 )
-send_ctf_approval_tx = web3.eth.send_raw_transaction(signed_ctf_approval_tx.raw_transaction)
-ctf_approval_tx_receipt = web3.eth.wait_for_transaction_receipt(send_ctf_approval_tx, 600)
+send_ctf_approval_tx = web3.eth.send_raw_transaction(
+    signed_ctf_approval_tx.raw_transaction
+)
+ctf_approval_tx_receipt = web3.eth.wait_for_transaction_receipt(
+    send_ctf_approval_tx, 600
+)
 print(ctf_approval_tx_receipt)
 
 nonce = web3.eth.get_transaction_count(pub_key, "pending")
@@ -122,8 +142,12 @@ signed_usdc_approve_tx = web3.eth.account.sign_transaction(
     raw_usdc_approve_txn,
     private_key=priv_key,
 )
-send_usdc_approve_tx = web3.eth.send_raw_transaction(signed_usdc_approve_tx.raw_transaction)
-usdc_approve_tx_receipt = web3.eth.wait_for_transaction_receipt(send_usdc_approve_tx, 600)
+send_usdc_approve_tx = web3.eth.send_raw_transaction(
+    signed_usdc_approve_tx.raw_transaction
+)
+usdc_approve_tx_receipt = web3.eth.wait_for_transaction_receipt(
+    send_usdc_approve_tx, 600
+)
 print(usdc_approve_tx_receipt)
 
 nonce = web3.eth.get_transaction_count(pub_key, "pending")
@@ -136,6 +160,10 @@ signed_ctf_approval_tx = web3.eth.account.sign_transaction(
     raw_ctf_approval_txn,
     private_key=priv_key,
 )
-send_ctf_approval_tx = web3.eth.send_raw_transaction(signed_ctf_approval_tx.raw_transaction)
-ctf_approval_tx_receipt = web3.eth.wait_for_transaction_receipt(send_ctf_approval_tx, 600)
+send_ctf_approval_tx = web3.eth.send_raw_transaction(
+    signed_ctf_approval_tx.raw_transaction
+)
+ctf_approval_tx_receipt = web3.eth.wait_for_transaction_receipt(
+    send_ctf_approval_tx, 600
+)
 print(ctf_approval_tx_receipt)

@@ -73,12 +73,16 @@ class BinanceWebSocketClient:
 
         self._base_url: str = base_url
         self._handler: Callable[[bytes], None] = handler
-        self._handler_reconnect: Callable[..., Awaitable[None]] | None = handler_reconnect
+        self._handler_reconnect: Callable[..., Awaitable[None]] | None = (
+            handler_reconnect
+        )
         self._loop = loop
         self._tasks: WeakSet[asyncio.Task] = WeakSet()
 
         self._streams: list[str] = []
-        self._clients: dict[int, WebSocketClient | None] = {}  # Client ID -> WebSocket client
+        self._clients: dict[int, WebSocketClient | None] = (
+            {}
+        )  # Client ID -> WebSocket client
         self._client_streams: dict[int, list[str]] = {}  # Client ID -> streams
         self._is_connecting: dict[int, bool] = {}  # Client ID -> is_connecting flag
         self._msg_id: int = 0
@@ -235,7 +239,9 @@ class BinanceWebSocketClient:
             post_reconnection=lambda: self._handle_reconnect(client_id),
         )
         self._is_connecting[client_id] = False
-        self._log.info(f"ws-client {client_id}: Connected to {self._base_url}", LogColor.BLUE)
+        self._log.info(
+            f"ws-client {client_id}: Connected to {self._base_url}", LogColor.BLUE
+        )
         self._log.debug(f"ws-client {client_id}: Subscribed to {initial_stream}")
 
         # If there are multiple streams, subscribe to the rest
@@ -268,7 +274,9 @@ class BinanceWebSocketClient:
         Handle reconnection for a specific client.
         """
         if client_id not in self._client_streams or not self._client_streams[client_id]:
-            self._log.error(f"ws-client {client_id}: Cannot reconnect: no streams for this client")
+            self._log.error(
+                f"ws-client {client_id}: Cannot reconnect: no streams for this client"
+            )
             return
 
         self._log.warning(f"ws-client {client_id}: Reconnected to {self._base_url}")
@@ -291,7 +299,9 @@ class BinanceWebSocketClient:
 
         msg = self._create_subscribe_msg(streams=streams)
         await self._send(client_id, msg)
-        self._log.debug(f"ws-client {client_id}: Resubscribed to {len(streams)} streams")
+        self._log.debug(
+            f"ws-client {client_id}: Resubscribed to {len(streams)} streams"
+        )
 
     async def disconnect(self) -> None:
         """
@@ -305,7 +315,9 @@ class BinanceWebSocketClient:
 
         if tasks:
             await asyncio.gather(*tasks)
-            self._log.info(f"Disconnected all clients from {self._base_url}", LogColor.BLUE)
+            self._log.info(
+                f"Disconnected all clients from {self._base_url}", LogColor.BLUE
+            )
 
     async def _disconnect_client(self, client_id: int) -> None:
         """
@@ -317,7 +329,9 @@ class BinanceWebSocketClient:
 
         # Check Rust-level state to make this idempotent
         if client.is_disconnecting() or client.is_closed():
-            self._log.debug(f"ws-client {client_id}: Already disconnecting/closed, skipping")
+            self._log.debug(
+                f"ws-client {client_id}: Already disconnecting/closed, skipping"
+            )
             return
 
         self._log.debug(f"ws-client {client_id}: Disconnecting...")
@@ -696,7 +710,9 @@ class BinanceWebSocketClient:
     async def _send(self, client_id: int, msg: dict[str, Any]) -> None:
         client = self._clients.get(client_id)
         if client is None:
-            self._log.error(f"ws-client {client_id}: Cannot send message {msg}: not connected")
+            self._log.error(
+                f"ws-client {client_id}: Cannot send message {msg}: not connected"
+            )
             return
 
         self._log.debug(f"ws-client {client_id}: SENDING: {msg}")

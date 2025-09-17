@@ -217,13 +217,17 @@ class InterestRateProvider(Actor):
     def update_interest_rate(self, alert=None):
         # import interest rates the first time
         if self.interest_rates_df is None:
-            self.interest_rates_df = import_interest_rates(self.config.interest_rates_file)
+            self.interest_rates_df = import_interest_rates(
+                self.config.interest_rates_file
+            )
 
         # get the interest rate for the current month
         utc_now_ns = alert.ts_init if alert is not None else self.clock.timestamp_ns()
         utc_now = unix_nanos_to_dt(utc_now_ns)
         month_string = f"{utc_now.year}-{str(utc_now.month).zfill(2)}"  # 2024-01
-        interest_rate_value = float(self.interest_rates_df.loc[month_string, "interest_rate"])
+        interest_rate_value = float(
+            self.interest_rates_df.loc[month_string, "interest_rate"]
+        )
 
         yield_curve = YieldCurveData(
             utc_now_ns,

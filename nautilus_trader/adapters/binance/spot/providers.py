@@ -87,7 +87,9 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
             clock=self._clock,
             account_type=account_type,
         )
-        self._http_market = BinanceSpotMarketHttpAPI(self._client, account_type=account_type)
+        self._http_market = BinanceSpotMarketHttpAPI(
+            self._client, account_type=account_type
+        )
 
         self._log_warnings = config.log_warnings if config else True
 
@@ -102,7 +104,9 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
             # Get current commission rates
             if not self._is_testnet:
                 response = await self._http_wallet.query_spot_trade_fees()
-                fees_dict: dict[str, BinanceSpotTradeFee] = {fee.symbol: fee for fee in response}
+                fees_dict: dict[str, BinanceSpotTradeFee] = {
+                    fee.symbol: fee for fee in response
+                }
             else:
                 self._log.warning(
                     "Currently not requesting actual trade fees for the SPOT testnet. "
@@ -136,13 +140,17 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
 
         # Check all instrument IDs
         for instrument_id in instrument_ids:
-            PyCondition.equal(instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE")
+            PyCondition.equal(
+                instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE"
+            )
 
         try:
             # Get current commission rates
             if not self._is_testnet:
                 response = await self._http_wallet.query_spot_trade_fees()
-                fees_dict: dict[str, BinanceSpotTradeFee] = {fee.symbol: fee for fee in response}
+                fees_dict: dict[str, BinanceSpotTradeFee] = {
+                    fee.symbol: fee for fee in response
+                }
             else:
                 fees_dict = {}
                 self._log.warning(
@@ -158,10 +166,13 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
 
         # Extract all symbol strings
         symbols = [
-            str(BinanceSymbol(instrument_id.symbol.value)) for instrument_id in instrument_ids
+            str(BinanceSymbol(instrument_id.symbol.value))
+            for instrument_id in instrument_ids
         ]
         # Get exchange info for all assets
-        exchange_info = await self._http_market.query_spot_exchange_info(symbols=symbols)
+        exchange_info = await self._http_market.query_spot_exchange_info(
+            symbols=symbols
+        )
         symbol_info_dict: dict[str, BinanceSpotSymbolInfo] = {
             info.symbol: info for info in exchange_info.symbols
         }
@@ -173,9 +184,13 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
                 ts_event=millis_to_nanos(exchange_info.serverTime),
             )
 
-    async def load_async(self, instrument_id: InstrumentId, filters: dict | None = None) -> None:
+    async def load_async(
+        self, instrument_id: InstrumentId, filters: dict | None = None
+    ) -> None:
         PyCondition.not_none(instrument_id, "instrument_id")
-        PyCondition.equal(instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE")
+        PyCondition.equal(
+            instrument_id.venue, self._venue, "instrument_id.venue", "BINANCE"
+        )
 
         filters_str = "..." if not filters else f" with filters {filters}..."
         self._log.debug(f"Loading instrument {instrument_id}{filters_str}.")
@@ -186,7 +201,9 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
             # Get current commission rates
             if not self._is_testnet:
                 response = await self._http_wallet.query_spot_trade_fees(symbol=symbol)
-                fees_dict: dict[str, BinanceSpotTradeFee] = {fee.symbol: fee for fee in response}
+                fees_dict: dict[str, BinanceSpotTradeFee] = {
+                    fee.symbol: fee for fee in response
+                }
             else:
                 self._log.warning(
                     "Currently not requesting actual trade fees for the SPOT testnet. "
@@ -239,7 +256,9 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
             tick_size = price_filter.tickSize
             step_size = lot_size_filter.stepSize
             PyCondition.in_range(float(tick_size), PRICE_MIN, PRICE_MAX, "tick_size")
-            PyCondition.in_range(float(step_size), QUANTITY_MIN, QUANTITY_MAX, "step_size")
+            PyCondition.in_range(
+                float(step_size), QUANTITY_MIN, QUANTITY_MAX, "step_size"
+            )
 
             price_precision = abs(int(Decimal(tick_size).as_tuple().exponent))
             size_precision = abs(int(Decimal(step_size).as_tuple().exponent))
@@ -260,22 +279,34 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
                 "minQty",
             )
 
-            max_quantity = Quantity(float(lot_size_filter.maxQty), precision=size_precision)
-            min_quantity = Quantity(float(lot_size_filter.minQty), precision=size_precision)
+            max_quantity = Quantity(
+                float(lot_size_filter.maxQty), precision=size_precision
+            )
+            min_quantity = Quantity(
+                float(lot_size_filter.minQty), precision=size_precision
+            )
 
             max_notional = None
             min_notional = None
             if min_notional_filter:
-                min_notional = Money(min_notional_filter.minNotional, currency=quote_currency)
+                min_notional = Money(
+                    min_notional_filter.minNotional, currency=quote_currency
+                )
             elif notional_filter:
-                max_notional = Money(notional_filter.maxNotional, currency=quote_currency)
-                min_notional = Money(notional_filter.minNotional, currency=quote_currency)
+                max_notional = Money(
+                    notional_filter.maxNotional, currency=quote_currency
+                )
+                min_notional = Money(
+                    notional_filter.minNotional, currency=quote_currency
+                )
 
             max_price = Price(
                 min(float(price_filter.maxPrice), 4294967296.0),
                 precision=price_precision,
             )
-            min_price = Price(max(float(price_filter.minPrice), 0.0), precision=price_precision)
+            min_price = Price(
+                max(float(price_filter.minPrice), 0.0), precision=price_precision
+            )
 
             # Parse fees
             maker_fee: Decimal = Decimal(0)
@@ -317,4 +348,6 @@ class BinanceSpotInstrumentProvider(InstrumentProvider):
             self._log.debug(f"Added instrument {instrument.id}.")
         except ValueError as e:
             if self._log_warnings:
-                self._log.warning(f"Unable to parse instrument {symbol_info.symbol}: {e}.")
+                self._log.warning(
+                    f"Unable to parse instrument {symbol_info.symbol}: {e}."
+                )

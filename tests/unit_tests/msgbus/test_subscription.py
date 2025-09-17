@@ -44,7 +44,9 @@ def test_equality_when_not_equal_returns_false():
     # Arrange
     subscriber = []
     subscription1 = Subscription(topic="*", handler=subscriber.append, priority=1)
-    subscription2 = Subscription(topic="something", handler=subscriber.append, priority=2)
+    subscription2 = Subscription(
+        topic="something", handler=subscriber.append, priority=2
+    )
 
     # Act, Assert
     assert subscription1 != subscription2
@@ -59,7 +61,9 @@ def test_reverse_sorting_list_of_subscribers_returns_expected_ordered_list():
     subscription4 = Subscription(topic="*", handler=subscriber.append, priority=10)
 
     # Act
-    sorted_list = sorted([subscription1, subscription2, subscription3, subscription4], reverse=True)
+    sorted_list = sorted(
+        [subscription1, subscription2, subscription3, subscription4], reverse=True
+    )
 
     # Assert
     assert sorted_list == [subscription4, subscription2, subscription3, subscription1]
@@ -78,7 +82,9 @@ def test_subscription_for_all():
     subscription = Subscription(topic="*", handler=subscriber.append)
 
     # Assert
-    assert str(subscription).startswith(f"Subscription(topic=*, handler={handler_str}, priority=0)")
+    assert str(subscription).startswith(
+        f"Subscription(topic=*, handler={handler_str}, priority=0)"
+    )
 
 
 def test_str_repr():
@@ -91,7 +97,8 @@ def test_str_repr():
 
     # Assert
     assert (
-        str(subscription) == f"Subscription(topic=system_status, handler={handler_str}, priority=0)"
+        str(subscription)
+        == f"Subscription(topic=system_status, handler={handler_str}, priority=0)"
     )
     assert (
         repr(subscription)

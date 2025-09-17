@@ -59,7 +59,9 @@ async def paginate_bars(
     collected: list = []
 
     while True:
-        batch_limit = MAX_PAGE_SIZE if remaining is None else min(MAX_PAGE_SIZE, remaining)
+        batch_limit = (
+            MAX_PAGE_SIZE if remaining is None else min(MAX_PAGE_SIZE, remaining)
+        )
         batch = await http_client.request_bars(
             bar_type=bar_type,
             start=cursor,
@@ -77,7 +79,9 @@ async def paginate_bars(
                 break
 
         # Advance cursor by 1 ms (matches the adapter's millisecond resolution)
-        cursor = pd.Timestamp(batch[-1].ts_event, unit="ns", tz=TZ_UTC) + pd.Timedelta("1ms")
+        cursor = pd.Timestamp(batch[-1].ts_event, unit="ns", tz=TZ_UTC) + pd.Timedelta(
+            "1ms"
+        )
         if end is not None and cursor >= end:
             break
 
@@ -130,7 +134,9 @@ def assert_chronological(bars: list) -> None:
 # ----------------------------------------------------------------------
 # Test suites
 # ----------------------------------------------------------------------
-async def quick_tests(http_client, bar_type: nautilus_pyo3.BarType, logger: Logger) -> None:
+async def quick_tests(
+    http_client, bar_type: nautilus_pyo3.BarType, logger: Logger
+) -> None:
     logger.info("\n=== QUICK TESTS ===")
 
     # Latest 5
@@ -147,7 +153,9 @@ async def quick_tests(http_client, bar_type: nautilus_pyo3.BarType, logger: Logg
     assert_chronological(fixed)
 
 
-async def limit_tests(http_client, bar_type: nautilus_pyo3.BarType, logger: Logger) -> None:
+async def limit_tests(
+    http_client, bar_type: nautilus_pyo3.BarType, logger: Logger
+) -> None:
     logger.info("\n=== LIMIT BEHAVIOR TESTS ===")
     tgt_start = utc_now() - pd.Timedelta(hours=8)
 
@@ -159,13 +167,17 @@ async def limit_tests(http_client, bar_type: nautilus_pyo3.BarType, logger: Logg
         (300, "three pages"),
         (500, "large"),
     ]:
-        bars = await http_client.request_bars(bar_type=bar_type, start=tgt_start, limit=limit)
+        bars = await http_client.request_bars(
+            bar_type=bar_type, start=tgt_start, limit=limit
+        )
         logger.info(f"[Limit {limit}] {label} → {len(bars)}")
         assert len(bars) <= limit
         assert_chronological(bars)
 
 
-async def edge_case_tests(http_client, bar_type: nautilus_pyo3.BarType, logger: Logger) -> None:
+async def edge_case_tests(
+    http_client, bar_type: nautilus_pyo3.BarType, logger: Logger
+) -> None:
     logger.info("\n=== EDGE-CASE TESTS ===")
 
     # 300-bar manual pagination
@@ -199,18 +211,24 @@ async def edge_case_tests(http_client, bar_type: nautilus_pyo3.BarType, logger: 
     # Pre-listing
     pre_start = pd.Timestamp("2015-01-01T00:00:00Z")
     pre_end = pre_start + pd.Timedelta(minutes=30)
-    pre = await http_client.request_bars(bar_type=bar_type, start=pre_start, end=pre_end, limit=50)
+    pre = await http_client.request_bars(
+        bar_type=bar_type, start=pre_start, end=pre_end, limit=50
+    )
     logger.info(f"[Edge-3] pre-listing → {len(pre)}")
     assert not pre
 
     # Reversed window
     try:
-        await http_client.request_bars(bar_type=bar_type, start=pre_end, end=pre_start, limit=5)
+        await http_client.request_bars(
+            bar_type=bar_type, start=pre_end, end=pre_start, limit=5
+        )
     except ValueError:
         logger.info("[Edge-4] reversed window correctly raised ValueError")
 
     # Wrong instrument
-    wrong_type = nautilus_pyo3.BarType.from_str("BTC-USD-SWAP.OKX-1-MINUTE-SETTLEMENT-EXTERNAL")
+    wrong_type = nautilus_pyo3.BarType.from_str(
+        "BTC-USD-SWAP.OKX-1-MINUTE-SETTLEMENT-EXTERNAL"
+    )
     try:
         await http_client.request_bars(bar_type=wrong_type, limit=1)
     except Exception:
@@ -219,7 +237,9 @@ async def edge_case_tests(http_client, bar_type: nautilus_pyo3.BarType, logger: 
     logger.info("Edge-case suite passed")
 
 
-async def pagination_demo(http_client, bar_type: nautilus_pyo3.BarType, logger: Logger) -> None:
+async def pagination_demo(
+    http_client, bar_type: nautilus_pyo3.BarType, logger: Logger
+) -> None:
     logger.info("\n=== PAGINATION FIX DEMONSTRATION ===")
 
     # 173-bar request (2 pages)
@@ -231,12 +251,16 @@ async def pagination_demo(http_client, bar_type: nautilus_pyo3.BarType, logger: 
 
     # 300-bar request (3 pages)
     start_large = utc_now() - pd.Timedelta(hours=5)
-    demo_large = await http_client.request_bars(bar_type=bar_type, start=start_large, limit=300)
+    demo_large = await http_client.request_bars(
+        bar_type=bar_type, start=start_large, limit=300
+    )
     logger.info(f"[Demo-2] 300 requested → {len(demo_large)}")
     assert len(demo_large) == 300
     assert_chronological(demo_large)
 
-    logger.info("Pagination demo finished - cursors advanced monotonically")  # ← fixed hyphen
+    logger.info(
+        "Pagination demo finished - cursors advanced monotonically"
+    )  # ← fixed hyphen
 
 
 # ----------------------------------------------------------------------

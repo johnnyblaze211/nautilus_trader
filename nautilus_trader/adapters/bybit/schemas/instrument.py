@@ -335,7 +335,9 @@ class BybitInstrumentInverse(msgspec.Struct):
                 info=msgspec.json.Decoder().decode(msgspec.json.Encoder().encode(self)),
             )
         else:
-            raise ValueError(f"Unrecognized inverse contract type '{self.contractType}'")
+            raise ValueError(
+                f"Unrecognized inverse contract type '{self.contractType}'"
+            )
         return instrument
 
 
@@ -394,7 +396,10 @@ class BybitInstrumentOption(msgspec.Struct):
 
 
 BybitInstrument = (
-    BybitInstrumentSpot | BybitInstrumentLinear | BybitInstrumentInverse | BybitInstrumentOption
+    BybitInstrumentSpot
+    | BybitInstrumentLinear
+    | BybitInstrumentInverse
+    | BybitInstrumentOption
 )
 
 BybitInstrumentList = (

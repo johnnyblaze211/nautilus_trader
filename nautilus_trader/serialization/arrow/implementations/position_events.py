@@ -51,7 +51,9 @@ def serialize(event: PositionEvent):
 
 
 def deserialize(cls):
-    def inner(batch: pa.RecordBatch) -> PositionOpened | (PositionChanged | PositionClosed):
+    def inner(
+        batch: pa.RecordBatch,
+    ) -> PositionOpened | (PositionChanged | PositionClosed):
         def parse(data):
             for k in ("quantity", "last_qty", "peak_qty", "last_px"):
                 if k in data:

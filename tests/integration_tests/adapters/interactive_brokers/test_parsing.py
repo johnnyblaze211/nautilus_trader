@@ -23,29 +23,53 @@ import pytest
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
 from nautilus_trader.adapters.interactive_brokers.common import IBContractDetails
 from nautilus_trader.adapters.interactive_brokers.config import SymbologyMethod
-from nautilus_trader.adapters.interactive_brokers.parsing.data import bar_spec_to_bar_size
-from nautilus_trader.adapters.interactive_brokers.parsing.data import timedelta_to_duration_str
+from nautilus_trader.adapters.interactive_brokers.parsing.data import (
+    bar_spec_to_bar_size,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.data import (
+    timedelta_to_duration_str,
+)
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import RE_CASH
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import RE_CRYPTO
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import RE_FOP
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import RE_FOP_ORIGINAL
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    RE_FOP_ORIGINAL,
+)
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import RE_FUT
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import RE_FUT_ORIGINAL
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import RE_FUT_UNDERLYING
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    RE_FUT_ORIGINAL,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    RE_FUT_UNDERLYING,
+)
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import RE_OPT
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import VENUES_CASH
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import VENUES_CRYPTO
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    VENUES_CRYPTO,
+)
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import VENUES_FUT
 from nautilus_trader.adapters.interactive_brokers.parsing.instruments import VENUES_OPT
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import _tick_size_to_precision
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import expiry_timestring_to_datetime
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import ib_contract_to_instrument_id
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import instrument_id_to_ib_contract
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import parse_instrument
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    _tick_size_to_precision,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    expiry_timestring_to_datetime,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    ib_contract_to_instrument_id,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    instrument_id_to_ib_contract,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    parse_instrument,
+)
 from nautilus_trader.model.data import BarSpecification
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.instruments import OptionContract
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestContractStubs
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestContractStubs,
+)
 
 
 # fmt: on
@@ -152,7 +176,9 @@ def test_ib_contract_to_instrument_id_raw_symbology(contract, instrument_id):
 def test_instrument_id_to_ib_contract_simplified_symbology(instrument_id, contract):
     # Arrange, Act
     instrument_id_type = InstrumentId.from_str(instrument_id)
-    result = instrument_id_to_ib_contract(instrument_id_type, instrument_id_type.venue.value)
+    result = instrument_id_to_ib_contract(
+        instrument_id_type, instrument_id_type.venue.value
+    )
 
     # Assert
     expected = contract
@@ -179,7 +205,16 @@ def test_verified_venues_registered():
     expected_venues_cash = {"IDEALPRO"}
     expected_venues_crypto = {"PAXOS"}
     expected_venues_opt = {"SMART"}
-    expected_venues_fut = {"CBOT", "CME", "COMEX", "KCBT", "MGE", "NYMEX", "NYBOT", "SNFE"}
+    expected_venues_fut = {
+        "CBOT",
+        "CME",
+        "COMEX",
+        "KCBT",
+        "MGE",
+        "NYMEX",
+        "NYBOT",
+        "SNFE",
+    }
 
     # Assert
     assert len(set(expected_venues_cash) - set(VENUES_CASH)) == 0

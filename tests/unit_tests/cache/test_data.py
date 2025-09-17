@@ -685,13 +685,19 @@ class TestCache:
                 AUDUSD_SIM.id,
                 PriceType.BID,
                 None,
-                [TestDataStubs.bartype_audusd_1min_bid(), TestDataStubs.bartype_audusd_5min_bid()],
+                [
+                    TestDataStubs.bartype_audusd_1min_bid(),
+                    TestDataStubs.bartype_audusd_5min_bid(),
+                ],
             ],
             [
                 AUDUSD_SIM.id,
                 PriceType.BID,
                 AggregationSource.EXTERNAL,
-                [TestDataStubs.bartype_audusd_1min_bid(), TestDataStubs.bartype_audusd_5min_bid()],
+                [
+                    TestDataStubs.bartype_audusd_1min_bid(),
+                    TestDataStubs.bartype_audusd_5min_bid(),
+                ],
             ],
             [AUDUSD_SIM.id, PriceType.ASK, AggregationSource.EXTERNAL, []],
             [ETHUSDT_BINANCE.id, PriceType.BID, AggregationSource.EXTERNAL, []],
@@ -924,7 +930,9 @@ class TestCache:
         # Assert
         assert result == 0.80005
 
-    def test_get_xrate_fallbacks_to_bars_if_no_quotes_returns_correct_rate_with_add_bars(self):
+    def test_get_xrate_fallbacks_to_bars_if_no_quotes_returns_correct_rate_with_add_bars(
+        self,
+    ):
         # Arrange
         self.cache.reset()
         self.cache.add_instrument(AUDUSD_SIM)

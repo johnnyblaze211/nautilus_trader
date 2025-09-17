@@ -168,7 +168,9 @@ class BybitOptionsDataCollector(Strategy):
         self.log.info("Data will be saved to the following directory structure:")
         self.log.info(f"Base directory: {self.base_data_dir}")
         self.log.info(f"Spot quote ticks: {self.quote_ticks_files[spot_key]}")
-        self.log.info(f"Spot order book deltas: {self.order_book_deltas_files[spot_key]}")
+        self.log.info(
+            f"Spot order book deltas: {self.order_book_deltas_files[spot_key]}"
+        )
 
     def on_start(self) -> None:
         """
@@ -226,7 +228,9 @@ class BybitOptionsDataCollector(Strategy):
         # Store discovered options for later use
         self.discovered_options = [option.id for option in options]
 
-        self.log.info(f"Discovered {len(options)} options across {len(expiry_groups)} expiries")
+        self.log.info(
+            f"Discovered {len(options)} options across {len(expiry_groups)} expiries"
+        )
 
     def _initialize_options_data_storage(self) -> None:
         """
@@ -252,7 +256,11 @@ class BybitOptionsDataCollector(Strategy):
 
         # Log summary of options data files
         options_count = len(
-            [k for k in self.quote_ticks_files.keys() if k != str(self.config.spot_instrument_id)],
+            [
+                k
+                for k in self.quote_ticks_files.keys()
+                if k != str(self.config.spot_instrument_id)
+            ],
         )
         self.log.info(f"Will create data files for {options_count} options instruments")
 
@@ -261,7 +269,9 @@ class BybitOptionsDataCollector(Strategy):
             self.log.info("Options data files:")
             for instrument_key in self.quote_ticks_files:
                 if instrument_key != str(self.config.spot_instrument_id):
-                    self.log.info(f"  Quote ticks: {self.quote_ticks_files[instrument_key]}")
+                    self.log.info(
+                        f"  Quote ticks: {self.quote_ticks_files[instrument_key]}"
+                    )
                     self.log.info(
                         f"  Order book deltas: {self.order_book_deltas_files[instrument_key]}",
                     )
@@ -273,7 +283,9 @@ class BybitOptionsDataCollector(Strategy):
         # Validate spot instrument
         self.spot_instrument = self.cache.instrument(self.config.spot_instrument_id)
         if self.spot_instrument is None:
-            self.log.error(f"Could not find spot instrument for {self.config.spot_instrument_id}")
+            self.log.error(
+                f"Could not find spot instrument for {self.config.spot_instrument_id}"
+            )
             self.stop()
             return False
 
@@ -364,7 +376,9 @@ class BybitOptionsDataCollector(Strategy):
         expiry_groups = self._get_expiry_groups()
 
         # Log subscription summary with maturity breakdown
-        self.log.info(f"Subscribed to {len(self.discovered_options)} options and 1 spot instrument")
+        self.log.info(
+            f"Subscribed to {len(self.discovered_options)} options and 1 spot instrument"
+        )
         self.log.info(
             f"Monitoring {len(self.discovered_options)} options across {len(expiry_groups)} maturities:",
         )
@@ -446,7 +460,9 @@ class BybitOptionsDataCollector(Strategy):
         # Check if we need to log and save data
         self._check_and_log_data()
 
-    def _store_order_book_delta(self, deltas: OrderBookDeltas, instrument_key: str) -> None:
+    def _store_order_book_delta(
+        self, deltas: OrderBookDeltas, instrument_key: str
+    ) -> None:
         """
         Store order book delta data.
         """
@@ -456,10 +472,18 @@ class BybitOptionsDataCollector(Strategy):
             "instrument_id": str(deltas.instrument_id),
             "sequence": deltas.sequence,
             "delta_count": len(deltas.deltas),
-            "best_bid": book.best_bid_price().as_double() if book.best_bid_price() else None,
-            "best_ask": book.best_ask_price().as_double() if book.best_ask_price() else None,
-            "bid_size": book.best_bid_size().as_double() if book.best_bid_size() else None,
-            "ask_size": book.best_ask_size().as_double() if book.best_ask_size() else None,
+            "best_bid": (
+                book.best_bid_price().as_double() if book.best_bid_price() else None
+            ),
+            "best_ask": (
+                book.best_ask_price().as_double() if book.best_ask_price() else None
+            ),
+            "bid_size": (
+                book.best_bid_size().as_double() if book.best_bid_size() else None
+            ),
+            "ask_size": (
+                book.best_ask_size().as_double() if book.best_ask_size() else None
+            ),
         }
 
         self.order_book_deltas_data[instrument_key].append(delta_data)
@@ -507,7 +531,9 @@ class BybitOptionsDataCollector(Strategy):
                     f"No data received for {int(current_time - self.last_data_time)} seconds - possible connection issue",
                 )
             elif self.connection_warnings == 4:
-                self.log.error("Multiple connection warnings - consider restarting the strategy")
+                self.log.error(
+                    "Multiple connection warnings - consider restarting the strategy"
+                )
         else:
             # Reset warnings if we're getting data
             self.connection_warnings = 0
@@ -556,7 +582,9 @@ class BybitOptionsDataCollector(Strategy):
             f"Monitoring {len(expiry_groups)} maturities: {', '.join(sorted(expiry_groups.keys()))}",
         )
         self.log.info(f"Data received: {total_quotes} quotes, {total_deltas} deltas")
-        self.log.info(f"  Options: {options_quote_total} quotes, {options_delta_total} deltas")
+        self.log.info(
+            f"  Options: {options_quote_total} quotes, {options_delta_total} deltas"
+        )
         self.log.info(f"  Spot: {spot_quote_count} quotes, {spot_delta_count} deltas")
 
         # Save all data to parquet files
@@ -579,7 +607,9 @@ class BybitOptionsDataCollector(Strategy):
         for instrument_key, data in self.quote_ticks_data.items():
             if data:
                 filepath = self.quote_ticks_files[instrument_key]
-                self._append_to_parquet_file(data, filepath, "quote_ticks", instrument_key)
+                self._append_to_parquet_file(
+                    data, filepath, "quote_ticks", instrument_key
+                )
                 total_quotes_saved += len(data)
                 instruments_with_quotes += 1
                 # Clear the data after saving to prevent duplicate appending
@@ -589,7 +619,9 @@ class BybitOptionsDataCollector(Strategy):
         for instrument_key, data in self.order_book_deltas_data.items():
             if data:
                 filepath = self.order_book_deltas_files[instrument_key]
-                self._append_to_parquet_file(data, filepath, "order_book_deltas", instrument_key)
+                self._append_to_parquet_file(
+                    data, filepath, "order_book_deltas", instrument_key
+                )
                 total_deltas_saved += len(data)
                 instruments_with_deltas += 1
                 # Clear the data after saving to prevent duplicate appending
@@ -690,7 +722,9 @@ class BybitOptionsDataCollector(Strategy):
             f"Active instruments: {active_options}/{len(self.discovered_options)} options, 1/1 spot",
         )
         self.log.info("Total data processed:")
-        self.log.info(f"  Options: {total_options_quotes} quotes, {total_options_deltas} deltas")
+        self.log.info(
+            f"  Options: {total_options_quotes} quotes, {total_options_deltas} deltas"
+        )
         self.log.info(
             f"  Spot: {self.spot_quote_count} quotes, {self.instrument_delta_counts.get(str(self.config.spot_instrument_id), 0)} deltas",
         )
@@ -745,7 +779,9 @@ class BybitOptionsDataCollector(Strategy):
             # Create new log filename with timestamp
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             logs_dir = os.path.join(self.base_data_dir, "logs")
-            log_filename = f"bybit_options_collector_{self.underlying_asset}_{timestamp}.log"
+            log_filename = (
+                f"bybit_options_collector_{self.underlying_asset}_{timestamp}.log"
+            )
             new_log_filepath = os.path.join(logs_dir, log_filename)
 
             # Create new file handler

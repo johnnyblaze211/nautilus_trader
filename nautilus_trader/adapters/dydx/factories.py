@@ -187,7 +187,9 @@ class DYDXLiveDataClientFactory(LiveDataClientFactory):
             clock=clock,
             is_testnet=config.is_testnet,
         )
-        wallet_address = config.wallet_address or get_wallet_address(is_testnet=config.is_testnet)
+        wallet_address = config.wallet_address or get_wallet_address(
+            is_testnet=config.is_testnet
+        )
         provider = get_dydx_instrument_provider(
             client=client,
             clock=clock,
@@ -251,7 +253,9 @@ class DYDXLiveExecClientFactory(LiveExecClientFactory):
             base_url=config.base_url_http,
             is_testnet=config.is_testnet,
         )
-        wallet_address = config.wallet_address or get_wallet_address(is_testnet=config.is_testnet)
+        wallet_address = config.wallet_address or get_wallet_address(
+            is_testnet=config.is_testnet
+        )
         provider = get_dydx_instrument_provider(
             client=client,
             clock=clock,

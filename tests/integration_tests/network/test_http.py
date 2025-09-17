@@ -84,7 +84,9 @@ async def test_client_post_with_body(test_server: Coroutine) -> None:
     body_bytes = msgspec.json.encode(body)
 
     # Act
-    response: HttpResponse = await client.request(HttpMethod.POST, url, headers={}, body=body_bytes)
+    response: HttpResponse = await client.request(
+        HttpMethod.POST, url, headers={}, body=body_bytes
+    )
 
     # Assert
     assert response.status == 200

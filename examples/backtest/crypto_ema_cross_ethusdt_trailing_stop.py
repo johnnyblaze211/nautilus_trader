@@ -22,8 +22,12 @@ import pandas as pd
 from nautilus_trader.adapters.binance import BINANCE_VENUE
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.engine import BacktestEngineConfig
-from nautilus_trader.examples.strategies.ema_cross_trailing_stop import EMACrossTrailingStop
-from nautilus_trader.examples.strategies.ema_cross_trailing_stop import EMACrossTrailingStopConfig
+from nautilus_trader.examples.strategies.ema_cross_trailing_stop import (
+    EMACrossTrailingStop,
+)
+from nautilus_trader.examples.strategies.ema_cross_trailing_stop import (
+    EMACrossTrailingStopConfig,
+)
 from nautilus_trader.model.currencies import ETH
 from nautilus_trader.model.currencies import USDT
 from nautilus_trader.model.data import BarType

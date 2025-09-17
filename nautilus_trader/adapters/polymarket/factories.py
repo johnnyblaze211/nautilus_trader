@@ -20,12 +20,22 @@ from py_clob_client.client import ApiCreds
 from py_clob_client.client import ClobClient
 from py_clob_client.constants import POLYGON
 
-from nautilus_trader.adapters.polymarket.common.credentials import PolymarketWebSocketAuth
-from nautilus_trader.adapters.polymarket.common.credentials import get_polymarket_api_key
-from nautilus_trader.adapters.polymarket.common.credentials import get_polymarket_api_secret
+from nautilus_trader.adapters.polymarket.common.credentials import (
+    PolymarketWebSocketAuth,
+)
+from nautilus_trader.adapters.polymarket.common.credentials import (
+    get_polymarket_api_key,
+)
+from nautilus_trader.adapters.polymarket.common.credentials import (
+    get_polymarket_api_secret,
+)
 from nautilus_trader.adapters.polymarket.common.credentials import get_polymarket_funder
-from nautilus_trader.adapters.polymarket.common.credentials import get_polymarket_passphrase
-from nautilus_trader.adapters.polymarket.common.credentials import get_polymarket_private_key
+from nautilus_trader.adapters.polymarket.common.credentials import (
+    get_polymarket_passphrase,
+)
+from nautilus_trader.adapters.polymarket.common.credentials import (
+    get_polymarket_private_key,
+)
 from nautilus_trader.adapters.polymarket.config import PolymarketDataClientConfig
 from nautilus_trader.adapters.polymarket.config import PolymarketExecClientConfig
 from nautilus_trader.adapters.polymarket.data import PolymarketDataClient

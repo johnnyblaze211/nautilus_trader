@@ -31,7 +31,9 @@ def get_allowances() -> None:
     balance_usdc = usdce_from_units(int(response["balance"]))
     print(f"Wallet: {balance_usdc}")
 
-    token_id = "3642309182816755995211647069086230404892359515361325090555875625429003317932"
+    token_id = (
+        "3642309182816755995211647069086230404892359515361325090555875625429003317932"
+    )
     params = BalanceAllowanceParams(
         asset_type=AssetType.CONDITIONAL,
         token_id=token_id,

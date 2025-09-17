@@ -243,7 +243,9 @@ class BinanceSpotOrderUpdateData(msgspec.Struct, kw_only=True):
                 ts_event=ts_event,
             )
         elif self.x == BinanceExecutionType.TRADE:
-            instrument = exec_client._instrument_provider.find(instrument_id=instrument_id)
+            instrument = exec_client._instrument_provider.find(
+                instrument_id=instrument_id
+            )
 
             # Determine commission
             commission_asset: str = self.N

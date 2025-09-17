@@ -30,7 +30,10 @@ from nautilus_trader.adapters.dydx.http.client import DYDXHttpClient
             {"returnLatestOrders": True, "subaccountNumber": 0},
             "returnLatestOrders=true&subaccountNumber=0",
         ),
-        ({"status": ["BEST_EFFORT_OPENED", "OPEN"]}, "status=BEST_EFFORT_OPENED%2COPEN"),
+        (
+            {"status": ["BEST_EFFORT_OPENED", "OPEN"]},
+            "status=BEST_EFFORT_OPENED%2COPEN",
+        ),
         ({"status": ["BEST_EFFORT_OPENED"]}, "status=BEST_EFFORT_OPENED"),
         ({"limit": 100}, "limit=100"),
         (

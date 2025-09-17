@@ -23,7 +23,10 @@ from collections.abc import Iterator
 from decimal import Decimal
 from enum import Enum
 from os import PathLike
-from typing import Any, Final, TypeAlias, Union
+from typing import Any
+from typing import Final
+from typing import TypeAlias
+from typing import Union
 
 import numpy as np
 

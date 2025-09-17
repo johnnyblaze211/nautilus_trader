@@ -29,11 +29,21 @@ from nautilus_trader.adapters.coinbase_intx.config import CoinbaseIntxExecClient
 from nautilus_trader.adapters.coinbase_intx.constants import COINBASE_INTX
 from nautilus_trader.adapters.coinbase_intx.constants import COINBASE_INTX_CLIENT_ID
 from nautilus_trader.adapters.coinbase_intx.constants import COINBASE_INTX_VENUE
-from nautilus_trader.adapters.coinbase_intx.factories import CoinbaseIntxLiveDataClientFactory
-from nautilus_trader.adapters.coinbase_intx.factories import CoinbaseIntxLiveExecClientFactory
-from nautilus_trader.adapters.coinbase_intx.factories import get_coinbase_intx_http_client
-from nautilus_trader.adapters.coinbase_intx.factories import get_coinbase_intx_instrument_provider
-from nautilus_trader.adapters.coinbase_intx.providers import CoinbaseIntxInstrumentProvider
+from nautilus_trader.adapters.coinbase_intx.factories import (
+    CoinbaseIntxLiveDataClientFactory,
+)
+from nautilus_trader.adapters.coinbase_intx.factories import (
+    CoinbaseIntxLiveExecClientFactory,
+)
+from nautilus_trader.adapters.coinbase_intx.factories import (
+    get_coinbase_intx_http_client,
+)
+from nautilus_trader.adapters.coinbase_intx.factories import (
+    get_coinbase_intx_instrument_provider,
+)
+from nautilus_trader.adapters.coinbase_intx.providers import (
+    CoinbaseIntxInstrumentProvider,
+)
 
 
 __all__ = [

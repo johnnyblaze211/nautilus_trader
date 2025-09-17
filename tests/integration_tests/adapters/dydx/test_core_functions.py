@@ -41,7 +41,9 @@ def test_format_symbol() -> None:
     # Assert
     assert result == "ETH-USDT"
     assert result.raw_symbol == "ETH-USDT"
-    assert result.to_instrument_id() == InstrumentId(Symbol("ETH-USDT-PERP"), DYDX_VENUE)
+    assert result.to_instrument_id() == InstrumentId(
+        Symbol("ETH-USDT-PERP"), DYDX_VENUE
+    )
 
 
 @pytest.mark.parametrize(

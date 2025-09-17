@@ -67,7 +67,9 @@ class BybitSetTradingStopEndpoint(BybitHttpEndpoint):
         )
         self._resp_decoder = msgspec.json.Decoder(BybitSetTradingStopResponse)
 
-    async def post(self, params: BybitSetTradingStopPostParams) -> BybitSetTradingStopResponse:
+    async def post(
+        self, params: BybitSetTradingStopPostParams
+    ) -> BybitSetTradingStopResponse:
         method_type = HttpMethod.POST
         raw = await self._method(method_type, params)
         try:

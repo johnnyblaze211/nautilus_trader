@@ -119,7 +119,9 @@ def test_get_missing_intervals(catalog: ParquetDataCatalog):
     pyo3_catalog.write_bars([bar(5), bar(6)])
 
     # Act
-    missing = pyo3_catalog.get_missing_intervals_for_request(0, 10, "bars", "AUD/USD.SIM")
+    missing = pyo3_catalog.get_missing_intervals_for_request(
+        0, 10, "bars", "AUD/USD.SIM"
+    )
 
     # Assert
     assert missing == [(0, 0), (3, 4), (7, 10)]
@@ -283,7 +285,9 @@ def test_write_index_price_updates(catalog: ParquetDataCatalog):
     pyo3_catalog = ParquetDataCatalogV2(catalog.path)
 
     # Act
-    pyo3_catalog.write_index_price_updates([index_price_update(1), index_price_update(2)])
+    pyo3_catalog.write_index_price_updates(
+        [index_price_update(1), index_price_update(2)]
+    )
 
     # Assert
     # Check that files were created
@@ -402,7 +406,9 @@ def test_query_mark_price_updates(catalog: ParquetDataCatalog):
 def test_query_index_price_updates(catalog: ParquetDataCatalog):
     # Arrange
     pyo3_catalog = ParquetDataCatalogV2(catalog.path)
-    pyo3_catalog.write_index_price_updates([index_price_update(1), index_price_update(2)])
+    pyo3_catalog.write_index_price_updates(
+        [index_price_update(1), index_price_update(2)]
+    )
 
     # Act
     updates = pyo3_catalog.query_index_price_updates(["ETH/USDT.BINANCE"])
@@ -465,7 +471,9 @@ def test_query_quote_ticks_with_time_range(catalog: ParquetDataCatalog):
     """
     # Arrange
     pyo3_catalog = ParquetDataCatalogV2(catalog.path)
-    pyo3_catalog.write_quote_ticks([quote_tick(1000), quote_tick(2000), quote_tick(3000)])
+    pyo3_catalog.write_quote_ticks(
+        [quote_tick(1000), quote_tick(2000), quote_tick(3000)]
+    )
 
     # Act - query quotes with time range
     quotes = pyo3_catalog.query_quote_ticks(["ETH/USDT.BINANCE"], start=1500, end=2500)
@@ -481,7 +489,9 @@ def test_query_trade_ticks_with_time_range(catalog: ParquetDataCatalog):
     """
     # Arrange
     pyo3_catalog = ParquetDataCatalogV2(catalog.path)
-    pyo3_catalog.write_trade_ticks([trade_tick(1000), trade_tick(2000), trade_tick(3000)])
+    pyo3_catalog.write_trade_ticks(
+        [trade_tick(1000), trade_tick(2000), trade_tick(3000)]
+    )
 
     # Act - query trades with time range
     trades = pyo3_catalog.query_trade_ticks(["ETH/USDT.BINANCE"], start=1500, end=2500)
@@ -712,7 +722,9 @@ def test_consolidate_data_by_period_different_periods(catalog: ParquetDataCatalo
         assert len(intervals) >= 1
 
 
-def test_consolidate_data_by_period_ensure_contiguous_files_true(catalog: ParquetDataCatalog):
+def test_consolidate_data_by_period_ensure_contiguous_files_true(
+    catalog: ParquetDataCatalog,
+):
     """
     Test consolidate_data_by_period with ensure_contiguous_files=True.
     """
@@ -1223,8 +1235,12 @@ def test_pyo3_query_bars_multiple_instruments_table_naming(catalog: ParquetDataC
     pyo3_catalog = ParquetDataCatalogV2(catalog.path)
 
     # Create bars using the existing bar helper function but with different timestamps
-    bars_set1 = [bar(1000000000 + i * 60000000000) for i in range(2)]  # Use nanosecond timestamps
-    bars_set2 = [bar(2000000000000 + i * 60000000000) for i in range(2)]  # Much later timestamps
+    bars_set1 = [
+        bar(1000000000 + i * 60000000000) for i in range(2)
+    ]  # Use nanosecond timestamps
+    bars_set2 = [
+        bar(2000000000000 + i * 60000000000) for i in range(2)
+    ]  # Much later timestamps
 
     # Write data for both sets
     pyo3_catalog.write_bars(bars_set1)
@@ -1241,7 +1257,9 @@ def test_pyo3_query_bars_multiple_instruments_table_naming(catalog: ParquetDataC
     assert timestamps == sorted(timestamps)
 
 
-def test_pyo3_backend_session_special_characters_table_naming(catalog: ParquetDataCatalog):
+def test_pyo3_backend_session_special_characters_table_naming(
+    catalog: ParquetDataCatalog,
+):
     """
     Test that pyo3 backend session handles special characters in identifiers correctly.
 

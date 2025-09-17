@@ -21,21 +21,28 @@ from unittest.mock import MagicMock
 
 # fmt: off
 # ruff: noqa: I001
-from nautilus_trader.adapters.interactive_brokers.execution import InteractiveBrokersExecutionClient
-from nautilus_trader.core.uuid import UUID4
-from nautilus_trader.model.enums import LiquiditySide, OrderSide, OrderType
-from nautilus_trader.model.events import OrderFilled
-from nautilus_trader.model.identifiers import (
-    AccountId,
-    ClientOrderId,
-    InstrumentId,
-    PositionId,
-    StrategyId,
-    TradeId,
-    TraderId,
-    VenueOrderId,
+from nautilus_trader.adapters.interactive_brokers.execution import (
+    InteractiveBrokersExecutionClient,
 )
-from nautilus_trader.model.objects import Currency, Money, Price, Quantity
+from nautilus_trader.core.uuid import UUID4
+from nautilus_trader.model.enums import LiquiditySide
+from nautilus_trader.model.enums import OrderSide
+from nautilus_trader.model.enums import OrderType
+from nautilus_trader.model.events import OrderFilled
+from nautilus_trader.model.identifiers import AccountId
+from nautilus_trader.model.identifiers import ClientOrderId
+from nautilus_trader.model.identifiers import InstrumentId
+from nautilus_trader.model.identifiers import PositionId
+from nautilus_trader.model.identifiers import StrategyId
+from nautilus_trader.model.identifiers import TradeId
+from nautilus_trader.model.identifiers import TraderId
+from nautilus_trader.model.identifiers import VenueOrderId
+from nautilus_trader.model.objects import Currency
+from nautilus_trader.model.objects import Money
+from nautilus_trader.model.objects import Price
+from nautilus_trader.model.objects import Quantity
+
+
 # fmt: on
 
 
@@ -104,7 +111,9 @@ class TestSpreadLegExtraction:
         """
         # Create mock leg fill
         leg_fill = MagicMock()
-        leg_fill.instrument_id = InstrumentId.from_str("(1)SPY C400_((1))SPY C410.SMART")
+        leg_fill.instrument_id = InstrumentId.from_str(
+            "(1)SPY C400_((1))SPY C410.SMART"
+        )
 
         # Extract leg instrument ID
         leg_id = self._extract_leg_instrument_id(leg_fill)
@@ -118,7 +127,9 @@ class TestSpreadLegExtraction:
         Test extraction from ratio spread format.
         """
         leg_fill = MagicMock()
-        leg_fill.instrument_id = InstrumentId.from_str("(1)E4DN5 P6350_((2))E4DN5 P6355.XCME")
+        leg_fill.instrument_id = InstrumentId.from_str(
+            "(1)E4DN5 P6350_((2))E4DN5 P6355.XCME"
+        )
 
         leg_id = self._extract_leg_instrument_id(leg_fill)
 
@@ -255,7 +266,9 @@ class TestSpreadFillCreation:
         assert combo_fill is not None
         assert combo_fill.instrument_id == leg_fill.instrument_id
         assert combo_fill.order_side == OrderSide.BUY  # Normalized
-        assert combo_fill.last_qty == Quantity.from_int(3)  # 6 contracts / 2 ratio = 3 spreads
+        assert combo_fill.last_qty == Quantity.from_int(
+            3
+        )  # 6 contracts / 2 ratio = 3 spreads
 
     def test_create_leg_fill_basic_spread(self):
         """
@@ -275,7 +288,9 @@ class TestSpreadFillCreation:
             "SPY C400.SMART",
         )  # Individual leg ID
         assert individual_leg_fill.order_side == OrderSide.SELL  # Keep original side
-        assert individual_leg_fill.last_qty == Quantity.from_int(3)  # Keep original quantity
+        assert individual_leg_fill.last_qty == Quantity.from_int(
+            3
+        )  # Keep original quantity
         assert individual_leg_fill.client_order_id == leg_fill.client_order_id
         assert "SPY C400.SMART-STRATEGY-001" in str(
             individual_leg_fill.position_id,
@@ -295,11 +310,15 @@ class TestSpreadFillCreation:
         individual_leg_fill = self._create_leg_fill(leg_fill)
 
         assert individual_leg_fill is not None
-        assert individual_leg_fill.instrument_id == InstrumentId.from_str("E4DN5 P6350.XCME")
+        assert individual_leg_fill.instrument_id == InstrumentId.from_str(
+            "E4DN5 P6350.XCME"
+        )
         assert individual_leg_fill.order_side == OrderSide.SELL
         assert individual_leg_fill.last_qty == Quantity.from_int(6)
 
-    def _create_combo_fill(self, leg_fill: OrderFilled, contract=None) -> OrderFilled | None:
+    def _create_combo_fill(
+        self, leg_fill: OrderFilled, contract=None
+    ) -> OrderFilled | None:
         """
         Test implementation of combo fill creation.
         """
@@ -348,7 +367,9 @@ class TestSpreadFillCreation:
         except Exception:
             return None
 
-    def _create_leg_fill(self, leg_fill: OrderFilled, contract=None) -> OrderFilled | None:
+    def _create_leg_fill(
+        self, leg_fill: OrderFilled, contract=None
+    ) -> OrderFilled | None:
         """
         Test implementation of leg fill creation.
         """

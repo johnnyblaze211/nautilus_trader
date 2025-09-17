@@ -203,7 +203,9 @@ class OrderStatusReport(ExecutionReport):
         PyCondition.positive(quantity, "quantity")
         PyCondition.not_negative(filled_qty, "filled_qty")
         if trigger_price is not None and trigger_price > 0:
-            PyCondition.not_equal(trigger_type, TriggerType.NO_TRIGGER, "trigger_type", "NONE")
+            PyCondition.not_equal(
+                trigger_type, TriggerType.NO_TRIGGER, "trigger_type", "NONE"
+            )
         if limit_offset is not None or trailing_offset is not None:
             PyCondition.not_equal(
                 trailing_offset_type,
@@ -337,16 +339,22 @@ class OrderStatusReport(ExecutionReport):
             "ts_accepted": self.ts_accepted,
             "ts_last": self.ts_last,
             "ts_init": self.ts_init,
-            "client_order_id": self.client_order_id.value if self.client_order_id else None,
+            "client_order_id": (
+                self.client_order_id.value if self.client_order_id else None
+            ),
             "order_list_id": self.order_list_id.value if self.order_list_id else None,
-            "venue_position_id": self.venue_position_id.value if self.venue_position_id else None,
+            "venue_position_id": (
+                self.venue_position_id.value if self.venue_position_id else None
+            ),
             "contingency_type": self.contingency_type.value,
             "expire_time": self.expire_time.isoformat() if self.expire_time else None,
             "price": str(self.price) if self.price else None,
             "trigger_price": str(self.trigger_price) if self.trigger_price else None,
             "trigger_type": self.trigger_type.value,
             "limit_offset": str(self.limit_offset) if self.limit_offset else None,
-            "trailing_offset": str(self.trailing_offset) if self.trailing_offset else None,
+            "trailing_offset": (
+                str(self.trailing_offset) if self.trailing_offset else None
+            ),
             "trailing_offset_type": self.trailing_offset_type.value,
             "avg_px": str(self.avg_px) if self.avg_px else None,
             "display_qty": str(self.display_qty) if self.display_qty else None,
@@ -386,28 +394,48 @@ class OrderStatusReport(ExecutionReport):
             ts_last=values["ts_last"],
             ts_init=values["ts_init"],
             client_order_id=(
-                ClientOrderId(values["client_order_id"]) if values["client_order_id"] else None
+                ClientOrderId(values["client_order_id"])
+                if values["client_order_id"]
+                else None
             ),
-            order_list_id=OrderListId(values["order_list_id"]) if values["order_list_id"] else None,
+            order_list_id=(
+                OrderListId(values["order_list_id"])
+                if values["order_list_id"]
+                else None
+            ),
             venue_position_id=(
-                PositionId(values["venue_position_id"]) if values["venue_position_id"] else None
+                PositionId(values["venue_position_id"])
+                if values["venue_position_id"]
+                else None
             ),
             contingency_type=ContingencyType(values["contingency_type"]),
             expire_time=(
-                datetime.fromisoformat(values["expire_time"]) if values["expire_time"] else None
+                datetime.fromisoformat(values["expire_time"])
+                if values["expire_time"]
+                else None
             ),
             price=Price.from_str(values["price"]) if values["price"] else None,
             trigger_price=(
-                Price.from_str(values["trigger_price"]) if values["trigger_price"] else None
+                Price.from_str(values["trigger_price"])
+                if values["trigger_price"]
+                else None
             ),
             trigger_type=TriggerType(values["trigger_type"]),
-            limit_offset=Decimal(values["limit_offset"]) if values["limit_offset"] else None,
+            limit_offset=(
+                Decimal(values["limit_offset"]) if values["limit_offset"] else None
+            ),
             trailing_offset=(
-                Decimal(values["trailing_offset"]) if values["trailing_offset"] else None
+                Decimal(values["trailing_offset"])
+                if values["trailing_offset"]
+                else None
             ),
             trailing_offset_type=TrailingOffsetType(values["trailing_offset_type"]),
             avg_px=Decimal(values["avg_px"]) if values["avg_px"] else None,
-            display_qty=Quantity.from_str(values["display_qty"]) if values["display_qty"] else None,
+            display_qty=(
+                Quantity.from_str(values["display_qty"])
+                if values["display_qty"]
+                else None
+            ),
             post_only=values["post_only"],
             reduce_only=values["reduce_only"],
             cancel_reason=values["cancel_reason"],
@@ -436,7 +464,9 @@ class OrderStatusReport(ExecutionReport):
             ),
             report_id=UUID4.from_str(pyo3_report.report_id.value),
             order_list_id=(
-                OrderListId(pyo3_report.order_list_id.value) if pyo3_report.order_list_id else None
+                OrderListId(pyo3_report.order_list_id.value)
+                if pyo3_report.order_list_id
+                else None
             ),
             venue_position_id=(
                 PositionId(pyo3_report.venue_position_id.value)
@@ -444,7 +474,11 @@ class OrderStatusReport(ExecutionReport):
                 else None
             ),
             contingency_type=contingency_type_from_pyo3(pyo3_report.contingency_type),
-            expire_time=pd.Timestamp(pyo3_report.expire_time) if pyo3_report.expire_time else None,
+            expire_time=(
+                pd.Timestamp(pyo3_report.expire_time)
+                if pyo3_report.expire_time
+                else None
+            ),
             price=Price.from_str(str(pyo3_report.price)) if pyo3_report.price else None,
             trigger_price=(
                 Price.from_str(str(pyo3_report.trigger_price))
@@ -458,10 +492,14 @@ class OrderStatusReport(ExecutionReport):
             ),
             limit_offset=pyo3_report.limit_offset,
             trailing_offset=pyo3_report.trailing_offset,
-            trailing_offset_type=TrailingOffsetType(pyo3_report.trailing_offset_type.value),
+            trailing_offset_type=TrailingOffsetType(
+                pyo3_report.trailing_offset_type.value
+            ),
             avg_px=pyo3_report.avg_px,
             display_qty=(
-                Quantity.from_str(str(pyo3_report.display_qty)) if pyo3_report.display_qty else None
+                Quantity.from_str(str(pyo3_report.display_qty))
+                if pyo3_report.display_qty
+                else None
             ),
             post_only=pyo3_report.post_only,
             reduce_only=pyo3_report.reduce_only,
@@ -605,8 +643,12 @@ class FillReport(ExecutionReport):
             "report_id": self.id.value,
             "ts_event": self.ts_event,
             "ts_init": self.ts_init,
-            "client_order_id": self.client_order_id.value if self.client_order_id else None,
-            "venue_position_id": self.venue_position_id.value if self.venue_position_id else None,
+            "client_order_id": (
+                self.client_order_id.value if self.client_order_id else None
+            ),
+            "venue_position_id": (
+                self.venue_position_id.value if self.venue_position_id else None
+            ),
         }
 
     @classmethod
@@ -638,10 +680,14 @@ class FillReport(ExecutionReport):
             ts_event=values["ts_event"],
             ts_init=values["ts_init"],
             client_order_id=(
-                ClientOrderId(values["client_order_id"]) if values["client_order_id"] else None
+                ClientOrderId(values["client_order_id"])
+                if values["client_order_id"]
+                else None
             ),
             venue_position_id=(
-                PositionId(values["venue_position_id"]) if values["venue_position_id"] else None
+                PositionId(values["venue_position_id"])
+                if values["venue_position_id"]
+                else None
             ),
         )
 
@@ -778,7 +824,9 @@ class PositionStatusReport(ExecutionReport):
             "report_id": self.id.value,
             "ts_last": self.ts_last,
             "ts_init": self.ts_init,
-            "venue_position_id": self.venue_position_id.value if self.venue_position_id else None,
+            "venue_position_id": (
+                self.venue_position_id.value if self.venue_position_id else None
+            ),
         }
 
     @classmethod
@@ -805,12 +853,16 @@ class PositionStatusReport(ExecutionReport):
             ts_last=values["ts_last"],
             ts_init=values["ts_init"],
             venue_position_id=(
-                PositionId(values["venue_position_id"]) if values["venue_position_id"] else None
+                PositionId(values["venue_position_id"])
+                if values["venue_position_id"]
+                else None
             ),
         )
 
     @staticmethod
-    def from_pyo3(pyo3_report: nautilus_pyo3.PositionStatusReport) -> PositionStatusReport:
+    def from_pyo3(
+        pyo3_report: nautilus_pyo3.PositionStatusReport,
+    ) -> PositionStatusReport:
         return PositionStatusReport(
             account_id=AccountId(pyo3_report.account_id.value),
             instrument_id=InstrumentId.from_str(pyo3_report.instrument_id.value),
@@ -1039,13 +1091,18 @@ class ExecutionMassStatus(Document):
         # Restore fill reports
         for venue_order_id_str, report_dicts in values["fill_reports"].items():
             venue_order_id = VenueOrderId(venue_order_id_str)
-            reports = [FillReport.from_dict(report_dict) for report_dict in report_dicts]
+            reports = [
+                FillReport.from_dict(report_dict) for report_dict in report_dicts
+            ]
             mass_status._fill_reports[venue_order_id] = reports
 
         # Restore position reports
         for instrument_id_str, report_dicts in values["position_reports"].items():
             instrument_id = InstrumentId.from_str(instrument_id_str)
-            reports = [PositionStatusReport.from_dict(report_dict) for report_dict in report_dicts]
+            reports = [
+                PositionStatusReport.from_dict(report_dict)
+                for report_dict in report_dicts
+            ]
             mass_status._position_reports[instrument_id] = reports
 
         return mass_status

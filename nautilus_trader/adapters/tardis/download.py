@@ -49,6 +49,8 @@ def url_to_path(url: str) -> str:
     day = path_components[5]
     filename = path_components[6]
 
-    local_path = f"~/Downloads/tardis/{exchange}/{data_type}/{year}/{month}/{day}/{filename}"
+    local_path = (
+        f"~/Downloads/tardis/{exchange}/{data_type}/{year}/{month}/{day}/{filename}"
+    )
     local_path = os.path.expanduser(local_path)
     return local_path

@@ -58,7 +58,9 @@ class BybitTradeHistoryEndpoint(BybitHttpEndpoint):
         )
         self._get_resp_decoder = msgspec.json.Decoder(BybitTradeHistoryResponseStruct)
 
-    async def get(self, params: BybitTradeHistoryGetParams) -> BybitTradeHistoryResponseStruct:
+    async def get(
+        self, params: BybitTradeHistoryGetParams
+    ) -> BybitTradeHistoryResponseStruct:
         method_type = HttpMethod.GET
         raw = await self._method(method_type, params)
         try:

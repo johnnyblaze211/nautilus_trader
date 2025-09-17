@@ -189,7 +189,9 @@ class ActorExecutor:
         if task.done():
             try:
                 if task.exception() is not None:
-                    self._log.error(f"Executor: Exception in {task_id}: {task.exception()}")
+                    self._log.error(
+                        f"Executor: Exception in {task_id}: {task.exception()}"
+                    )
                     return
             except asyncio.CancelledError:
                 # Make this a warning level for now
@@ -232,7 +234,9 @@ class ActorExecutor:
 
         """
         task_id = TaskId.create()
-        self._loop.call_soon_threadsafe(self._queue.put_nowait, (task_id, func, args, kwargs))
+        self._loop.call_soon_threadsafe(
+            self._queue.put_nowait, (task_id, func, args, kwargs)
+        )
         self._queued_tasks.add(task_id)
 
         return task_id

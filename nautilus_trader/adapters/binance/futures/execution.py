@@ -27,18 +27,42 @@ from nautilus_trader.adapters.binance.config import BinanceExecClientConfig
 from nautilus_trader.adapters.binance.execution import BinanceCommonExecutionClient
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesEnumParser
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesEventType
-from nautilus_trader.adapters.binance.futures.http.account import BinanceFuturesAccountHttpAPI
-from nautilus_trader.adapters.binance.futures.http.market import BinanceFuturesMarketHttpAPI
-from nautilus_trader.adapters.binance.futures.http.user import BinanceFuturesUserDataHttpAPI
-from nautilus_trader.adapters.binance.futures.providers import BinanceFuturesInstrumentProvider
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesAccountInfo
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesDualSidePosition
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesLeverage
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesPositionRisk
-from nautilus_trader.adapters.binance.futures.schemas.user import BinanceFuturesAccountUpdateWrapper
-from nautilus_trader.adapters.binance.futures.schemas.user import BinanceFuturesOrderUpdateWrapper
-from nautilus_trader.adapters.binance.futures.schemas.user import BinanceFuturesTradeLiteWrapper
-from nautilus_trader.adapters.binance.futures.schemas.user import BinanceFuturesUserMsgWrapper
+from nautilus_trader.adapters.binance.futures.http.account import (
+    BinanceFuturesAccountHttpAPI,
+)
+from nautilus_trader.adapters.binance.futures.http.market import (
+    BinanceFuturesMarketHttpAPI,
+)
+from nautilus_trader.adapters.binance.futures.http.user import (
+    BinanceFuturesUserDataHttpAPI,
+)
+from nautilus_trader.adapters.binance.futures.providers import (
+    BinanceFuturesInstrumentProvider,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesAccountInfo,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesDualSidePosition,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesLeverage,
+)
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesPositionRisk,
+)
+from nautilus_trader.adapters.binance.futures.schemas.user import (
+    BinanceFuturesAccountUpdateWrapper,
+)
+from nautilus_trader.adapters.binance.futures.schemas.user import (
+    BinanceFuturesOrderUpdateWrapper,
+)
+from nautilus_trader.adapters.binance.futures.schemas.user import (
+    BinanceFuturesTradeLiteWrapper,
+)
+from nautilus_trader.adapters.binance.futures.schemas.user import (
+    BinanceFuturesUserMsgWrapper,
+)
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
 from nautilus_trader.adapters.binance.http.error import BinanceError
 from nautilus_trader.cache.cache import Cache
@@ -106,7 +130,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
         )
 
         # Futures HTTP API
-        self._futures_http_account = BinanceFuturesAccountHttpAPI(client, clock, account_type)
+        self._futures_http_account = BinanceFuturesAccountHttpAPI(
+            client, clock, account_type
+        )
         self._futures_http_market = BinanceFuturesMarketHttpAPI(client, account_type)
         self._futures_http_user = BinanceFuturesUserDataHttpAPI(client, account_type)
 
@@ -149,7 +175,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
         self._margin_types = config.futures_margin_types
 
         # WebSocket futures schema decoders
-        self._decoder_futures_user_msg_wrapper = msgspec.json.Decoder(BinanceFuturesUserMsgWrapper)
+        self._decoder_futures_user_msg_wrapper = msgspec.json.Decoder(
+            BinanceFuturesUserMsgWrapper
+        )
         self._decoder_futures_order_update_wrapper = msgspec.json.Decoder(
             BinanceFuturesOrderUpdateWrapper,
         )
@@ -162,11 +190,15 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
 
     async def _update_account_state(self) -> None:
         account_info: BinanceFuturesAccountInfo = (
-            await self._futures_http_account.query_futures_account_info(recv_window=str(5000))
+            await self._futures_http_account.query_futures_account_info(
+                recv_window=str(5000)
+            )
         )
         if account_info.canTrade:
             self._log.info("Binance API key authenticated", LogColor.GREEN)
-            self._log.info(f"API key {self._http_client.api_key} has trading permissions")
+            self._log.info(
+                f"API key {self._http_client.api_key} has trading permissions"
+            )
         else:
             self._log.error("Binance API key does not have trading permissions")
         self.generate_account_state(
@@ -181,7 +213,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
         if self._leverages:
             async with TaskGroup() as tg:
                 leverage_tasks = [
-                    tg.create_task(self._futures_http_account.set_leverage(symbol, leverage))
+                    tg.create_task(
+                        self._futures_http_account.set_leverage(symbol, leverage)
+                    )
                     for symbol, leverage in self._leverages.items()
                 ]
             for task in leverage_tasks:
@@ -192,7 +226,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
             async with TaskGroup() as tg:
                 margin_tasks = [
                     (
-                        tg.create_task(self._futures_http_account.set_margin_type(symbol, type_)),
+                        tg.create_task(
+                            self._futures_http_account.set_margin_type(symbol, type_)
+                        ),
                         symbol,
                         type_,
                     )
@@ -204,7 +240,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
         account: MarginAccount = self.get_account()
         position_risks = await self._futures_http_account.query_futures_position_risk()
         for position in position_risks:
-            instrument_id: InstrumentId = self._get_cached_instrument_id(position.symbol)
+            instrument_id: InstrumentId = self._get_cached_instrument_id(
+                position.symbol
+            )
             leverage = Decimal(position.leverage)
             account.set_leverage(instrument_id, leverage)
             self._log.debug(f"Set leverage {position.symbol} {leverage}X")
@@ -214,13 +252,17 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
             await self._futures_http_account.query_futures_hedge_mode()
         )
         # "true": Hedge Mode; "false": One-way Mode
-        self._is_dual_side_position = binance_futures_dual_side_position.dualSidePosition
+        self._is_dual_side_position = (
+            binance_futures_dual_side_position.dualSidePosition
+        )
         if self._is_dual_side_position:
             PyCondition.is_false(
                 self._use_reduce_only,
                 "Cannot use `reduce_only` with Binance Hedge Mode",
             )
-        self._log.info(f"Dual side position: {self._is_dual_side_position}", LogColor.BLUE)
+        self._log.info(
+            f"Dual side position: {self._is_dual_side_position}", LogColor.BLUE
+        )
 
     # -- EXECUTION REPORTS ------------------------------------------------------------------------
 
@@ -231,7 +273,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
         reports: list[PositionStatusReport] = []
         # Check Binance for all active positions
         binance_positions: list[BinanceFuturesPositionRisk]
-        binance_positions = await self._futures_http_account.query_futures_position_risk(symbol)
+        binance_positions = (
+            await self._futures_http_account.query_futures_position_risk(symbol)
+        )
         for position in binance_positions:
             if Decimal(position.positionAmt) == 0:
                 continue  # Flat position
@@ -253,7 +297,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
         # Check Binance for all active positions
         active_symbols: set[str] = set()
         binance_positions: list[BinanceFuturesPositionRisk]
-        binance_positions = await self._futures_http_account.query_futures_position_risk(symbol)
+        binance_positions = (
+            await self._futures_http_account.query_futures_position_risk(symbol)
+        )
         for position in binance_positions:
             if Decimal(position.positionAmt) == 0:
                 continue  # Flat position
@@ -273,7 +319,10 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
             )
             return
         # Check time in force valid
-        if order.time_in_force not in self._futures_enum_parser.futures_valid_time_in_force:
+        if (
+            order.time_in_force
+            not in self._futures_enum_parser.futures_valid_time_in_force
+        ):
             self._log.error(
                 f"Cannot submit order: "
                 f"{time_in_force_to_str(order.time_in_force)} "
@@ -334,7 +383,8 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
         # Process cancel orders in batches of 10 (Binance API limit)
         batch_size = 10
         batches = [
-            valid_cancels[i : i + batch_size] for i in range(0, len(valid_cancels), batch_size)
+            valid_cancels[i : i + batch_size]
+            for i in range(0, len(valid_cancels), batch_size)
         ]
 
         # Process all batches concurrently for better latency
@@ -380,7 +430,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
             )
 
             if retry_manager.result:
-                self._log.debug(f"Successfully cancelled batch: {batch_client_order_ids}")
+                self._log.debug(
+                    f"Successfully cancelled batch: {batch_client_order_ids}"
+                )
                 return batch, []
             else:
                 self._log.error(
@@ -396,12 +448,16 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
             else:
                 self._log.exception(f"Cannot cancel batch of orders: {e.message}", e)
 
-            self._generate_cancel_rejected_events(batch, f"Batch cancel failed: {e.message}")
+            self._generate_cancel_rejected_events(
+                batch, f"Batch cancel failed: {e.message}"
+            )
             return [], batch
         finally:
             await self._retry_manager_pool.release(retry_manager)
 
-    def _generate_cancel_rejected_events(self, cancels: list[CancelOrder], reason: str) -> None:
+    def _generate_cancel_rejected_events(
+        self, cancels: list[CancelOrder], reason: str
+    ) -> None:
         for cancel in cancels:
             self.generate_order_cancel_rejected(
                 cancel.strategy_id,
@@ -430,7 +486,9 @@ class BinanceFuturesExecutionClient(BinanceCommonExecutionClient):
 
     def _handle_order_trade_update(self, raw: bytes) -> None:
         order_update = self._decoder_futures_order_update_wrapper.decode(raw)
-        if not (self._use_trade_lite and order_update.data.o.x == BinanceExecutionType.TRADE):
+        if not (
+            self._use_trade_lite and order_update.data.o.x == BinanceExecutionType.TRADE
+        ):
             order_update.data.o.handle_order_trade_update(self)
 
     def _handle_margin_call(self, raw: bytes) -> None:

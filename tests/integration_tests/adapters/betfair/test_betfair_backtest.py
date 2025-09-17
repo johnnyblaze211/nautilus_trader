@@ -20,7 +20,9 @@ from nautilus_trader.backtest.engine import BacktestEngineConfig
 from nautilus_trader.backtest.engine import Decimal
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.examples.strategies.orderbook_imbalance import OrderBookImbalance
-from nautilus_trader.examples.strategies.orderbook_imbalance import OrderBookImbalanceConfig
+from nautilus_trader.examples.strategies.orderbook_imbalance import (
+    OrderBookImbalanceConfig,
+)
 from nautilus_trader.model.currencies import GBP
 from nautilus_trader.model.enums import AccountType
 from nautilus_trader.model.enums import BookType
@@ -72,7 +74,9 @@ def test_betfair_backtest():
     # Add data
     raw = list(BetfairDataProvider.market_updates())
     parser = BetfairParser(currency="GBP")
-    updates = [upd for update in raw for upd in parser.parse(update, min_notional=min_notional)]
+    updates = [
+        upd for update in raw for upd in parser.parse(update, min_notional=min_notional)
+    ]
     engine.add_data(updates, client_id=ClientId("BETFAIR"))
 
     # Configure your strategy

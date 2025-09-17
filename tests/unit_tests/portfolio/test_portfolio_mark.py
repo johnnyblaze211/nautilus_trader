@@ -155,16 +155,30 @@ class TestPortfolioMarkPrices:
         # Assert: the calculated portfolio values should reflect the mark price.
         # (The expected Money values mirror those from the existing test,
         # assuming the same calculation logic but using the mark price.)
-        assert self.portfolio.net_exposures(BINANCE) == {USDT: Money(105100.00000000, USDT)}
-        assert self.portfolio.unrealized_pnls(BINANCE) == {USDT: Money(100.00000000, USDT)}
-        assert self.portfolio.realized_pnls(BINANCE) == {USDT: Money(-18.90000000, USDT)}
+        assert self.portfolio.net_exposures(BINANCE) == {
+            USDT: Money(105100.00000000, USDT)
+        }
+        assert self.portfolio.unrealized_pnls(BINANCE) == {
+            USDT: Money(100.00000000, USDT)
+        }
+        assert self.portfolio.realized_pnls(BINANCE) == {
+            USDT: Money(-18.90000000, USDT)
+        }
         assert self.portfolio.margins_maint(BINANCE) == {
             BTCUSDT_PERP_BINANCE.id: Money(2625.00000000, USDT),
         }
-        assert self.portfolio.net_exposure(BTCUSDT_PERP_BINANCE.id) == Money(105100.00000000, USDT)
-        assert self.portfolio.unrealized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(100.00000000, USDT)
-        assert self.portfolio.realized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(-18.900000000, USDT)
-        assert self.portfolio.net_position(order.instrument_id) == Decimal("10.00000000")
+        assert self.portfolio.net_exposure(BTCUSDT_PERP_BINANCE.id) == Money(
+            105100.00000000, USDT
+        )
+        assert self.portfolio.unrealized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(
+            100.00000000, USDT
+        )
+        assert self.portfolio.realized_pnl(BTCUSDT_PERP_BINANCE.id) == Money(
+            -18.900000000, USDT
+        )
+        assert self.portfolio.net_position(order.instrument_id) == Decimal(
+            "10.00000000"
+        )
         assert self.portfolio.is_net_long(order.instrument_id)
         assert not self.portfolio.is_net_short(order.instrument_id)
         assert not self.portfolio.is_flat(order.instrument_id)

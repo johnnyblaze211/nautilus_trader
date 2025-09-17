@@ -23,7 +23,9 @@ from nautilus_trader.adapters.binance.data import BinanceCommonDataClient
 from nautilus_trader.adapters.binance.http.client import BinanceHttpClient
 from nautilus_trader.adapters.binance.spot.enums import BinanceSpotEnumParser
 from nautilus_trader.adapters.binance.spot.http.market import BinanceSpotMarketHttpAPI
-from nautilus_trader.adapters.binance.spot.schemas.market import BinanceSpotOrderBookPartialDepthMsg
+from nautilus_trader.adapters.binance.spot.schemas.market import (
+    BinanceSpotOrderBookPartialDepthMsg,
+)
 from nautilus_trader.adapters.binance.spot.schemas.market import BinanceSpotTradeMsg
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
@@ -122,8 +124,10 @@ class BinanceSpotDataClient(BinanceCommonDataClient):
             ts_init=self._clock.timestamp_ns(),
         )
         # Check if book buffer active
-        book_buffer: list[OrderBookDelta | OrderBookDeltas] | None = self._book_buffer.get(
-            instrument_id,
+        book_buffer: list[OrderBookDelta | OrderBookDeltas] | None = (
+            self._book_buffer.get(
+                instrument_id,
+            )
         )
         if book_buffer is not None:
             book_buffer.append(book_snapshot)

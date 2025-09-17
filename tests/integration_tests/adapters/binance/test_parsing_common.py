@@ -20,7 +20,9 @@ from nautilus_trader.adapters.binance.common.enums import BinanceKlineInterval
 from nautilus_trader.adapters.binance.common.enums import BinanceOrderType
 from nautilus_trader.adapters.binance.common.schemas.market import BinanceCandlestick
 from nautilus_trader.adapters.binance.futures.enums import BinanceFuturesEnumParser
-from nautilus_trader.adapters.binance.futures.schemas.account import BinanceFuturesBalanceInfo
+from nautilus_trader.adapters.binance.futures.schemas.account import (
+    BinanceFuturesBalanceInfo,
+)
 from nautilus_trader.adapters.binance.spot.enums import BinanceSpotEnumParser
 from nautilus_trader.core.datetime import millis_to_nanos
 from nautilus_trader.model.data import BarSpecification
@@ -234,7 +236,9 @@ class TestBinanceCommonParsing:
             [PositionId("P-20240817-BTCUSDT-BOTH"), BinanceFuturesPositionSide.BOTH],
         ],
     )
-    def test_parse_position_id_to_binance_futures_position_side(self, position_id, expected):
+    def test_parse_position_id_to_binance_futures_position_side(
+        self, position_id, expected
+    ):
         # Arrange, Act
         result = self._futures_enum_parser.parse_position_id_to_binance_futures_position_side(
             position_id,

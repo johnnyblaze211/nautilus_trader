@@ -131,7 +131,9 @@ class TestTradingNodeConfiguration:
         assert node.trader.id.value == "Test-111"
         assert node.trader.strategy_ids() == [StrategyId("VolatilityMarketMaker-000")]
 
-    @pytest.mark.skip(reason="client configs need to handle params other than those on base class")
+    @pytest.mark.skip(
+        reason="client configs need to handle params other than those on base class"
+    )
     def test_node_build_raw(self, monkeypatch):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -145,7 +147,9 @@ class TestTradingNodeConfiguration:
         node.add_exec_client_factory("BINANCE", BinanceLiveExecClientFactory)
         node.build()
 
-    @pytest.mark.skip(reason="refactor test to use Binance clients which have no dependencies")
+    @pytest.mark.skip(
+        reason="refactor test to use Binance clients which have no dependencies"
+    )
     def test_node_build_objects(self, monkeypatch):
         # Arrange
         loop = asyncio.new_event_loop()

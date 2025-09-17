@@ -514,7 +514,9 @@ class BinanceEnumParser:
             BinanceOrderSide.BUY: OrderSide.BUY,
             BinanceOrderSide.SELL: OrderSide.SELL,
         }
-        self.int_to_ext_order_side = {b: a for a, b in self.ext_to_int_order_side.items()}
+        self.int_to_ext_order_side = {
+            b: a for a, b in self.ext_to_int_order_side.items()
+        }
 
         self.ext_to_int_bar_agg = {
             "s": BarAggregation.SECOND,
@@ -557,7 +559,9 @@ class BinanceEnumParser:
                 f"unrecognized Nautilus order side, was {order_side}",  # pragma: no cover
             )
 
-    def parse_binance_time_in_force(self, time_in_force: BinanceTimeInForce) -> TimeInForce:
+    def parse_binance_time_in_force(
+        self, time_in_force: BinanceTimeInForce
+    ) -> TimeInForce:
         try:
             return self.ext_to_int_time_in_force[time_in_force]
         except KeyError:
@@ -565,7 +569,9 @@ class BinanceEnumParser:
                 f"unrecognized Binance time in force, was {time_in_force}",  # pragma: no cover
             )
 
-    def parse_internal_time_in_force(self, time_in_force: TimeInForce) -> BinanceTimeInForce:
+    def parse_internal_time_in_force(
+        self, time_in_force: TimeInForce
+    ) -> BinanceTimeInForce:
         try:
             return self.int_to_ext_time_in_force[time_in_force]
         except KeyError:
@@ -573,7 +579,9 @@ class BinanceEnumParser:
                 f"unrecognized Nautilus time in force, was {time_in_force}",  # pragma: no cover
             )
 
-    def parse_binance_order_status(self, order_status: BinanceOrderStatus) -> OrderStatus:
+    def parse_binance_order_status(
+        self, order_status: BinanceOrderStatus
+    ) -> OrderStatus:
         try:
             return self.ext_to_int_status[order_status]
         except KeyError:

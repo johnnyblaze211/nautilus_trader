@@ -58,7 +58,9 @@ def test_legacy_trades_to_record_batch_reader() -> None:
     # Arrange
     instrument = TestInstrumentProvider.ethusdt_binance()
     wrangler = TradeTickDataWrangler(instrument=instrument)
-    trades = wrangler.process(TestDataProvider().read_csv_ticks("binance/ethusdt-trades.csv"))
+    trades = wrangler.process(
+        TestDataProvider().read_csv_ticks("binance/ethusdt-trades.csv")
+    )
 
     # Act
     batch_bytes = nautilus_pyo3.pyobjects_to_arrow_record_batch_bytes(trades)

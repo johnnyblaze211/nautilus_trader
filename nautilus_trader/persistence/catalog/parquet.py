@@ -25,7 +25,9 @@ from collections.abc import Generator
 from itertools import groupby
 from os import PathLike
 from pathlib import Path
-from typing import Any, NamedTuple, Union
+from typing import Any
+from typing import NamedTuple
+from typing import Union
 
 import fsspec
 import pandas as pd
@@ -136,7 +138,9 @@ class ParquetDataCatalog(BaseDataCatalog):
         self.fs_protocol: str = fs_protocol or _DEFAULT_FS_PROTOCOL
 
         if isinstance(self.fs_protocol, str) and self.fs_protocol.startswith("("):
-            print(f"Unexpected `fs_protocol` format: {self.fs_protocol}, defaulting to 'file'")
+            print(
+                f"Unexpected `fs_protocol` format: {self.fs_protocol}, defaulting to 'file'"
+            )
             self.fs_protocol = "file"
 
         self.fs_storage_options = fs_storage_options or {}
@@ -224,7 +228,9 @@ class ParquetDataCatalog(BaseDataCatalog):
         if storage_options:
             merged_storage_options.update(storage_options)
 
-        return cls(path=path, fs_protocol=protocol, fs_storage_options=merged_storage_options)
+        return cls(
+            path=path, fs_protocol=protocol, fs_storage_options=merged_storage_options
+        )
 
     # -- WRITING ----------------------------------------------------------------------------------
 
@@ -411,7 +417,9 @@ class ParquetDataCatalog(BaseDataCatalog):
                     directory,
                     _timestamps_to_filename(interval[0], interval[1]),
                 )
-                new_path = os.path.join(directory, _timestamps_to_filename(start, interval[1]))
+                new_path = os.path.join(
+                    directory, _timestamps_to_filename(start, interval[1])
+                )
                 self.fs.rename(old_path, new_path)
                 break
             elif interval[1] == start - 1:
@@ -419,7 +427,9 @@ class ParquetDataCatalog(BaseDataCatalog):
                     directory,
                     _timestamps_to_filename(interval[0], interval[1]),
                 )
-                new_path = os.path.join(directory, _timestamps_to_filename(interval[0], end))
+                new_path = os.path.join(
+                    directory, _timestamps_to_filename(interval[0], end)
+                )
                 self.fs.rename(old_path, new_path)
                 break
 
@@ -649,7 +659,9 @@ class ParquetDataCatalog(BaseDataCatalog):
         if len(file_list) <= 1:
             return
 
-        tables = [pq.read_table(file, memory_map=True, pre_buffer=False) for file in file_list]
+        tables = [
+            pq.read_table(file, memory_map=True, pre_buffer=False) for file in file_list
+        ]
         combined_table = pa.concat_tables(tables)
         pq.write_table(combined_table, where=new_file)
 
@@ -704,7 +716,9 @@ class ParquetDataCatalog(BaseDataCatalog):
         leaf_directories = self._find_leaf_data_directories()
 
         for directory in leaf_directories:
-            data_cls, identifier = self._extract_data_cls_and_identifier_from_path(directory)
+            data_cls, identifier = self._extract_data_cls_and_identifier_from_path(
+                directory
+            )
 
             if data_cls is None:
                 # Skip directories that don't correspond to known data classes
@@ -858,7 +872,9 @@ class ParquetDataCatalog(BaseDataCatalog):
             del period_data
 
             # Identify files that are completely covered by this period
-            for file in existing_files[:]:  # Use slice copy to avoid modification during iteration
+            for file in existing_files[
+                :
+            ]:  # Use slice copy to avoid modification during iteration
                 interval = _parse_filename_timestamps(file)
 
                 if interval and interval[1] <= query_info["query_end"]:
@@ -867,7 +883,9 @@ class ParquetDataCatalog(BaseDataCatalog):
 
             # Remove files as soon as we have some to remove
             if files_to_remove:
-                for file in list(files_to_remove):  # Copy to avoid modification during iteration
+                for file in list(
+                    files_to_remove
+                ):  # Copy to avoid modification during iteration
                     self.fs.rm(file)
                     files_to_remove.remove(file)
 
@@ -1099,7 +1117,9 @@ class ParquetDataCatalog(BaseDataCatalog):
         for directory in leaf_directories:
             # Extract data class and identifier from directory path
             try:
-                data_cls, identifier = self._extract_data_cls_and_identifier_from_path(directory)
+                data_cls, identifier = self._extract_data_cls_and_identifier_from_path(
+                    directory
+                )
                 if data_cls is not None:
                     self.delete_data_range(data_cls, identifier, start, end)
             except Exception as e:
@@ -1327,9 +1347,9 @@ class ParquetDataCatalog(BaseDataCatalog):
             file_start_ns, file_end_ns = interval
 
             # Check if file intersects with deletion range
-            intersects = (delete_start_ns is None or delete_start_ns <= file_end_ns) and (
-                delete_end_ns is None or file_start_ns <= delete_end_ns
-            )
+            intersects = (
+                delete_start_ns is None or delete_start_ns <= file_end_ns
+            ) and (delete_end_ns is None or file_start_ns <= delete_end_ns)
 
             if not intersects:
                 continue  # File doesn't intersect with deletion range
@@ -1413,8 +1433,12 @@ class ParquetDataCatalog(BaseDataCatalog):
                 else:
                     raise e
 
-        non_empty_data_lists = [data_list for data_list in data_lists if data_list is not None]
-        objects = [o for objs in non_empty_data_lists for o in objs]  # flatten of list of lists
+        non_empty_data_lists = [
+            data_list for data_list in data_lists if data_list is not None
+        ]
+        objects = [
+            o for objs in non_empty_data_lists for o in objs
+        ]  # flatten of list of lists
 
         return objects
 
@@ -1507,7 +1531,9 @@ class ParquetDataCatalog(BaseDataCatalog):
 
             if callable(metadata):
                 data = [
-                    CustomData(data_type=DataType(data_cls, metadata=metadata(d)), data=d)
+                    CustomData(
+                        data_type=DataType(data_cls, metadata=metadata(d)), data=d
+                    )
                     for d in data
                 ]
             else:
@@ -1611,8 +1637,12 @@ class ParquetDataCatalog(BaseDataCatalog):
             If the data class is not supported by the Rust backend.
 
         """
-        data_type: NautilusDataType = ParquetDataCatalog._nautilus_data_cls_to_data_type(data_cls)
-        file_list = files if files else self._query_files(data_cls, identifiers, start, end)
+        data_type: NautilusDataType = (
+            ParquetDataCatalog._nautilus_data_cls_to_data_type(data_cls)
+        )
+        file_list = (
+            files if files else self._query_files(data_cls, identifiers, start, end)
+        )
         file_prefix = class_to_filename(data_cls)
 
         if session is None:
@@ -1725,7 +1755,9 @@ class ParquetDataCatalog(BaseDataCatalog):
         elif data_cls == MarkPriceUpdate:
             return NautilusDataType.MarkPriceUpdate
         else:
-            raise RuntimeError(f"unsupported `data_cls` for Rust parquet, was {data_cls.__name__}")
+            raise RuntimeError(
+                f"unsupported `data_cls` for Rust parquet, was {data_cls.__name__}"
+            )
 
     def _build_query(
         self,
@@ -1764,7 +1796,9 @@ class ParquetDataCatalog(BaseDataCatalog):
         **kwargs: Any,
     ) -> list[Data]:
         # Load dataset - use provided files or query for them
-        file_list = files if files else self._query_files(data_cls, identifiers, start, end)
+        file_list = (
+            files if files else self._query_files(data_cls, identifiers, start, end)
+        )
 
         if not file_list:
             return []
@@ -1811,7 +1845,9 @@ class ParquetDataCatalog(BaseDataCatalog):
             if not isinstance(identifiers, list):
                 identifiers = [identifiers]
 
-            safe_identifiers = [urisafe_identifier(identifier) for identifier in identifiers]
+            safe_identifiers = [
+                urisafe_identifier(identifier) for identifier in identifiers
+            ]
 
             # Exact match by default for instrument_ids or bar_types
             exact_match_file_paths = [
@@ -2100,10 +2136,14 @@ class ParquetDataCatalog(BaseDataCatalog):
         instance_id: str,
         raise_on_failed_deserialize: bool = False,
     ) -> list[Data]:
-        class_mapping: dict[str, type] = {class_to_filename(cls): cls for cls in list_schemas()}
+        class_mapping: dict[str, type] = {
+            class_to_filename(cls): cls for cls in list_schemas()
+        }
         data = defaultdict(list)
 
-        for feather_file in self._list_feather_files(kind=kind, instance_id=instance_id):
+        for feather_file in self._list_feather_files(
+            kind=kind, instance_id=instance_id
+        ):
             path = feather_file.path
             cls_name = feather_file.class_name
             table: pa.Table = self._read_feather_file(path=path)
@@ -2126,7 +2166,9 @@ class ParquetDataCatalog(BaseDataCatalog):
 
                 print(f"Failed to deserialize {cls_name}: {e}")
 
-        return sorted(itertools.chain.from_iterable(data.values()), key=lambda x: x.ts_init)
+        return sorted(
+            itertools.chain.from_iterable(data.values()), key=lambda x: x.ts_init
+        )
 
     def _list_feather_files(
         self,
@@ -2144,7 +2186,9 @@ class ParquetDataCatalog(BaseDataCatalog):
             cls_name = "_".join(file_name.split("_")[:-1])
 
             if not cls_name:
-                raise ValueError(f"`cls_name` was empty when a value was expected: {path_str}")
+                raise ValueError(
+                    f"`cls_name` was empty when a value was expected: {path_str}"
+                )
 
             yield FeatherFile(path=path_str, class_name=cls_name)
 
@@ -2256,7 +2300,9 @@ def _query_intersects_filename(
 
     file_start, file_end = file_interval
 
-    return (start is None or start.value <= file_end) and (end is None or file_start <= end.value)
+    return (start is None or start.value <= file_end) and (
+        end is None or file_start <= end.value
+    )
 
 
 def _parse_filename_timestamps(filename: str) -> tuple[int, int] | None:
@@ -2281,7 +2327,9 @@ def _file_timestamp_to_iso_timestamp(file_timestamp: str) -> str:
     date_part, time_part = file_timestamp.split("T")
     time_part = time_part[:-1]
     last_hyphen_idx = time_part.rfind("-")
-    time_with_dot_for_nanos = time_part[:last_hyphen_idx] + "." + time_part[last_hyphen_idx + 1 :]
+    time_with_dot_for_nanos = (
+        time_part[:last_hyphen_idx] + "." + time_part[last_hyphen_idx + 1 :]
+    )
     final_time_part = time_with_dot_for_nanos.replace("-", ":")
 
     return f"{date_part}T{final_time_part}Z"
@@ -2311,7 +2359,9 @@ def _min_max_from_parquet_metadata(file_path: str, column_name: str) -> tuple[in
                         overall_max_value = max_value
 
     if overall_min_value is None or overall_max_value is None:
-        print(f"Column '{column_name}' not found or has no statistics in any row group.")
+        print(
+            f"Column '{column_name}' not found or has no statistics in any row group."
+        )
         return -1, -1
     else:
         return overall_min_value, overall_max_value
@@ -2354,7 +2404,10 @@ def _query_interval_diff(
     interval_diff = interval_query - interval_set
 
     return [
-        (interval.lower, interval.upper if interval.right == P.CLOSED else interval.upper - 1)
+        (
+            interval.lower,
+            interval.upper if interval.right == P.CLOSED else interval.upper - 1,
+        )
         for interval in interval_diff
     ]
 
@@ -2392,4 +2445,6 @@ def _extract_sql_safe_filename(file_path: str) -> str:
         name_without_ext = filename
 
     # Remove characters that can pose problems: hyphens, colons, etc.
-    return name_without_ext.replace("-", "_").replace(":", "_").replace(".", "_").lower()
+    return (
+        name_without_ext.replace("-", "_").replace(":", "_").replace(".", "_").lower()
+    )

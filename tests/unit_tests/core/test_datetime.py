@@ -210,7 +210,10 @@ class TestDatetimeFunctions:
             [UNIX_EPOCH + timedelta(milliseconds=1), 1_000_000],
             [UNIX_EPOCH + timedelta(microseconds=3), 3_000],
             [UNIX_EPOCH + timedelta(hours=12), 43_200_000_000_000],
-            [datetime(2021, 5, 7, 13, 41, 7, 930000, tzinfo=pytz.utc), 1620394867930000000],
+            [
+                datetime(2021, 5, 7, 13, 41, 7, 930000, tzinfo=pytz.utc),
+                1620394867930000000,
+            ],
         ],
     )
     def test_dt_to_unix_nanos(self, value, expected):
@@ -229,7 +232,10 @@ class TestDatetimeFunctions:
             [UNIX_EPOCH + timedelta(milliseconds=1), 1_000_000],
             [UNIX_EPOCH + timedelta(microseconds=3), 3_000],
             [UNIX_EPOCH + timedelta(hours=12), 43_200_000_000_000],
-            [datetime(2021, 5, 7, 13, 41, 7, 930000, tzinfo=pytz.utc), 1620394867930000000],
+            [
+                datetime(2021, 5, 7, 13, 41, 7, 930000, tzinfo=pytz.utc),
+                1620394867930000000,
+            ],
         ],
     )
     def test_maybe_dt_to_unix_nanos(self, value, expected):
@@ -248,7 +254,9 @@ class TestDatetimeFunctions:
                 1357002000000000000,
             ],
             [
-                datetime(2020, 1, 2, 3, 2, microsecond=333, tzinfo=pytz.utc).isoformat(),
+                datetime(
+                    2020, 1, 2, 3, 2, microsecond=333, tzinfo=pytz.utc
+                ).isoformat(),
                 1577934120003330000,
             ],
         ],
@@ -467,7 +475,9 @@ class TestDatetimeFunctions:
 
     def test_with_utc_index_given_tz_aware_different_timezone_dataframe(self):
         # Arrange
-        data1 = pd.DataFrame({"timestamp": ["2019-05-21 12:00:00", "2019-05-21 12:15:00"]})
+        data1 = pd.DataFrame(
+            {"timestamp": ["2019-05-21 12:00:00", "2019-05-21 12:15:00"]}
+        )
         data1.set_index("timestamp")
         data1.index = pd.to_datetime(data1.index)
 

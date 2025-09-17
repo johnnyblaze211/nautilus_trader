@@ -643,7 +643,9 @@ class BinanceMarketHttpAPI:
         self._endpoint_time = BinanceTimeHttp(client, self.base_endpoint)
         self._endpoint_depth = BinanceDepthHttp(client, self.base_endpoint)
         self._endpoint_trades = BinanceTradesHttp(client, self.base_endpoint)
-        self._endpoint_historical_trades = BinanceHistoricalTradesHttp(client, self.base_endpoint)
+        self._endpoint_historical_trades = BinanceHistoricalTradesHttp(
+            client, self.base_endpoint
+        )
         self._endpoint_agg_trades = BinanceAggTradesHttp(client, self.base_endpoint)
         self._endpoint_klines = BinanceKlinesHttp(client, self.base_endpoint)
         self._endpoint_ticker_24hr = BinanceTicker24hrHttp(client, self.base_endpoint)
@@ -775,18 +777,24 @@ class BinanceMarketHttpAPI:
             )
 
         # Only split into separate requests if both start_time and end_time are specified
-        max_interval = (1000 * 60 * 60) - 1  # 1ms under an hour, as specified in Futures docs.
+        max_interval = (
+            1000 * 60 * 60
+        ) - 1  # 1ms under an hour, as specified in Futures docs.
         last_id = 0
         interval_limited = False
 
-        def _calculate_next_end_time(start_time: int, end_time: int) -> tuple[int, bool]:
+        def _calculate_next_end_time(
+            start_time: int, end_time: int
+        ) -> tuple[int, bool]:
             next_interval = start_time + max_interval
             interval_limited = next_interval < end_time
             next_end_time = next_interval if interval_limited is True else end_time
             return next_end_time, interval_limited
 
         if start_time is not None and end_time is not None:
-            next_end_time, interval_limited = _calculate_next_end_time(start_time, end_time)
+            next_end_time, interval_limited = _calculate_next_end_time(
+                start_time, end_time
+            )
         else:
             next_end_time = end_time
 

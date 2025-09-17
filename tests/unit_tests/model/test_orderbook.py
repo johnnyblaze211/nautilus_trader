@@ -57,7 +57,12 @@ class TestOrderBook:
                 "type": "OrderBookDelta",
                 "instrument_id": "1.166564490-237491-0.0.BETFAIR",
                 "action": "CLEAR",
-                "order": {"side": "NO_ORDER_SIDE", "price": "0", "size": "0", "order_id": 0},
+                "order": {
+                    "side": "NO_ORDER_SIDE",
+                    "price": "0",
+                    "size": "0",
+                    "order_id": 0,
+                },
                 "flags": 0,
                 "sequence": 0,
                 "ts_event": 1576840503572000000,
@@ -186,7 +191,9 @@ class TestOrderBook:
             OrderSide.SELL,
         ],
     )
-    def test_get_avg_px_for_quantity_when_no_market(self, order_side: OrderSide) -> None:
+    def test_get_avg_px_for_quantity_when_no_market(
+        self, order_side: OrderSide
+    ) -> None:
         # Arrange
         book = OrderBook(
             instrument_id=self.instrument.id,
@@ -205,7 +212,9 @@ class TestOrderBook:
             [OrderSide.SELL, 10.0],
         ],
     )
-    def test_get_avg_px_for_quantity(self, order_side: OrderSide, expected: float) -> None:
+    def test_get_avg_px_for_quantity(
+        self, order_side: OrderSide, expected: float
+    ) -> None:
         # Arrange
         book = OrderBook(
             instrument_id=self.instrument.id,
@@ -652,7 +661,9 @@ class TestOrderBook:
         instrument_id = InstrumentId.from_str("1.166564490-237491-0.0.BETFAIR")
         book = OrderBook(instrument_id, BookType.L2_MBP)
 
-        def make_delta(side: OrderSide, price: float, size: float, ts: int) -> OrderBookDelta:
+        def make_delta(
+            side: OrderSide, price: float, size: float, ts: int
+        ) -> OrderBookDelta:
             order = BookOrder(
                 price=Price(price, 2),
                 size=Quantity(size, 0),
@@ -692,8 +703,12 @@ class TestOrderBook:
         loader = DatabentoDataLoader()
         instrument = TestInstrumentProvider.es_future(expiry_year=2024, expiry_month=3)
 
-        path_20231224 = TEST_DATA_DIR / "databento" / "esh4-glbx-mdp3-20231224.mbo.dbn.zst"
-        path_20231225 = TEST_DATA_DIR / "databento" / "esh4-glbx-mdp3-20231225.mbo.dbn.zst"
+        path_20231224 = (
+            TEST_DATA_DIR / "databento" / "esh4-glbx-mdp3-20231224.mbo.dbn.zst"
+        )
+        path_20231225 = (
+            TEST_DATA_DIR / "databento" / "esh4-glbx-mdp3-20231225.mbo.dbn.zst"
+        )
 
         # Act
         data = loader.from_dbn_file(

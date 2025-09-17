@@ -24,9 +24,15 @@ from ibapi.common import MarketDataTypeEnum
 # fmt: off
 from nautilus_trader.adapters.interactive_brokers.client import InteractiveBrokersClient
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersInstrumentProviderConfig
-from nautilus_trader.adapters.interactive_brokers.parsing.instruments import ib_contract_to_instrument_id
-from nautilus_trader.adapters.interactive_brokers.providers import InteractiveBrokersInstrumentProvider
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersInstrumentProviderConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.parsing.instruments import (
+    ib_contract_to_instrument_id,
+)
+from nautilus_trader.adapters.interactive_brokers.providers import (
+    InteractiveBrokersInstrumentProvider,
+)
 
 # fmt: on
 from nautilus_trader.cache.cache import Cache
@@ -97,7 +103,9 @@ class HistoricInteractiveBrokersClient:
         self,
         instrument_ids: list[str] | None = None,
         contracts: list[IBContract] | None = None,
-        instrument_provider_config: InteractiveBrokersInstrumentProviderConfig | None = None,
+        instrument_provider_config: (
+            InteractiveBrokersInstrumentProviderConfig | None
+        ) = None,
     ) -> list[Instrument]:
         """
         Return Instruments given either a InteractiveBrokersInstrumentProviderConfig or
@@ -125,7 +133,9 @@ class HistoricInteractiveBrokersClient:
             self._clock,
             instrument_provider_config,
         )
-        await instrument_provider.load_ids_async((instrument_ids or []) + (contracts or []))
+        await instrument_provider.load_ids_async(
+            (instrument_ids or []) + (contracts or [])
+        )
 
         return list(instrument_provider._instruments.values())
 
@@ -138,7 +148,9 @@ class HistoricInteractiveBrokersClient:
         duration: str | None = None,
         contracts: list[IBContract] | None = None,
         instrument_ids: list[str] | None = None,
-        instrument_provider_config: InteractiveBrokersInstrumentProviderConfig | None = None,
+        instrument_provider_config: (
+            InteractiveBrokersInstrumentProviderConfig | None
+        ) = None,
         use_rth: bool = True,
         timeout: int = 120,
     ) -> list[Bar]:
@@ -180,11 +192,15 @@ class HistoricInteractiveBrokersClient:
         """
         # Perform all necessary validations (merged from _prepare_request_bars_parameters)
         if start_date_time and duration:
-            raise ValueError("Either start_date_time or duration should be provided, not both.")
+            raise ValueError(
+                "Either start_date_time or duration should be provided, not both."
+            )
 
         # Adjust start and end time based on the timezone
         if start_date_time:
-            start_date_time = pd.Timestamp(start_date_time, tz=tz_name).tz_convert("UTC")
+            start_date_time = pd.Timestamp(start_date_time, tz=tz_name).tz_convert(
+                "UTC"
+            )
 
         end_date_time = pd.Timestamp(end_date_time, tz=tz_name).tz_convert("UTC")
 
@@ -225,7 +241,9 @@ class HistoricInteractiveBrokersClient:
         )
 
         # Ensure instruments are fetched and cached
-        await self._fetch_instruments_if_not_cached(contracts, instrument_provider_config)
+        await self._fetch_instruments_if_not_cached(
+            contracts, instrument_provider_config
+        )
         data: list[Bar] = []
 
         for contract in contracts:
@@ -242,7 +260,10 @@ class HistoricInteractiveBrokersClient:
                     AggregationSource.EXTERNAL,
                 )
 
-                for segment_end_date_time, segment_duration in self._calculate_duration_segments(
+                for (
+                    segment_end_date_time,
+                    segment_duration,
+                ) in self._calculate_duration_segments(
                     start_date_time,
                     end_date_time,
                     duration,
@@ -267,7 +288,9 @@ class HistoricInteractiveBrokersClient:
                         data.extend(bars)
                         self.log.info(f"Total number of bars in data: {len(data)}")
                     else:
-                        self.log.info(f"{instrument_id}: No bars retrieved for: {bar_type}")
+                        self.log.info(
+                            f"{instrument_id}: No bars retrieved for: {bar_type}"
+                        )
 
         return sorted(data, key=lambda x: x.ts_init)
 
@@ -279,7 +302,9 @@ class HistoricInteractiveBrokersClient:
         tz_name: str,
         contracts: list[IBContract] | None = None,
         instrument_ids: list[str] | None = None,
-        instrument_provider_config: InteractiveBrokersInstrumentProviderConfig | None = None,
+        instrument_provider_config: (
+            InteractiveBrokersInstrumentProviderConfig | None
+        ) = None,
         use_rth: bool = True,
         timeout: int = 60,
     ) -> list[TradeTick | QuoteTick]:
@@ -356,7 +381,9 @@ class HistoricInteractiveBrokersClient:
         )
 
         # Ensure instruments are fetched and cached
-        await self._fetch_instruments_if_not_cached(contracts, instrument_provider_config)
+        await self._fetch_instruments_if_not_cached(
+            contracts, instrument_provider_config
+        )
         data: list[TradeTick | QuoteTick] = []
 
         for contract in contracts:
@@ -372,13 +399,15 @@ class HistoricInteractiveBrokersClient:
                 self.log.info(
                     f"{instrument_id}: Requesting {tick_type} ticks from {current_start_date_time}",
                 )
-                ticks: list[TradeTick | QuoteTick] = await self._client.get_historical_ticks(
-                    instrument_id=instrument_id,
-                    contract=contract,
-                    tick_type=tick_type,
-                    start_date_time=current_start_date_time,
-                    use_rth=use_rth,
-                    timeout=timeout,
+                ticks: list[TradeTick | QuoteTick] = (
+                    await self._client.get_historical_ticks(
+                        instrument_id=instrument_id,
+                        contract=contract,
+                        tick_type=tick_type,
+                        start_date_time=current_start_date_time,
+                        use_rth=use_rth,
+                        timeout=timeout,
+                    )
                 )
 
                 if not ticks:
@@ -388,18 +417,24 @@ class HistoricInteractiveBrokersClient:
                     f"{instrument_id}: Number of {tick_type} ticks retrieved in batch: {len(ticks)}",
                 )
 
-                current_start_date_time, should_continue = self._handle_timestamp_iteration(
-                    ticks,
-                    end_date_time,
+                current_start_date_time, should_continue = (
+                    self._handle_timestamp_iteration(
+                        ticks,
+                        end_date_time,
+                    )
                 )
 
                 if not should_continue:
                     # Filter out ticks that are after the end_date_time
                     ticks = [
-                        tick for tick in ticks if tick.ts_event <= dt_to_unix_nanos(end_date_time)
+                        tick
+                        for tick in ticks
+                        if tick.ts_event <= dt_to_unix_nanos(end_date_time)
                     ]
                     data.extend(ticks)
-                    self.log.info(f"Total number of {tick_type} ticks in data: {len(data)}")
+                    self.log.info(
+                        f"Total number of {tick_type} ticks in data: {len(data)}"
+                    )
                     break
 
                 data.extend(ticks)

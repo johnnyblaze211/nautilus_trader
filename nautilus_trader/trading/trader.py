@@ -168,7 +168,9 @@ class Trader(Component):
         """
         return list(self._strategies.values())
 
-    def exec_algorithms(self) -> list[Any]:  # ExecutonAlgorithm (circular import issues)
+    def exec_algorithms(
+        self,
+    ) -> list[Any]:  # ExecutonAlgorithm (circular import issues)
         """
         Return the execution algorithms loaded in the trader.
 
@@ -407,7 +409,9 @@ class Trader(Component):
         if strategy.order_id_tag in (None, str(None)):
             order_id_tag = f"{len(order_id_tags):03d}"
             # Assign strategy `order_id_tag`
-            strategy_id = StrategyId(f"{strategy.id.value.partition('-')[0]}-{order_id_tag}")
+            strategy_id = StrategyId(
+                f"{strategy.id.value.partition('-')[0]}-{order_id_tag}"
+            )
             strategy.change_id(strategy_id)
             strategy.change_order_id_tag(order_id_tag)
 
@@ -474,8 +478,12 @@ class Trader(Component):
 
         """
         PyCondition.not_none(exec_algorithm, "exec_algorithm")
-        PyCondition.is_true(not exec_algorithm.is_running, "exec_algorithm.state was RUNNING")
-        PyCondition.is_true(not exec_algorithm.is_disposed, "exec_algorithm.state was DISPOSED")
+        PyCondition.is_true(
+            not exec_algorithm.is_running, "exec_algorithm.state was RUNNING"
+        )
+        PyCondition.is_true(
+            not exec_algorithm.is_disposed, "exec_algorithm.state was DISPOSED"
+        )
 
         if self.is_running:
             self._log.error("Cannot add an execution algorithm to a running trader")

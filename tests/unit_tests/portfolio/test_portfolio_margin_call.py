@@ -60,7 +60,9 @@ def test_margin_call_flow_with_adverse_price_movement(
         account_type=AccountType.MARGIN,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(10_000, USD), Money(0, USD), Money(10_000, USD))],
+        balances=[
+            AccountBalance(Money(10_000, USD), Money(0, USD), Money(10_000, USD))
+        ],
         margins=[],
         info={},
         event_id=UUID4(),
@@ -151,7 +153,9 @@ def test_liquidation_trigger_on_maintenance_margin_breach(
         account_type=AccountType.MARGIN,
         base_currency=USD,
         reported=True,
-        balances=[AccountBalance(Money(5_000, USD), Money(4_500, USD), Money(500, USD))],
+        balances=[
+            AccountBalance(Money(5_000, USD), Money(4_500, USD), Money(500, USD))
+        ],
         margins=[
             MarginBalance(
                 initial=Money(4_500, USD),

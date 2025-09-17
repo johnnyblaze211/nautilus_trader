@@ -91,7 +91,9 @@ class TestQuantity:
             [Quantity(2.255, precision=3), 2, Decimal("2.26")],
         ],
     )
-    def test_round_with_various_digits_returns_expected_decimal(self, value, precision, expected):
+    def test_round_with_various_digits_returns_expected_decimal(
+        self, value, precision, expected
+    ):
         # Arrange, Act
         result = round(value, precision)
 
@@ -138,7 +140,9 @@ class TestQuantity:
             [Quantity(1.1, precision=1), Quantity(1.1, precision=1)],
         ],
     )
-    def test_instantiate_with_various_valid_inputs_returns_expected_decimal(self, value, expected):
+    def test_instantiate_with_various_valid_inputs_returns_expected_decimal(
+        self, value, expected
+    ):
         # Arrange, Act
         decimal_object = Quantity(value, 2)
 
@@ -179,7 +183,9 @@ class TestQuantity:
             [1.1, 1.12, False],
         ],
     )
-    def test_equality_with_various_values_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_values_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result = Quantity(value1, 2) == Quantity(value2, 2)
 
@@ -196,7 +202,9 @@ class TestQuantity:
             [1, 2, False],
         ],
     )
-    def test_equality_with_various_int_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_int_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result1 = Quantity(value1, 0) == value2
         result2 = value2 == Quantity(value1, 0)
@@ -213,7 +221,9 @@ class TestQuantity:
             [Quantity(1, precision=0), Decimal(0), False],
         ],
     )
-    def test_equality_with_various_decimals_returns_expected_result(self, value1, value2, expected):
+    def test_equality_with_various_decimals_returns_expected_result(
+        self, value1, value2, expected
+    ):
         # Arrange, Act
         result = value1 == value2
 
@@ -237,10 +247,18 @@ class TestQuantity:
         expected4,
     ):
         # Arrange, Act, Assert
-        assert (Quantity(value1, precision=0) > Quantity(value2, precision=0)) == expected1
-        assert (Quantity(value1, precision=0) >= Quantity(value2, precision=0)) == expected2
-        assert (Quantity(value1, precision=0) <= Quantity(value2, precision=0)) == expected3
-        assert (Quantity(value1, precision=0) < Quantity(value2, precision=0)) == expected4
+        assert (
+            Quantity(value1, precision=0) > Quantity(value2, precision=0)
+        ) == expected1
+        assert (
+            Quantity(value1, precision=0) >= Quantity(value2, precision=0)
+        ) == expected2
+        assert (
+            Quantity(value1, precision=0) <= Quantity(value2, precision=0)
+        ) == expected3
+        assert (
+            Quantity(value1, precision=0) < Quantity(value2, precision=0)
+        ) == expected4
 
     @pytest.mark.parametrize(
         ("value1", "value2", "expected_type", "expected_value"),
@@ -813,7 +831,9 @@ class TestQuantity:
         ("value", "expected"),
         [[0, 0], [-0, 0], [1, 1], [1.1, 1.1]],
     )
-    def test_as_double_with_various_values_returns_expected_value(self, value, expected):
+    def test_as_double_with_various_values_returns_expected_value(
+        self, value, expected
+    ):
         # Arrange, Act
         result = Quantity(value, 1).as_double()
 

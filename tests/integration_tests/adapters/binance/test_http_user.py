@@ -102,7 +102,9 @@ class TestBinanceUserHttpAPI:
         # Assert
         request = mock_send_request.call_args.kwargs
         assert request["method"] == "POST"
-        assert request["url"] == "https://api.binance.com/sapi/v1/userDataStream/isolated"
+        assert (
+            request["url"] == "https://api.binance.com/sapi/v1/userDataStream/isolated"
+        )
         assert request["params"] == "symbol=ETHUSDT"
 
     @pytest.mark.asyncio()
@@ -119,7 +121,9 @@ class TestBinanceUserHttpAPI:
         # Assert
         request = mock_send_request.call_args.kwargs
         assert request["method"] == "PUT"
-        assert request["url"] == "https://api.binance.com/sapi/v1/userDataStream/isolated"
+        assert (
+            request["url"] == "https://api.binance.com/sapi/v1/userDataStream/isolated"
+        )
         assert (
             request["params"]
             == "listenKey=JUdsZc8CSmMUxg1wJha23RogrT3EuC8eV5UTbAOVTkF3XWofMzWoXtWmDAhy&symbol=ETHUSDT"
@@ -139,7 +143,9 @@ class TestBinanceUserHttpAPI:
         # Assert
         request = mock_send_request.call_args.kwargs
         assert request["method"] == "DELETE"
-        assert request["url"] == "https://api.binance.com/sapi/v1/userDataStream/isolated"
+        assert (
+            request["url"] == "https://api.binance.com/sapi/v1/userDataStream/isolated"
+        )
         assert (
             request["params"]
             == "listenKey=JUdsZc8CSmMUxg1wJha23RogrT3EuC8eV5UTbAOVTkF3XWofMzWoXtWmDAhy&symbol=ETHUSDT"

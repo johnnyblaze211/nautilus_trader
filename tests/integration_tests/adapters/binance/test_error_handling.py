@@ -26,7 +26,10 @@ def retry_error():
     """
     return BinanceError(
         status=400,
-        message={"code": -1021, "msg": "Timestamp for this request is outside of the recvWindow."},
+        message={
+            "code": -1021,
+            "msg": "Timestamp for this request is outside of the recvWindow.",
+        },
         headers={},
     )
 

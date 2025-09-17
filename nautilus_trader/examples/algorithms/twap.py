@@ -210,7 +210,9 @@ class TWAPExecAlgorithm(ExecAlgorithm):
             or (instrument.min_quantity and qty_per_interval < instrument.min_quantity)
         ):
             # Immediately submit first order for entire size
-            self.log.warning(f"Submitting for entire size {qty_per_interval=}, {order.quantity=}")
+            self.log.warning(
+                f"Submitting for entire size {qty_per_interval=}, {order.quantity=}"
+            )
             self.submit_order(order)
             return  # Done
 
@@ -219,7 +221,9 @@ class TWAPExecAlgorithm(ExecAlgorithm):
             scheduled_sizes.append(instrument.make_qty(qty_remainder))
 
         assert sum(scheduled_sizes) == order.quantity
-        self.log.info(f"Order execution size schedule: {scheduled_sizes}", LogColor.BLUE)
+        self.log.info(
+            f"Order execution size schedule: {scheduled_sizes}", LogColor.BLUE
+        )
 
         self._scheduled_sizes[order.client_order_id] = scheduled_sizes
         first_qty: Quantity = scheduled_sizes.pop(0)

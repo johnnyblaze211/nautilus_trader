@@ -78,7 +78,9 @@ if __name__ == "__main__":
     # Change order of columns
     df = df.reindex(columns=["timestamp_utc", "open", "high", "low", "close", "volume"])
     # Convert string timestamps into datetime
-    df["timestamp_utc"] = pd.to_datetime(df["timestamp_utc"], format="%Y-%m-%d %H:%M:%S")
+    df["timestamp_utc"] = pd.to_datetime(
+        df["timestamp_utc"], format="%Y-%m-%d %H:%M:%S"
+    )
     # Rename column to required name
     df = df.rename(columns={"timestamp_utc": "timestamp"})
     # Seet column `timestamp` as index

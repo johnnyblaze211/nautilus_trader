@@ -18,7 +18,9 @@ from unittest.mock import patch
 
 import pytest
 
-from tests.integration_tests.adapters.interactive_brokers.test_kit import IBTestContractStubs
+from tests.integration_tests.adapters.interactive_brokers.test_kit import (
+    IBTestContractStubs,
+)
 
 
 @pytest.mark.asyncio

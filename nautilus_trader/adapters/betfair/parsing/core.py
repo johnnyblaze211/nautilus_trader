@@ -27,7 +27,9 @@ from betfair_parser.spec.streaming import Status
 from betfair_parser.spec.streaming import stream_decode
 
 from nautilus_trader.adapters.betfair.data_types import BetfairSequenceCompleted
-from nautilus_trader.adapters.betfair.parsing.streaming import BETFAIR_SEQUENCE_COMPLETED_DATA_TYPE
+from nautilus_trader.adapters.betfair.parsing.streaming import (
+    BETFAIR_SEQUENCE_COMPLETED_DATA_TYPE,
+)
 from nautilus_trader.adapters.betfair.parsing.streaming import PARSE_TYPES
 from nautilus_trader.adapters.betfair.parsing.streaming import market_change_to_updates
 from nautilus_trader.adapters.betfair.providers import make_instruments
@@ -64,7 +66,9 @@ class BetfairParser:
         ts_init = ts_init or ts_event
         for mc in mcm.mc:
             if mc.market_definition is not None:
-                market_def = msgspec.structs.replace(mc.market_definition, market_id=mc.id)
+                market_def = msgspec.structs.replace(
+                    mc.market_definition, market_id=mc.id
+                )
                 self.market_definitions[mc.id] = market_def
                 instruments = make_instruments(
                     market_def,
@@ -74,7 +78,9 @@ class BetfairParser:
                     min_notional=min_notional,
                 )
                 updates.extend(instruments)
-            mc_updates = market_change_to_updates(mc, self.traded_volumes, ts_event, ts_init)
+            mc_updates = market_change_to_updates(
+                mc, self.traded_volumes, ts_event, ts_init
+            )
             updates.extend(mc_updates)
 
         updates.append(create_sequence_completed(ts_event=ts_event, ts_init=ts_init))
@@ -131,7 +137,9 @@ def betting_instruments_from_file(
         for mcm in iter_stream(f):
             for mc in mcm.mc:
                 if mc.market_definition:
-                    market_def = msgspec.structs.replace(mc.market_definition, market_id=mc.id)
+                    market_def = msgspec.structs.replace(
+                        mc.market_definition, market_id=mc.id
+                    )
                     mc = msgspec.structs.replace(mc, market_definition=market_def)
                     new_instruments = make_instruments(
                         mc.market_definition,

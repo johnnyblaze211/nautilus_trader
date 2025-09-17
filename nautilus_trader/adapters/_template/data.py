@@ -216,7 +216,9 @@ class TemplateLiveMarketDataClient(LiveMarketDataClient):
             "method `_subscribe_order_book_deltas` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _subscribe_order_book_snapshots(self, command: SubscribeOrderBook) -> None:
+    async def _subscribe_order_book_snapshots(
+        self, command: SubscribeOrderBook
+    ) -> None:
         raise NotImplementedError(
             "method `_subscribe_order_book_snapshots` must be implemented in the subclass",
         )  # pragma: no cover
@@ -251,12 +253,16 @@ class TemplateLiveMarketDataClient(LiveMarketDataClient):
             "method `_subscribe_bars` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _subscribe_instrument_status(self, command: SubscribeInstrumentStatus) -> None:
+    async def _subscribe_instrument_status(
+        self, command: SubscribeInstrumentStatus
+    ) -> None:
         raise NotImplementedError(
             "method `_subscribe_instrument_status` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _subscribe_instrument_close(self, command: SubscribeInstrumentClose) -> None:
+    async def _subscribe_instrument_close(
+        self, command: SubscribeInstrumentClose
+    ) -> None:
         raise NotImplementedError(
             "method `_subscribe_instrument_close` must be implemented in the subclass",
         )  # pragma: no cover
@@ -276,12 +282,16 @@ class TemplateLiveMarketDataClient(LiveMarketDataClient):
             "method `_unsubscribe_instrument` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _unsubscribe_order_book_deltas(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_deltas(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         raise NotImplementedError(
             "method `_unsubscribe_order_book_deltas` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _unsubscribe_order_book_snapshots(self, command: UnsubscribeOrderBook) -> None:
+    async def _unsubscribe_order_book_snapshots(
+        self, command: UnsubscribeOrderBook
+    ) -> None:
         raise NotImplementedError(
             "method `_unsubscribe_order_book_snapshots` must be implemented in the subclass",
         )  # pragma: no cover
@@ -306,7 +316,9 @@ class TemplateLiveMarketDataClient(LiveMarketDataClient):
             "method `_unsubscribe_index_prices` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _unsubscribe_funding_rates(self, command: UnsubscribeFundingRates) -> None:
+    async def _unsubscribe_funding_rates(
+        self, command: UnsubscribeFundingRates
+    ) -> None:
         raise NotImplementedError(
             "method `_unsubscribe_funding_rates` must be implemented in the subclass",
         )  # pragma: no cover
@@ -316,12 +328,16 @@ class TemplateLiveMarketDataClient(LiveMarketDataClient):
             "method `_unsubscribe_bars` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _unsubscribe_instrument_status(self, command: UnsubscribeInstrumentStatus) -> None:
+    async def _unsubscribe_instrument_status(
+        self, command: UnsubscribeInstrumentStatus
+    ) -> None:
         raise NotImplementedError(
             "method `_unsubscribe_instrument_status` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _unsubscribe_instrument_close(self, command: UnsubscribeInstrumentClose) -> None:
+    async def _unsubscribe_instrument_close(
+        self, command: UnsubscribeInstrumentClose
+    ) -> None:
         raise NotImplementedError(
             "method `_unsubscribe_instrument_close` must be implemented in the subclass",
         )  # pragma: no cover
@@ -343,7 +359,9 @@ class TemplateLiveMarketDataClient(LiveMarketDataClient):
             "method `_request_instruments` must be implemented in the subclass",
         )  # pragma: no cover
 
-    async def _request_order_book_snapshot(self, request: RequestOrderBookSnapshot) -> None:
+    async def _request_order_book_snapshot(
+        self, request: RequestOrderBookSnapshot
+    ) -> None:
         raise NotImplementedError(
             "method `_request_quote_tick` must be implemented in the subclass",
         )  # pragma: no cover

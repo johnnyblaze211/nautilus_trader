@@ -72,7 +72,9 @@ if __name__ == "__main__":
         venue=Venue(venue_name),
         oms_type=OmsType.NETTING,  # Netting: positions are netted against each other
         account_type=AccountType.MARGIN,  # Margin account: allows trading with leverage
-        starting_balances=[Money(1_000_000, USD)],  # Initial account balance of $1,000,000 USD
+        starting_balances=[
+            Money(1_000_000, USD)
+        ],  # Initial account balance of $1,000,000 USD
         base_currency=USD,  # Account base currency is USD
         default_leverage=Decimal(1),  # No leverage is used (1:1)
     )
@@ -111,7 +113,9 @@ if __name__ == "__main__":
 
     # - List all available data types
     data_types_in_catalog = data_catalog.list_data_types()
-    log.info(f"Data types stored in catalog\n{data_types_in_catalog}", color=LogColor.YELLOW)
+    log.info(
+        f"Data types stored in catalog\n{data_types_in_catalog}", color=LogColor.YELLOW
+    )
 
     # ----------------------------------------------------------------------------------
     # 5. Configure and run strategy

@@ -30,30 +30,46 @@ from py_clob_client.clob_types import AssetType
 from py_clob_client.exceptions import PolyApiException
 
 from nautilus_trader.adapters.polymarket.common.cache import get_polymarket_trades_key
-from nautilus_trader.adapters.polymarket.common.constants import POLYMARKET_INVALID_API_KEY
+from nautilus_trader.adapters.polymarket.common.constants import (
+    POLYMARKET_INVALID_API_KEY,
+)
 from nautilus_trader.adapters.polymarket.common.constants import POLYMARKET_MAX_PRICE
 from nautilus_trader.adapters.polymarket.common.constants import POLYMARKET_MIN_PRICE
 from nautilus_trader.adapters.polymarket.common.constants import POLYMARKET_VENUE
-from nautilus_trader.adapters.polymarket.common.constants import VALID_POLYMARKET_TIME_IN_FORCE
+from nautilus_trader.adapters.polymarket.common.constants import (
+    VALID_POLYMARKET_TIME_IN_FORCE,
+)
 from nautilus_trader.adapters.polymarket.common.conversion import usdce_from_units
-from nautilus_trader.adapters.polymarket.common.credentials import PolymarketWebSocketAuth
+from nautilus_trader.adapters.polymarket.common.credentials import (
+    PolymarketWebSocketAuth,
+)
 from nautilus_trader.adapters.polymarket.common.enums import PolymarketEventType
 from nautilus_trader.adapters.polymarket.common.enums import PolymarketTradeStatus
 from nautilus_trader.adapters.polymarket.common.parsing import parse_order_side
-from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_condition_id
-from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_instrument_id
+from nautilus_trader.adapters.polymarket.common.symbol import (
+    get_polymarket_condition_id,
+)
+from nautilus_trader.adapters.polymarket.common.symbol import (
+    get_polymarket_instrument_id,
+)
 from nautilus_trader.adapters.polymarket.common.symbol import get_polymarket_token_id
 from nautilus_trader.adapters.polymarket.common.types import JSON
 from nautilus_trader.adapters.polymarket.config import PolymarketExecClientConfig
-from nautilus_trader.adapters.polymarket.http.conversion import convert_tif_to_polymarket_order_type
+from nautilus_trader.adapters.polymarket.http.conversion import (
+    convert_tif_to_polymarket_order_type,
+)
 from nautilus_trader.adapters.polymarket.http.errors import should_retry
 from nautilus_trader.adapters.polymarket.providers import PolymarketInstrumentProvider
 from nautilus_trader.adapters.polymarket.schemas.trade import PolymarketTradeReport
 from nautilus_trader.adapters.polymarket.schemas.user import PolymarketOpenOrder
 from nautilus_trader.adapters.polymarket.schemas.user import PolymarketUserOrder
 from nautilus_trader.adapters.polymarket.schemas.user import PolymarketUserTrade
-from nautilus_trader.adapters.polymarket.websocket.client import PolymarketWebSocketChannel
-from nautilus_trader.adapters.polymarket.websocket.client import PolymarketWebSocketClient
+from nautilus_trader.adapters.polymarket.websocket.client import (
+    PolymarketWebSocketChannel,
+)
+from nautilus_trader.adapters.polymarket.websocket.client import (
+    PolymarketWebSocketClient,
+)
 from nautilus_trader.adapters.polymarket.websocket.types import USER_WS_MESSAGE
 from nautilus_trader.cache.cache import Cache
 from nautilus_trader.common.component import LiveClock
@@ -358,7 +374,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
             self._log.warning(
                 "Experimental feature not currently recommended: generating order history from trades",
             )
-            reported_client_order_ids: set[ClientOrderId] = {r.client_order_id for r in reports}
+            reported_client_order_ids: set[ClientOrderId] = {
+                r.client_order_id for r in reports
+            }
             for order in self._cache.orders_open(venue=POLYMARKET_VENUE):
                 if order.client_order_id in reported_client_order_ids:
                     continue  # Already reported
@@ -394,7 +412,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
                     "No previously known venue order IDs found in cache or from active orders",
                 )
 
-            venue_order_id_fill_reports: dict[VenueOrderId, list[FillReport]] = defaultdict(list)
+            venue_order_id_fill_reports: dict[VenueOrderId, list[FillReport]] = (
+                defaultdict(list)
+            )
             for fill in fill_reports:
                 if fill.venue_order_id in known_venue_order_ids:
                     continue  # Already reported
@@ -577,7 +597,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
                         )
                         continue
 
-                    venue_order_id = polymarket_trade.venue_order_id(self._wallet_address)
+                    venue_order_id = polymarket_trade.venue_order_id(
+                        self._wallet_address
+                    )
                     client_order_id = self._cache.client_order_id(venue_order_id)
                     if client_order_id is None:
                         client_order_id = ClientOrderId(str(UUID4()))
@@ -589,7 +611,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
                         maker_address=self._wallet_address,
                         ts_init=self._clock.timestamp_ns(),
                     )
-                    assert report.trade_id not in trade_ids, "trade IDs should be unique"
+                    assert (
+                        report.trade_id not in trade_ids
+                    ), "trade IDs should be unique"
                     trade_ids.add(report.trade_id)
                     reports.append(report)
         finally:
@@ -610,7 +634,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
         if command.instrument_id is not None:
             instrument_ids = [command.instrument_id]
         else:
-            instrument_ids = [inst.id for inst in self._cache.instruments(venue=POLYMARKET_VENUE)]
+            instrument_ids = [
+                inst.id for inst in self._cache.instruments(venue=POLYMARKET_VENUE)
+            ]
 
         for instrument_id in instrument_ids:
             self._log.debug(f"Requesting PositionStatusReport for {instrument_id}")
@@ -625,14 +651,18 @@ class PolymarketExecutionClient(LiveExecutionClient):
                 params,
             )
             usdce_balance = usdce_from_units(int(response["balance"]))
-            position_side = PositionSide.LONG if usdce_balance.raw > 0 else PositionSide.FLAT
+            position_side = (
+                PositionSide.LONG if usdce_balance.raw > 0 else PositionSide.FLAT
+            )
             now = self._clock.timestamp_ns()
 
             report = PositionStatusReport(
                 account_id=self.account_id,
                 instrument_id=instrument_id,
                 position_side=position_side,
-                quantity=Quantity.from_raw(usdce_balance.raw, precision=USDC_POS.precision),
+                quantity=Quantity.from_raw(
+                    usdce_balance.raw, precision=USDC_POS.precision
+                ),
                 report_id=UUID4(),
                 ts_last=now,
                 ts_init=now,
@@ -658,7 +688,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
         order: Order | None = self._cache.order(command.client_order_id)
 
         if order is None:
-            self._log.error(f"Cannot cancel order: {command.client_order_id!r} not found in cache")
+            self._log.error(
+                f"Cannot cancel order: {command.client_order_id!r} not found in cache"
+            )
             return
 
         if order.is_closed:
@@ -703,7 +735,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
         await self._maintain_active_market(command.instrument_id)
 
         # Check open orders for instrument
-        open_order_ids = self._cache.client_order_ids_open(instrument_id=command.instrument_id)
+        open_order_ids = self._cache.client_order_ids_open(
+            instrument_id=command.instrument_id
+        )
 
         # Filter orders that are actually open
         valid_cancels: list[CancelOrder] = []
@@ -714,7 +748,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
             self._log.warning(f"{cancel.client_order_id!r} not open for cancel")
 
         if not valid_cancels:
-            self._log.warning(f"No orders open for {command.instrument_id} batch cancel")
+            self._log.warning(
+                f"No orders open for {command.instrument_id} batch cancel"
+            )
             return
 
         retry_manager = await self._retry_manager_pool.acquire()
@@ -760,7 +796,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
             strategy_id=command.strategy_id,
         )
         if not open_orders_strategy:
-            self._log.warning(f"No open orders to cancel for strategy {command.strategy_id}")
+            self._log.warning(
+                f"No open orders to cancel for strategy {command.strategy_id}"
+            )
             return
 
         retry_manager = await self._retry_manager_pool.acquire()
@@ -863,7 +901,11 @@ class PolymarketExecutionClient(LiveExecutionClient):
         # self._log.info(f"Signed Polymarket market order in {interval:.3f}s", LogColor.BLUE)
         # --------------------------------------------------------------------------------------
 
-        price = POLYMARKET_MAX_PRICE if order.side == OrderSide.BUY else POLYMARKET_MIN_PRICE
+        price = (
+            POLYMARKET_MAX_PRICE
+            if order.side == OrderSide.BUY
+            else POLYMARKET_MIN_PRICE
+        )
 
         # Create signed Polymarket limit order for now
         order_args = OrderArgs(
@@ -996,7 +1038,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
             client_order_id = self._cache.client_order_id(venue_order_id)
 
         if client_order_id is None:
-            self._log.warning(f"Timed out awaiting placement ack for {venue_order_id!r}")
+            self._log.warning(
+                f"Timed out awaiting placement ack for {venue_order_id!r}"
+            )
 
         self._handle_ws_order_msg(msg, wait_for_ack=False)
 
@@ -1016,7 +1060,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
             client_order_id = self._cache.client_order_id(venue_order_id)
 
         if client_order_id is None:
-            self._log.warning(f"Timed out awaiting placement ack for {venue_order_id!r}")
+            self._log.warning(
+                f"Timed out awaiting placement ack for {venue_order_id!r}"
+            )
 
         self._handle_ws_trade_msg(msg, wait_for_ack=False)
 
@@ -1055,7 +1101,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
             self._send_order_status_report(report)
             return
 
-        self._log.debug(f"Order {msg.type.value}: {client_order_id!r}", LogColor.MAGENTA)
+        self._log.debug(
+            f"Order {msg.type.value}: {client_order_id!r}", LogColor.MAGENTA
+        )
 
         match msg.type:
             case PolymarketEventType.PLACEMENT:
@@ -1085,7 +1133,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
                 # We skip these events as they are handled by trade messages
                 self._log.debug(f"Skipping order update: {msg}")
             case _:  # Branch never hit unless code changes (leave in place)
-                raise RuntimeError(f"Unknown `PolymarketEventType`, was '{msg.type.value}'")
+                raise RuntimeError(
+                    f"Unknown `PolymarketEventType`, was '{msg.type.value}'"
+                )
 
     def _handle_ws_trade_msg(self, msg: PolymarketUserTrade, wait_for_ack: bool):
         self._log.debug(f"Handling trade message, {wait_for_ack=}")
@@ -1141,7 +1191,9 @@ class PolymarketExecutionClient(LiveExecutionClient):
         order = self._cache.order(client_order_id)
 
         if order is None:
-            self._log.error(f"Cannot process trade: {client_order_id!r} not found in cache")
+            self._log.error(
+                f"Cannot process trade: {client_order_id!r} not found in cache"
+            )
             return
 
         if trade_id in order.trade_ids or trade_id in self._processed_trades:
@@ -1149,12 +1201,16 @@ class PolymarketExecutionClient(LiveExecutionClient):
             return
 
         if order.is_closed:
-            self._log.warning(f"Order already closed - skipping trade processing: {order}")
+            self._log.warning(
+                f"Order already closed - skipping trade processing: {order}"
+            )
             return  # Already closed (only status update)
 
         last_qty = instrument.make_qty(msg.last_qty(self._wallet_address))
         last_px = instrument.make_price(msg.last_px(self._wallet_address))
-        commission = float(last_qty * last_px) * basis_points_as_percentage(float(msg.fee_rate_bps))
+        commission = float(last_qty * last_px) * basis_points_as_percentage(
+            float(msg.fee_rate_bps)
+        )
         ts_event = millis_to_nanos(int(msg.match_time))
 
         self.generate_order_filled(

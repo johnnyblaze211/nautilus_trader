@@ -158,7 +158,9 @@ class PortfolioAnalyzer:
         self._positions += positions
         for position in positions:
             self.add_trade(position.id, position.realized_pnl)
-            self.add_return(unix_nanos_to_dt(position.ts_closed), position.realized_return)
+            self.add_return(
+                unix_nanos_to_dt(position.ts_closed), position.realized_return
+            )
 
     def add_trade(self, position_id: PositionId, realized_pnl: Money) -> None:
         """
@@ -266,12 +268,16 @@ class PortfolioAnalyzer:
             raise ValueError(f"unrealized PnL currency is not {currency}")
 
         account_balance = self._account_balances.get(currency)
-        account_balance_starting = self._account_balances_starting.get(currency, Money(0, currency))
+        account_balance_starting = self._account_balances_starting.get(
+            currency, Money(0, currency)
+        )
 
         if account_balance is None:
             return 0.0
 
-        unrealized_pnl_f64 = 0.0 if unrealized_pnl is None else unrealized_pnl.as_double()
+        unrealized_pnl_f64 = (
+            0.0 if unrealized_pnl is None else unrealized_pnl.as_double()
+        )
         return float(account_balance - account_balance_starting) + unrealized_pnl_f64
 
     def total_pnl_percentage(
@@ -317,7 +323,9 @@ class PortfolioAnalyzer:
             raise ValueError(f"unrealized PnL currency is not {currency}")
 
         account_balance = self._account_balances.get(currency)
-        account_balance_starting = self._account_balances_starting.get(currency, Money(0, currency))
+        account_balance_starting = self._account_balances_starting.get(
+            currency, Money(0, currency)
+        )
 
         if account_balance is None:
             return 0.0
@@ -326,7 +334,9 @@ class PortfolioAnalyzer:
             # Protect divide by zero
             return 0.0
 
-        unrealized_pnl_f64 = 0.0 if unrealized_pnl is None else unrealized_pnl.as_double()
+        unrealized_pnl_f64 = (
+            0.0 if unrealized_pnl is None else unrealized_pnl.as_double()
+        )
 
         # Calculate percentage
         current = account_balance + unrealized_pnl_f64

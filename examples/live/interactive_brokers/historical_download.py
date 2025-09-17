@@ -19,9 +19,13 @@ import datetime
 import os
 
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
-from nautilus_trader.adapters.interactive_brokers.config import DockerizedIBGatewayConfig
+from nautilus_trader.adapters.interactive_brokers.config import (
+    DockerizedIBGatewayConfig,
+)
 from nautilus_trader.adapters.interactive_brokers.gateway import DockerizedIBGateway
-from nautilus_trader.adapters.interactive_brokers.historical import HistoricInteractiveBrokersClient
+from nautilus_trader.adapters.interactive_brokers.historical import (
+    HistoricInteractiveBrokersClient,
+)
 from nautilus_trader.core.correctness import PyCondition
 from nautilus_trader.persistence.catalog import ParquetDataCatalog
 
@@ -32,9 +36,15 @@ async def main(
     dockerized_gateway: DockerizedIBGatewayConfig | None = None,
 ) -> None:
     if dockerized_gateway:
-        PyCondition.none(host, "Ensure `host` is set to None when using DockerizedIBGatewayConfig.")
-        PyCondition.none(port, "Ensure `port` is set to None when using DockerizedIBGatewayConfig.")
-        PyCondition.type(dockerized_gateway, DockerizedIBGatewayConfig, "dockerized_gateway")
+        PyCondition.none(
+            host, "Ensure `host` is set to None when using DockerizedIBGatewayConfig."
+        )
+        PyCondition.none(
+            port, "Ensure `port` is set to None when using DockerizedIBGatewayConfig."
+        )
+        PyCondition.type(
+            dockerized_gateway, DockerizedIBGatewayConfig, "dockerized_gateway"
+        )
         gateway = DockerizedIBGateway(config=dockerized_gateway)
         gateway.start(dockerized_gateway.timeout)
         host = gateway.host
@@ -45,7 +55,9 @@ async def main(
             host,
             "Please provide the `host` IP address for the IB TWS or Gateway.",
         )
-        PyCondition.not_none(port, "Please provide the `port` for the IB TWS or Gateway.")
+        PyCondition.not_none(
+            port, "Please provide the `port` for the IB TWS or Gateway."
+        )
 
     contract = IBContract(
         secType="STK",

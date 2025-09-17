@@ -26,12 +26,22 @@ import time
 
 from nautilus_trader.adapters.interactive_brokers.common import IB
 from nautilus_trader.adapters.interactive_brokers.common import IB_VENUE
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersDataClientConfig
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersExecClientConfig
-from nautilus_trader.adapters.interactive_brokers.config import InteractiveBrokersInstrumentProviderConfig
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersDataClientConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersExecClientConfig,
+)
+from nautilus_trader.adapters.interactive_brokers.config import (
+    InteractiveBrokersInstrumentProviderConfig,
+)
 from nautilus_trader.adapters.interactive_brokers.config import SymbologyMethod
-from nautilus_trader.adapters.interactive_brokers.factories import InteractiveBrokersLiveDataClientFactory
-from nautilus_trader.adapters.interactive_brokers.factories import InteractiveBrokersLiveExecClientFactory
+from nautilus_trader.adapters.interactive_brokers.factories import (
+    InteractiveBrokersLiveDataClientFactory,
+)
+from nautilus_trader.adapters.interactive_brokers.factories import (
+    InteractiveBrokersLiveExecClientFactory,
+)
 from nautilus_trader.common.enums import LogColor
 from nautilus_trader.config import LiveDataEngineConfig
 from nautilus_trader.config import LoggingConfig
@@ -116,7 +126,9 @@ class DemoStrategy(Strategy):
 
         # Show portfolio state if we reached target bar
         if self.show_portfolio_at_bar == self.count_of_bars:
-            self.show_portfolio_info("Portfolio state (2 minutes after position opened)")
+            self.show_portfolio_info(
+                "Portfolio state (2 minutes after position opened)"
+            )
 
         # Only place one order for demonstration
         if not self.order_placed:
@@ -141,7 +153,9 @@ class DemoStrategy(Strategy):
             # Submit order and remember it
             self.submit_order_list(bracket_order_list)
             self.order_placed = True
-            self.log.info(f"Submitted bracket order: {bracket_order_list}", color=LogColor.GREEN)
+            self.log.info(
+                f"Submitted bracket order: {bracket_order_list}", color=LogColor.GREEN
+            )
 
     def on_position_opened(self, event: PositionOpened):
         """

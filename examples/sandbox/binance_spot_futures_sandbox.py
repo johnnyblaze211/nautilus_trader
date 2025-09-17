@@ -64,7 +64,9 @@ class TestStrategy(Strategy):
         self.futures_client_id = config.futures_client_id
 
     def on_start(self) -> None:
-        self.futures_instrument = self.cache.instrument(self.config.futures_instrument_id)
+        self.futures_instrument = self.cache.instrument(
+            self.config.futures_instrument_id
+        )
         if self.futures_instrument is None:
             self.log.error(
                 f"Could not find instrument for {self.config.futures_instrument_id}"
@@ -82,11 +84,21 @@ class TestStrategy(Strategy):
             return
 
         account = self.portfolio.account(venue=self.futures_instrument.venue)
-        balances = {str(currency): str(balance) for currency, balance in account.balances().items()}
-        self.log.info(f"Futures balances\n{json.dumps(balances, indent=4)}", LogColor.GREEN)
+        balances = {
+            str(currency): str(balance)
+            for currency, balance in account.balances().items()
+        }
+        self.log.info(
+            f"Futures balances\n{json.dumps(balances, indent=4)}", LogColor.GREEN
+        )
         account = self.portfolio.account(venue=self.spot_instrument.venue)
-        balances = {str(currency): str(balance) for currency, balance in account.balances().items()}
-        self.log.info(f"Spot balances\n{json.dumps(balances, indent=4)}", LogColor.GREEN)
+        balances = {
+            str(currency): str(balance)
+            for currency, balance in account.balances().items()
+        }
+        self.log.info(
+            f"Spot balances\n{json.dumps(balances, indent=4)}", LogColor.GREEN
+        )
 
         # Subscribe to live data
         self.subscribe_quote_ticks(self.config.futures_instrument_id)

@@ -94,7 +94,9 @@ async def main():
     )
 
     logger.info(f"Received {len(bars_old)} bar(s) with old start time")
-    logger.info(f"Received {len(bars_limit_zero)} bar(s) with limit=0 (expected: many bars)")
+    logger.info(
+        f"Received {len(bars_limit_zero)} bar(s) with limit=0 (expected: many bars)"
+    )
 
     # Test with recent start time
     logger.info(f"Requesting bars with RECENT start time ({start_time_recent})...")
@@ -121,7 +123,9 @@ async def main():
     logger.info(f"Received {len(bars_range)} bar(s) with start and end time")
 
     # Test with narrow 1-hour range (mimics okx_data_tester behavior)
-    logger.info(f"Requesting bars with NARROW RANGE ({narrow_start} to {narrow_end})...")
+    logger.info(
+        f"Requesting bars with NARROW RANGE ({narrow_start} to {narrow_end})..."
+    )
 
     bars_narrow = await http_client.request_bars(
         bar_type=bar_type,
@@ -133,8 +137,12 @@ async def main():
     logger.info(f"Received {len(bars_narrow)} bar(s) with narrow range and limit=0")
 
     # Test with ETH-USDT-SWAP like okx_data_tester
-    eth_bar_type = nautilus_pyo3.BarType.from_str("ETH-USDT-SWAP.OKX-1-MINUTE-LAST-EXTERNAL")
-    logger.info(f"Testing ETH-USDT-SWAP with narrow range ({narrow_start} to {narrow_end})...")
+    eth_bar_type = nautilus_pyo3.BarType.from_str(
+        "ETH-USDT-SWAP.OKX-1-MINUTE-LAST-EXTERNAL"
+    )
+    logger.info(
+        f"Testing ETH-USDT-SWAP with narrow range ({narrow_start} to {narrow_end})..."
+    )
 
     bars_eth = await http_client.request_bars(
         bar_type=eth_bar_type,
@@ -171,7 +179,9 @@ async def main():
         last_ts = ns_to_timestamp(bars_old[-1].ts_event)
         logger.info(f"bars_old[0]  = {bars_old[0]} (time: {first_ts})")
         logger.info(f"bars_old[-1] = {bars_old[-1]} (time: {last_ts})")
-        assert first_ts >= start_time_old, f"First bar {first_ts} should be >= {start_time_old}"
+        assert (
+            first_ts >= start_time_old
+        ), f"First bar {first_ts} should be >= {start_time_old}"
         logger.info(f"✅ bars_old time range valid: {first_ts} to {last_ts}")
 
     # Validate bars_recent (start-only mode, should be >= start_time_recent)
@@ -207,7 +217,9 @@ async def main():
         ), f"Expected at most {max_expected} bars for 1-hour range, got {len(bars_narrow)}"
 
         # Check time bounds with small tolerance
-        time_tolerance = pd.Timedelta(minutes=10)  # Allow 10 min tolerance due to API adjustments
+        time_tolerance = pd.Timedelta(
+            minutes=10
+        )  # Allow 10 min tolerance due to API adjustments
         assert (
             first_ts >= narrow_start - time_tolerance
         ), f"First bar {first_ts} should be >= {narrow_start - time_tolerance}"
@@ -215,9 +227,13 @@ async def main():
             last_ts <= narrow_end + time_tolerance
         ), f"Last bar {last_ts} should be <= {narrow_end + time_tolerance}"
 
-        logger.info(f"✅ bars_narrow: {len(bars_narrow)} bars in range {first_ts} to {last_ts}")
+        logger.info(
+            f"✅ bars_narrow: {len(bars_narrow)} bars in range {first_ts} to {last_ts}"
+        )
     else:
-        logger.error(f"❌ No bars returned for narrow range {narrow_start} to {narrow_end}")
+        logger.error(
+            f"❌ No bars returned for narrow range {narrow_start} to {narrow_end}"
+        )
 
     # Validate bars_range (should be within range_start and range_end)
     if bars_range:
@@ -225,7 +241,9 @@ async def main():
         last_ts = ns_to_timestamp(bars_range[-1].ts_event)
         logger.info(f"bars_range[0]  = {bars_range[0]} (time: {first_ts})")
         logger.info(f"bars_range[-1] = {bars_range[-1]} (time: {last_ts})")
-        assert first_ts >= range_start, f"First bar {first_ts} should be >= {range_start}"
+        assert (
+            first_ts >= range_start
+        ), f"First bar {first_ts} should be >= {range_start}"
         assert last_ts <= range_end, f"Last bar {last_ts} should be <= {range_end}"
         logger.info(f"✅ bars_range time range valid: {first_ts} to {last_ts}")
     else:

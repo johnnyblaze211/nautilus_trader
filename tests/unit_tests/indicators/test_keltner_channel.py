@@ -25,7 +25,9 @@ AUDUSD_SIM = TestInstrumentProvider.default_fx_ccy("AUD/USD")
 class TestKeltnerChannel:
     def setup(self):
         # Fixture Setup
-        self.kc = KeltnerChannel(10, 2.5, MovingAverageType.EXPONENTIAL, MovingAverageType.SIMPLE)
+        self.kc = KeltnerChannel(
+            10, 2.5, MovingAverageType.EXPONENTIAL, MovingAverageType.SIMPLE
+        )
 
     def test_name_returns_expected_string(self):
         # Arrange, Act, Assert
@@ -34,7 +36,9 @@ class TestKeltnerChannel:
     def test_str_repr_returns_expected_string(self):
         # Arrange, Act, Assert
         assert str(self.kc) == "KeltnerChannel(10, 2.5, EXPONENTIAL, SIMPLE, True, 0.0)"
-        assert repr(self.kc) == "KeltnerChannel(10, 2.5, EXPONENTIAL, SIMPLE, True, 0.0)"
+        assert (
+            repr(self.kc) == "KeltnerChannel(10, 2.5, EXPONENTIAL, SIMPLE, True, 0.0)"
+        )
 
     def test_period_returns_expected_value(self):
         # Arrange, Act, Assert
@@ -66,7 +70,9 @@ class TestKeltnerChannel:
 
     def test_handle_bar_updates_indicator(self):
         # Arrange
-        indicator = KeltnerChannel(10, 2.5, MovingAverageType.EXPONENTIAL, MovingAverageType.SIMPLE)
+        indicator = KeltnerChannel(
+            10, 2.5, MovingAverageType.EXPONENTIAL, MovingAverageType.SIMPLE
+        )
 
         bar = TestDataStubs.bar_5decimal()
 

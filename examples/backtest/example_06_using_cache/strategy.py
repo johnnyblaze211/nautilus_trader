@@ -50,7 +50,9 @@ class CacheDemoStrategy(Strategy):
         # Trading state
         self.bar_count = 0
         self.order_placed = False  # Flag to ensure, only one order is placed
-        self.show_cache_info_at_bar: int | None = None  # Bar number where to output Cache info
+        self.show_cache_info_at_bar: int | None = (
+            None  # Bar number where to output Cache info
+        )
 
     def on_start(self):
         self.subscribe_bars(self.bar_type)
@@ -83,7 +85,9 @@ class CacheDemoStrategy(Strategy):
 
         # Create and store complex object
         complex_data = DataContainer("example")
-        complex_data_key, complex_data_bytes = "complex_data", pickle.dumps(complex_data)
+        complex_data_key, complex_data_bytes = "complex_data", pickle.dumps(
+            complex_data
+        )
         self.cache.add(complex_data_key, complex_data_bytes)
         self.log.info(f"Stored complex data: {complex_data}")
 
@@ -91,12 +95,16 @@ class CacheDemoStrategy(Strategy):
         # Step 1: Load bytes from cache
         simple_data_bytes = self.cache.get(simple_data_key)
         # Step 2: Deserialize bytes to objects
-        simple_retrieved = pickle.loads(simple_data_bytes)  # noqa: S301 (safe pickle usage)
+        simple_retrieved = pickle.loads(
+            simple_data_bytes
+        )  # noqa: S301 (safe pickle usage)
         self.log.info(f"Retrieved simple data: {simple_retrieved}")
 
         # Retrieve complex object (custom class instance)
         complex_data_bytes = self.cache.get(complex_data_key)
-        complex_retrieved = pickle.loads(complex_data_bytes)  # noqa: S301 (safe pickle usage)
+        complex_retrieved = pickle.loads(
+            complex_data_bytes
+        )  # noqa: S301 (safe pickle usage)
         self.log.info(f"Retrieved complex data: {complex_retrieved}")
 
         # =============================================
@@ -174,7 +182,9 @@ class CacheDemoStrategy(Strategy):
             # Submit order and remember it
             self.submit_order_list(bracket_order_list)
             self.order_placed = True
-            self.log.info(f"Submitted bracket order: {bracket_order_list}", color=LogColor.GREEN)
+            self.log.info(
+                f"Submitted bracket order: {bracket_order_list}", color=LogColor.GREEN
+            )
             return
 
         # Wait with the Cache demonstration, until 1 bar after position opened
@@ -274,7 +284,9 @@ class CacheDemoStrategy(Strategy):
         total = self.cache.orders_total_count()
         open_count = self.cache.orders_open_count()
         closed_count = self.cache.orders_closed_count()
-        self.log.info(f"Order counts - Total: {total}, Open: {open_count}, Closed: {closed_count}")
+        self.log.info(
+            f"Order counts - Total: {total}, Open: {open_count}, Closed: {closed_count}"
+        )
 
         # =============================================
         # POSITION MANAGEMENT

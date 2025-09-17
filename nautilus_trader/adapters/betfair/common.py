@@ -108,7 +108,9 @@ BETFAIR_TICK_SCHEME = TieredTickScheme(
     BETFAIR_PRICE_TIERS,
     price_precision=BETFAIR_PRICE_PRECISION,
 )
-BETFAIR_FLOAT_TO_PRICE = {price.as_double(): price for price in BETFAIR_TICK_SCHEME.ticks}
+BETFAIR_FLOAT_TO_PRICE = {
+    price.as_double(): price for price in BETFAIR_TICK_SCHEME.ticks
+}
 MAX_BET_PRICE = max(BETFAIR_TICK_SCHEME.ticks)
 MIN_BET_PRICE = min(BETFAIR_TICK_SCHEME.ticks)
 register_tick_scheme(BETFAIR_TICK_SCHEME)

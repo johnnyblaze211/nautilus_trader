@@ -14,14 +14,22 @@
 #  limitations under the License.
 # -------------------------------------------------------------------------------------------------
 
-from nautilus_trader.model.data import TradeTick
-from tests.mem_leak_tests.test_utils import create_memory_test_functions
+from nautilus_trader.test_kit.rust.data_pyo3 import TestDataProviderPyo3
+from nautilus_trader.test_kit.stubs.data import TestDataStubs
+from tests.mem_leak_tests.conftest import snapshot_memory
 
-# Create test functions using the utility
-run_repr, run_from_pyo3 = create_memory_test_functions(
-    "TradeTick", TradeTick, "trade_tick", "trade_tick"
-)
 
-if __name__ == "__main__":
-    run_repr()
-    run_from_pyo3()
+def create_memory_test_functions(data_type_name, data_class, stub_method, pyo3_method):
+    """Create standardized memory test functions for data types."""
+    
+    @snapshot_memory(4000)
+    def run_repr(*args, **kwargs):
+        data_obj = getattr(TestDataStubs, stub_method)()
+        repr(data_obj)
+    
+    @snapshot_memory(4000)
+    def run_from_pyo3(*args, **kwargs):
+        pyo3_obj = getattr(TestDataProviderPyo3, pyo3_method)()
+        data_class.from_pyo3(pyo3_obj)
+    
+    return run_repr, run_from_pyo3
